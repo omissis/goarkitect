@@ -1,0 +1,8 @@
+---
+
+rules:
+  - name: project structure
+    file:
+      path: 'test/project/Makefile'
+      should:
+        exist: true
