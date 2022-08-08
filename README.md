@@ -25,6 +25,9 @@ if a file:
   - [x] does not exist
   - [x] name matches a regex
   - [ ] name matches a glob pattern
+  - [ ] content matches value
+  - [ ] content matches regex
+  - [ ] content matches template
   - [ ] is gitignored
   - [ ] is gitcrypted
 
