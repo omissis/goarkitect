@@ -23,7 +23,7 @@ if a set of files:
 if a file:
 - [x] exists
 - [x] does not exist
-- [x] name matches a regex
+- [x] name matches a regex
 - [ ] name matches a glob pattern
 - [ ] content matches value
 - [ ] content matches regex
@@ -48,7 +48,7 @@ if a struct:
 
 if a makefile:
 - [ ] contains a set of targets
-- [ ] does not contain a set of targets
+- [ ] does not contain a set of targets
 
 if a json file:
 - [ ] matches a json schema
