@@ -68,13 +68,13 @@ func (rb *RuleBuilder) Because(b rule.Because) []rule.Violation {
 	}
 
 	for _, should := range rb.shoulds {
-		rb.Violations = should.Evaluate(rb)
-		if len(rb.Violations) > 0 {
-			return rb.Violations
+		vs := should.Evaluate(rb)
+		if len(vs) > 0 {
+			rb.Violations = append(rb.Violations, vs...)
 		}
 	}
 
-	return nil
+	return rb.Violations
 }
 
 func (rb *RuleBuilder) GetFiles() []string {
