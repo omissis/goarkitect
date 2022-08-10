@@ -9,12 +9,12 @@ import (
 
 func NotExist() *Expression {
 	return &Expression{
-		checkViolation: func(filePath string) bool {
+		evaluate: func(rb rule.Builder, filePath string) bool {
 			if _, err := os.Stat(filePath); err != nil {
-				if os.IsNotExist(err) {
-					return false
+				if !os.IsNotExist(err) {
+					rb.AddError(err)
 				}
-				panic(err)
+				return false
 			}
 
 			return true

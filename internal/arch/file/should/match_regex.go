@@ -11,7 +11,7 @@ func MatchRegex(res string) *Expression {
 	rx := regexp.MustCompile(res)
 
 	return &Expression{
-		checkViolation: func(filePath string) bool {
+		evaluate: func(_ rule.Builder, filePath string) bool {
 			return !rx.MatchString(
 				filepath.Base(filePath),
 			)

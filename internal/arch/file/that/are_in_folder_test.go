@@ -1,3 +1,59 @@
 package that_test
 
-// TODO: implement
+import (
+	"goarkitect/internal/arch/file"
+	"goarkitect/internal/arch/file/that"
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+)
+
+func Test_AreInFolder(t *testing.T) {
+	testCases := []struct {
+		desc        string
+		ruleBuilder *file.RuleBuilder
+		folder      string
+		want        []string
+		wantErrs    []string
+	}{
+		{
+			desc:        "files in 'test/project' folder",
+			ruleBuilder: file.All(),
+			folder:      "../test/project",
+			want:        []string{"../test/project/Dockerfile", "../test/project/Makefile"},
+			wantErrs:    nil,
+		},
+		{
+			desc:        "files in non-existing folder",
+			ruleBuilder: file.All(),
+			folder:      "/does/not/exist",
+			want:        nil,
+			wantErrs:    []string{"open /does/not/exist: no such file or directory"},
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			aif := that.AreInFolder(tC.folder, false)
+			aif.Evaluate(tC.ruleBuilder)
+
+			got := tC.ruleBuilder.GetFiles()
+			if !cmp.Equal(got, tC.want, cmpopts.EquateEmpty()) {
+				t.Errorf("want = %+v, got = %+v", tC.want, got)
+			}
+
+			gotErrs := tC.ruleBuilder.GetErrors()
+			if len(gotErrs) != len(tC.wantErrs) {
+				t.Errorf("want %d errs, got %d", len(tC.wantErrs), len(gotErrs))
+			}
+
+			for i := 0; i < len(gotErrs); i++ {
+				if gotErrs[i].Error() != tC.wantErrs[i] {
+					t.Errorf("wantErr[%d] = %+v, gotErr[%d] = %+v", i, tC.wantErrs[i], i, gotErrs[i].Error())
+				}
+			}
+		})
+	}
+}
+
+// TODO: add tests for recursive files search

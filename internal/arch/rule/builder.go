@@ -6,7 +6,9 @@ type Builder interface {
 	Except(s ...Except) Builder
 	Should(e Should) Builder
 	AndShould(e Should) Builder
-	Because(b Because) []Violation
+	Because(b Because) ([]Violation, []error)
+	AddError(err error)
+	GetErrors() []error
 }
 
 type That interface {

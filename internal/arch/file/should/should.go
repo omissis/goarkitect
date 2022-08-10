@@ -6,14 +6,14 @@ import (
 )
 
 type Expression struct {
-	checkViolation func(filePath string) bool
-	getViolation   func(filePath string) rule.Violation
+	evaluate     func(rb rule.Builder, filePath string) bool
+	getViolation func(filePath string) rule.Violation
 }
 
 func (e Expression) Evaluate(rb rule.Builder) []rule.Violation {
 	violations := make([]rule.Violation, 0)
 	for _, filePath := range rb.(*file.RuleBuilder).GetFiles() {
-		if e.checkViolation(filePath) {
+		if e.evaluate(rb, filePath) {
 			violations = append(violations, e.getViolation(filePath))
 		}
 	}

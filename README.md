@@ -14,22 +14,39 @@ if a folder:
 - [ ] is gitignored
 - [ ] is gitcrypted
 
-if a set of files:
-- [x] exists
-- [x] does not exist
-- [ ] is gitignored
-- [ ] is gitcrypted
-
 if a file:
 - [x] exists
 - [x] does not exist
 - [x] name matches a regex
-- [ ] name matches a glob pattern
+- [x] name does not match a regex
 - [ ] content matches value
 - [ ] content matches regex
 - [ ] content matches template
 - [ ] is gitignored
 - [ ] is gitcrypted
+
+if a set of files:
+- [x] exists
+- [x] does not exist
+- [x] names match a regex
+- [x] names do not match a regex
+- [ ] paths matching a glob pattern exist
+- [ ] paths matching a glob pattern do not exist
+- [ ] is gitignored
+- [ ] is gitcrypted
+
+if all files that respect some conditions:
+- [x] start with a given suffix
+- [x] do not start with a given suffix
+- [x] end with a given suffix
+- [x] do not end with a given suffix
+- [x] names match a regex
+- [x] names do not match a regex
+- [ ] paths matching a glob pattern exist
+- [ ] paths matching a glob pattern do not exist
+- [ ] is gitignored
+- [ ] is gitcrypted
+
 
 if a package:
 - [ ] depends on another package

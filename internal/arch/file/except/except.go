@@ -3,24 +3,21 @@ package except
 import (
 	"goarkitect/internal/arch/file"
 	"goarkitect/internal/arch/rule"
-	"path/filepath"
 )
 
 type Expression struct {
-	value string
+	evaluate func(filePath string) bool
 }
 
 func (e Expression) Evaluate(rb rule.Builder) {
 	frb := rb.(*file.RuleBuilder)
 
 	nf := make([]string, 0)
-	for _, f := range frb.GetFiles() {
-		if filepath.Base(f) != e.value {
-			nf = append(nf, f)
+	for _, filePath := range frb.GetFiles() {
+		if e.evaluate(filePath) {
+			nf = append(nf, filePath)
 		}
 	}
 
 	frb.SetFiles(nf)
-
-	return
 }

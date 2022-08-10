@@ -5,11 +5,23 @@ import (
 )
 
 func All() *RuleBuilder {
-	return NewRuleBuilder().AllFiles()
+	return NewRuleBuilder()
 }
 
 func One(filename string) *RuleBuilder {
-	return NewRuleBuilder().File(filename)
+	rb := NewRuleBuilder()
+
+	rb.files = []string{filename}
+
+	return rb
+}
+
+func Set(filenames ...string) *RuleBuilder {
+	rb := NewRuleBuilder()
+
+	rb.SetFiles(filenames)
+
+	return rb
 }
 
 func NewRuleBuilder() *RuleBuilder {
@@ -21,42 +33,56 @@ type RuleBuilder struct {
 	excepts    []rule.Except
 	shoulds    []rule.Should
 	because    rule.Because
-	Violations []rule.Violation
+	violations []rule.Violation
+	errors     []error
+	locked     bool
 
 	files []string
 }
 
 func (rb *RuleBuilder) That(t rule.That) rule.Builder {
+	rb.assertNotLocked()
+
 	rb.thats = []rule.That{t}
 
 	return rb
 }
 
 func (rb *RuleBuilder) AndThat(t rule.That) rule.Builder {
+	rb.assertNotLocked()
+
 	rb.thats = append(rb.thats, t)
 
 	return rb
 }
 
 func (rb *RuleBuilder) Except(s ...rule.Except) rule.Builder {
+	rb.assertNotLocked()
+
 	rb.excepts = s
 
 	return rb
 }
 
 func (rb *RuleBuilder) Should(e rule.Should) rule.Builder {
+	rb.assertNotLocked()
+
 	rb.shoulds = []rule.Should{e}
 
 	return rb
 }
 
 func (rb *RuleBuilder) AndShould(e rule.Should) rule.Builder {
+	rb.assertNotLocked()
+
 	rb.shoulds = append(rb.shoulds, e)
 
 	return rb
 }
 
-func (rb *RuleBuilder) Because(b rule.Because) []rule.Violation {
+func (rb *RuleBuilder) Because(b rule.Because) ([]rule.Violation, []error) {
+	rb.assertNotLocked()
+
 	rb.because = b
 
 	for _, that := range rb.thats {
@@ -70,11 +96,23 @@ func (rb *RuleBuilder) Because(b rule.Because) []rule.Violation {
 	for _, should := range rb.shoulds {
 		vs := should.Evaluate(rb)
 		if len(vs) > 0 {
-			rb.Violations = append(rb.Violations, vs...)
+			rb.violations = append(rb.violations, vs...)
 		}
 	}
 
-	return rb.Violations
+	rb.lock()
+
+	return rb.violations, rb.errors
+}
+
+func (rb *RuleBuilder) AddError(err error) {
+	rb.assertNotLocked()
+
+	rb.errors = append(rb.errors, err)
+}
+
+func (rb *RuleBuilder) GetErrors() []error {
+	return rb.errors
 }
 
 func (rb *RuleBuilder) GetFiles() []string {
@@ -82,15 +120,17 @@ func (rb *RuleBuilder) GetFiles() []string {
 }
 
 func (rb *RuleBuilder) SetFiles(files []string) {
+	rb.assertNotLocked()
+
 	rb.files = files
 }
 
-func (rb *RuleBuilder) AllFiles() *RuleBuilder {
-	return rb
+func (rb *RuleBuilder) assertNotLocked() {
+	if rb.locked {
+		panic("this rule builder has been already used: create a new one if you want to test a new ruleset")
+	}
 }
 
-func (rb *RuleBuilder) File(filename string) *RuleBuilder {
-	rb.files = []string{filename}
-
-	return rb
+func (rb *RuleBuilder) lock() {
+	rb.locked = true
 }

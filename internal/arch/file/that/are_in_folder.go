@@ -4,7 +4,6 @@ import (
 	"goarkitect/internal/arch/file"
 	"goarkitect/internal/arch/rule"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -22,23 +21,29 @@ type AreInFolderExpression struct {
 }
 
 func (e *AreInFolderExpression) Evaluate(rb rule.Builder) {
-	frb := rb.(*file.RuleBuilder)
+	var files []string
+	var err error
 
 	if e.recursive {
-		frb.SetFiles(e.getFilesRecursive(e.folder))
+		files, err = e.getFilesRecursive(e.folder)
 	} else {
-		frb.SetFiles(e.getFiles(e.folder))
+		files, err = e.getFiles(e.folder)
 	}
+
+	if err != nil {
+		rb.(*file.RuleBuilder).AddError(err)
+	}
+
+	rb.(*file.RuleBuilder).SetFiles(files)
 }
 
-func (e *AreInFolderExpression) getFilesRecursive(folder string) []string {
+func (e *AreInFolderExpression) getFilesRecursive(folder string) ([]string, error) {
 	var filenames []string
 	if err := filepath.Walk(folder, e.visit(&filenames)); err != nil {
-		log.Println(err)
-		return nil
+		return nil, err
 	}
 
-	return filenames
+	return filenames, nil
 }
 
 func (e *AreInFolderExpression) visit(files *[]string) filepath.WalkFunc {
@@ -52,16 +57,18 @@ func (e *AreInFolderExpression) visit(files *[]string) filepath.WalkFunc {
 	}
 }
 
-func (e *AreInFolderExpression) getFiles(folder string) []string {
+func (e *AreInFolderExpression) getFiles(folder string) ([]string, error) {
 	files, err := ioutil.ReadDir(folder)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	filePaths := make([]string, len(files))
-	for i, file := range files {
-		filePaths[i] = filepath.Join(folder, file.Name())
+	filePaths := make([]string, 0)
+	for _, file := range files {
+		if !file.IsDir() {
+			filePaths = append(filePaths, filepath.Join(folder, file.Name()))
+		}
 	}
 
-	return filePaths
+	return filePaths, nil
 }

@@ -10,7 +10,7 @@ func NotEndWith(suffix string) *Expression {
 	ls := len(suffix)
 
 	return &Expression{
-		checkViolation: func(filePath string) bool {
+		evaluate: func(_ rule.Builder, filePath string) bool {
 			fileName := filepath.Base(filePath)
 
 			lf := len(fileName)

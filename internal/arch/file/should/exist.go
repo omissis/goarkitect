@@ -9,13 +9,13 @@ import (
 
 func Exist() *Expression {
 	return &Expression{
-		checkViolation: func(filePath string) bool {
+		evaluate: func(rb rule.Builder, filePath string) bool {
 			if _, err := os.Stat(filePath); err != nil {
 				if os.IsNotExist(err) {
 					return true
 				}
 
-				panic(err)
+				rb.AddError(err)
 			}
 
 			return false
