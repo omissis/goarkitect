@@ -5,26 +5,20 @@ import (
 	"goarkitect/internal/arch/rule"
 )
 
+type Expression interface {
+	Evaluate(rb rule.Builder)
+}
+
 type evaluateFunc func(filePath string) bool
 
-func NewExpression(
-	evaluate evaluateFunc,
-) *Expression {
-	return &Expression{
-		evaluate: evaluate,
-	}
-}
+type baseExpression struct{}
 
-type Expression struct {
-	evaluate func(filePath string) bool
-}
-
-func (e Expression) Evaluate(rb rule.Builder) {
+func (e baseExpression) evaluate(rb rule.Builder, eval evaluateFunc) {
 	frb := rb.(*file.RuleBuilder)
 
 	nf := make([]string, 0)
 	for _, filePath := range frb.GetFiles() {
-		if e.evaluate(filePath) {
+		if eval(filePath) {
 			nf = append(nf, filePath)
 		}
 	}

@@ -9,66 +9,74 @@ import (
 	"regexp"
 )
 
-func HaveContentMatchingRegex(res string, opts ...Option) *Expression {
-	rx := regexp.MustCompile(res)
+func HaveContentMatchingRegex(regex string, opts ...Option) *haveContentMatchingRegex {
+	expr := &haveContentMatchingRegex{
+		regex: regex,
+	}
 
-	return NewExpression(
-		func(rb rule.Builder, filePath string) bool {
-			data, err := os.ReadFile(filePath)
-			if err != nil {
-				rb.AddError(err)
+	for _, opt := range opts {
+		opt.apply(&expr.options)
+	}
 
+	return expr
+}
+
+type haveContentMatchingRegex struct {
+	baseExpression
+
+	regex string
+}
+
+func (e haveContentMatchingRegex) Evaluate(rb rule.Builder) []rule.Violation {
+	return e.evaluate(rb, e.doEvaluate, e.getViolation)
+}
+
+func (e haveContentMatchingRegex) doEvaluate(rb rule.Builder, filePath string) bool {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		rb.AddError(err)
+
+		return true
+	}
+
+	rx := regexp.MustCompile(e.regex)
+
+	if e.options.ignoreNewLinesAtTheEndOfFile {
+		data = bytes.TrimRight(data, "\n")
+	}
+
+	if e.options.ignoreCase {
+		data = bytes.ToLower(data)
+	}
+
+	if e.options.matchSingleLines {
+		linesData := bytes.Split(data, []byte(e.options.matchSingleLinesSeparator))
+		for _, ld := range linesData {
+			if !rx.Match(ld) {
 				return true
 			}
+		}
+	}
 
-			match := "SINGLE"
-			separator := []byte("\n")
-			for _, opt := range opts {
-				switch opt.(type) {
-				case IgnoreNewLinesAtTheEndOfFile:
-					data = bytes.TrimRight(data, "\n")
-				case IgnoreCase:
-					data = bytes.ToLower(data)
-				case MatchSingleLines:
-					match = "MULTIPLE"
-					if sep := opt.(MatchSingleLines).Separator; sep != "" {
-						separator = []byte(sep)
-					}
-				}
-			}
+	return !rx.Match(data)
+}
 
-			if match == "SINGLE" {
-				return !rx.Match(data)
-			}
+func (e haveContentMatchingRegex) getViolation(filePath string) rule.Violation {
+	format := "file '%s' does not have content matching regex '%s'"
 
-			linesData := bytes.Split(data, separator)
-			for _, ld := range linesData {
-				if !rx.Match(ld) {
-					return true
-				}
-			}
+	if e.options.matchSingleLines {
+		format = "file '%s' does not have all lines matching regex '%s'"
+	}
 
-			return false
-		},
-		func(filePath string, options options) rule.Violation {
-			format := "file '%s' does not have content matching regex '%s'"
+	if e.options.negated {
+		format = "file '%s' does have content matching regex '%s'"
+	}
 
-			if options.matchSingleLines {
-				format = "file '%s' does not have all lines matching regex '%s'"
-			}
+	if e.options.negated && e.options.matchSingleLines {
+		format = "file '%s' does have all lines matching regex '%s'"
+	}
 
-			if options.negated {
-				format = "file '%s' does have content matching regex '%s'"
-			}
-
-			if options.negated && options.matchSingleLines {
-				format = "file '%s' does have all lines matching regex '%s'"
-			}
-
-			return rule.NewViolation(
-				fmt.Sprintf(format, filepath.Base(filePath), res),
-			)
-		},
-		opts...,
+	return rule.NewViolation(
+		fmt.Sprintf(format, filepath.Base(filePath), e.regex),
 	)
 }

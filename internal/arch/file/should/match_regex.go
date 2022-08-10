@@ -7,29 +7,45 @@ import (
 	"regexp"
 )
 
-func MatchRegex(res string, opts ...Option) *Expression {
-	rx := regexp.MustCompile(res)
+func MatchRegex(res string, opts ...Option) *matchRegexExpression {
+	expr := &matchRegexExpression{
+		regex: regexp.MustCompile(res),
+	}
 
-	return NewExpression(
-		func(_ rule.Builder, filePath string) bool {
-			return !rx.MatchString(
-				filepath.Base(filePath),
-			)
-		},
-		func(filePath string, options options) rule.Violation {
-			format := "file's name '%s' does not match regex '%s'"
-			if options.negated {
-				format = "file's name '%s' does match regex '%s'"
-			}
+	for _, opt := range opts {
+		opt.apply(&expr.options)
+	}
 
-			return rule.NewViolation(
-				fmt.Sprintf(
-					format,
-					filepath.Base(filePath),
-					res,
-				),
-			)
-		},
-		opts...,
+	return expr
+}
+
+type matchRegexExpression struct {
+	baseExpression
+
+	regex *regexp.Regexp
+}
+
+func (e matchRegexExpression) Evaluate(rb rule.Builder) []rule.Violation {
+	return e.evaluate(rb, e.doEvaluate, e.getViolation)
+}
+
+func (e matchRegexExpression) doEvaluate(rb rule.Builder, filePath string) bool {
+	return !e.regex.MatchString(
+		filepath.Base(filePath),
+	)
+}
+
+func (e matchRegexExpression) getViolation(filePath string) rule.Violation {
+	format := "file's name '%s' does not match regex '%s'"
+	if e.options.negated {
+		format = "file's name '%s' does match regex '%s'"
+	}
+
+	return rule.NewViolation(
+		fmt.Sprintf(
+			format,
+			filepath.Base(filePath),
+			e.regex,
+		),
 	)
 }

@@ -1,11 +1,24 @@
 package except
 
-import "path/filepath"
+import (
+	"goarkitect/internal/arch/rule"
+	"path/filepath"
+)
 
-func This(value string) *Expression {
-	return NewExpression(
-		func(filePath string) bool {
-			return filepath.Base(filePath) != value
-		},
-	)
+func This(value string) *ThisExpression {
+	return &ThisExpression{
+		value: value,
+	}
+}
+
+type ThisExpression struct {
+	baseExpression
+
+	value string
+}
+
+func (e ThisExpression) Evaluate(rb rule.Builder) {
+	e.evaluate(rb, func(filePath string) bool {
+		return filepath.Base(filePath) != e.value
+	})
 }
