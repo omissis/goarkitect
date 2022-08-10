@@ -30,8 +30,8 @@ if a set of files:
 - [x] does not exist
 - [x] names match a regex
 - [x] names do not match a regex
-- [ ] paths matching a glob pattern exist
-- [ ] paths matching a glob pattern do not exist
+- [x] paths matching a glob pattern exist
+- [x] paths matching a glob pattern do not exist
 - [ ] is gitignored
 - [ ] is gitcrypted
 
@@ -42,11 +42,10 @@ if all files that respect some conditions:
 - [x] do not end with a given suffix
 - [x] names match a regex
 - [x] names do not match a regex
-- [ ] paths matching a glob pattern exist
-- [ ] paths matching a glob pattern do not exist
-- [ ] is gitignored
-- [ ] is gitcrypted
-
+- [x] paths matching a glob pattern exist
+- [x] paths matching a glob pattern do not exist
+- [ ] are gitignored
+- [ ] are gitcrypted
 
 if a package:
 - [ ] depends on another package

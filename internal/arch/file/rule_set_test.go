@@ -182,3 +182,76 @@ func Test_It_Checks_A_Set_Of_Files_Names_Matches_A_Regexp(t *testing.T) {
 		})
 	}
 }
+
+func Test_It_Checks_A_Set_Of_Files_Names_Matches_A_Glob_Pattern(t *testing.T) {
+	basePath, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testCases := []struct {
+		desc           string
+		filenames      []string
+		glob           string
+		wantViolations []rule.Violation
+	}{
+		{
+			desc: "check that a set of files' names match a glob pattern when it's actually there",
+			filenames: []string{
+				filepath.Join(basePath, "test/project3/baz.go"),
+				filepath.Join(basePath, "test/project3/quux.go"),
+			},
+			glob:           "*/*/*.go",
+			wantViolations: nil,
+		},
+		{
+			desc: "check that a set of files' names match a glob pattern when it's not actually there",
+			filenames: []string{
+				filepath.Join(basePath, "test/project3/baz.ts"),
+				filepath.Join(basePath, "test/project3/quux.ts"),
+			},
+			glob:           "*/*/*.ts",
+			wantViolations: nil,
+		},
+		{
+			desc: "check that a set of files' names do not match a glob pattern when it's actually there",
+			filenames: []string{
+				filepath.Join(basePath, "test/project3/baz.go"),
+				filepath.Join(basePath, "test/project3/quux.go"),
+			},
+			glob: "*/*/*.ts",
+			wantViolations: []rule.Violation{
+				rule.NewViolation("file's path 'baz.go' does not match glob pattern '*/*/*.ts'"),
+				rule.NewViolation("file's path 'quux.go' does not match glob pattern '*/*/*.ts'"),
+			},
+		},
+		{
+			desc: "check that a set of files' names do not match a glob pattern when it's not actually there",
+			filenames: []string{
+				filepath.Join(basePath, "test/project3/baz.ts"),
+				filepath.Join(basePath, "test/project3/quux.ts"),
+			},
+			glob: "*/*/*.go",
+			wantViolations: []rule.Violation{
+				rule.NewViolation("file's path 'baz.ts' does not match glob pattern '*/*/*.go'"),
+				rule.NewViolation("file's path 'quux.ts' does not match glob pattern '*/*/*.go'"),
+			},
+		},
+	}
+
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			vs, errs := file.Set(tC.filenames...).
+				Should(fs.MatchGlob(tC.glob, basePath)).
+				Because("testing reasons")
+
+			if !cmp.Equal(vs, tC.wantViolations, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {
+				t.Errorf("Expected violations %v, got %v", tC.wantViolations, vs)
+			}
+
+			if errs != nil {
+				t.Errorf("Expected errs to be nil, got: %+v", errs)
+			}
+		})
+	}
+}
