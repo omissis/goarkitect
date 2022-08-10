@@ -12,7 +12,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
-func Test_HaveContentMatching(t *testing.T) {
+func Test_HaveContentMatchingRegex(t *testing.T) {
 	basePath, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -21,20 +21,20 @@ func Test_HaveContentMatching(t *testing.T) {
 	testCases := []struct {
 		desc        string
 		ruleBuilder *file.RuleBuilder
-		content     string
+		regexp      string
 		options     []should.Option
 		want        []rule.Violation
 	}{
 		{
-			desc:        "content of file 'foobar.txt' matches expected content",
+			desc:        "content of file 'foobar.txt' matches regex",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
-			content:     "foo bar baz quux\n",
+			regexp:      "^foo.+",
 			want:        nil,
 		},
 		{
-			desc:        "content of file 'foobar.txt' matches expected content, ignoring newlines at the end of file",
+			desc:        "content of file 'foobar.txt' matches regex, ignoring newlines at the end of file",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
-			content:     "foo bar baz quux",
+			regexp:      "^foo.+",
 			options: []should.Option{
 				should.IgnoreNewLinesAtTheEndOfFile{},
 			},
@@ -43,7 +43,7 @@ func Test_HaveContentMatching(t *testing.T) {
 		{
 			desc:        "content of file 'foobar.txt' matches expected content, ignoring case",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
-			content:     "FOO BAR BAZ QUUX\n",
+			regexp:      "^foo.+",
 			options: []should.Option{
 				should.IgnoreCase{},
 			},
@@ -52,15 +52,15 @@ func Test_HaveContentMatching(t *testing.T) {
 		{
 			desc:        "content of file 'foobar.txt' does not match expected content",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
-			content:     "something else",
+			regexp:      "^something\\ else.+",
 			want: []rule.Violation{
-				rule.NewViolation("file 'foobar.txt' does not have content matching 'something else'"),
+				rule.NewViolation("file 'foobar.txt' does not have content matching regex '^something\\ else.+'"),
 			},
 		},
 		{
-			desc:        "every line of file 'baz.txt' matches expected content",
-			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
-			content:     "foo bar baz quux",
+			desc:        "every line of file 'baz.txt' matches regex",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/baz.txt")),
+			regexp:      "^foo.+",
 			options: []should.Option{
 				should.IgnoreNewLinesAtTheEndOfFile{},
 				should.MatchSingleLines{},
@@ -70,20 +70,20 @@ func Test_HaveContentMatching(t *testing.T) {
 		{
 			desc:        "not every line of file 'baz.txt' matches regex",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/baz.txt")),
-			content:     "something else",
+			regexp:      "^bar.+",
 			options: []should.Option{
 				should.IgnoreNewLinesAtTheEndOfFile{},
 				should.MatchSingleLines{},
 			},
 			want: []rule.Violation{
-				rule.NewViolation("file 'baz.txt' does not have all lines matching 'something else'"),
+				rule.NewViolation("file 'baz.txt' does not have all lines matching regex '^bar.+'"),
 			},
 		},
 	}
 
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			hcm := should.HaveContentMatching([]byte(tC.content), tC.options...)
+			hcm := should.HaveContentMatchingRegex(tC.regexp, tC.options...)
 			got := hcm.Evaluate(tC.ruleBuilder)
 
 			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {

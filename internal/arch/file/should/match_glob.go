@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 )
 
-func MatchGlob(glob string, basePath string) *Expression {
-	return &Expression{
-		evaluate: func(rb rule.Builder, filePath string) bool {
+func MatchGlob(glob string, basePath string, opts ...Option) *Expression {
+	return NewExpression(
+		func(rb rule.Builder, filePath string) bool {
 			match, err := filepath.Match(filepath.Join(basePath, glob), filePath)
 			if err != nil {
 				rb.AddError(err)
@@ -16,9 +16,9 @@ func MatchGlob(glob string, basePath string) *Expression {
 
 			return !match
 		},
-		getViolation: func(filePath string, negated bool) rule.Violation {
+		func(filePath string, options options) rule.Violation {
 			format := "file's path '%s' does not match glob pattern '%s'"
-			if negated {
+			if options.negated {
 				format = "file's path '%s' does match glob pattern '%s'"
 			}
 
@@ -30,5 +30,6 @@ func MatchGlob(glob string, basePath string) *Expression {
 				),
 			)
 		},
-	}
+		opts...,
+	)
 }

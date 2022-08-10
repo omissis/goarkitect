@@ -5,6 +5,16 @@ import (
 	"goarkitect/internal/arch/rule"
 )
 
+type evaluateFunc func(filePath string) bool
+
+func NewExpression(
+	evaluate evaluateFunc,
+) *Expression {
+	return &Expression{
+		evaluate: evaluate,
+	}
+}
+
 type Expression struct {
 	evaluate func(filePath string) bool
 }

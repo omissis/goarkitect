@@ -19,8 +19,8 @@ if a file:
 - [x] does not exist
 - [x] name matches a regex
 - [x] name does not match a regex
-- [ ] content matches value
-- [ ] content matches regex
+- [x] content matches value
+- [x] content matches regex
 - [ ] content matches template
 - [ ] is gitignored
 - [ ] is gitcrypted

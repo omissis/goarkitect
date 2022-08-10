@@ -161,16 +161,16 @@ func Test_It_Checks_All_Files_Paths_In_A_Folder_Match_A_Glob_Pattern(t *testing.
 		{
 			desc:           "check that all files' names in a folder match a glob pattern",
 			folder:         filepath.Join(basePath, "test/project3"),
-			glob:           "*/*/*.go",
+			glob:           "*/*/*.txt",
 			wantViolations: nil,
 		},
 		{
 			desc:   "check that all files' names in a folder do not match a glob pattern",
 			folder: filepath.Join(basePath, "test/project3"),
-			glob:   "*/*/*.ts",
+			glob:   "*/*/*.doc",
 			wantViolations: []rule.Violation{
-				rule.NewViolation("file's path 'baz.go' does not match glob pattern '*/*/*.ts'"),
-				rule.NewViolation("file's path 'quux.go' does not match glob pattern '*/*/*.ts'"),
+				rule.NewViolation("file's path 'baz.txt' does not match glob pattern '*/*/*.doc'"),
+				rule.NewViolation("file's path 'quux.txt' does not match glob pattern '*/*/*.doc'"),
 			},
 		},
 	}

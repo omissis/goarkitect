@@ -21,8 +21,8 @@ func Test_MatchGlob(t *testing.T) {
 	newRuleBuilder := func() *file.RuleBuilder {
 		rb := file.All()
 		rb.SetFiles([]string{
-			filepath.Join(basePath, "test/project3/baz.go"),
-			filepath.Join(basePath, "test/project3/quux.go"),
+			filepath.Join(basePath, "test/project3/baz.txt"),
+			filepath.Join(basePath, "test/project3/quux.txt"),
 		})
 		return rb
 	}
@@ -34,24 +34,24 @@ func Test_MatchGlob(t *testing.T) {
 		want        []rule.Violation
 	}{
 		{
-			desc:        "project3 matches '*.go'",
+			desc:        "project3 matches '*.txt'",
 			ruleBuilder: newRuleBuilder(),
-			glob:        "*/*/*.go",
+			glob:        "*/*/*.txt",
 			want:        nil,
 		},
 		{
-			desc:        "project3 matches 'foo/*/*.go'",
+			desc:        "project3 matches 'foo/*/*.txt'",
 			ruleBuilder: newRuleBuilder(),
-			glob:        "test/*/*.go",
+			glob:        "test/*/*.txt",
 			want:        nil,
 		},
 		{
-			desc:        "project3 does not match '**/*.ts'",
+			desc:        "project3 does not match '**/*.doc'",
 			ruleBuilder: newRuleBuilder(),
-			glob:        "**/*.ts",
+			glob:        "**/*.doc",
 			want: []rule.Violation{
-				rule.NewViolation("file's path 'baz.go' does not match glob pattern '**/*.ts'"),
-				rule.NewViolation("file's path 'quux.go' does not match glob pattern '**/*.ts'"),
+				rule.NewViolation("file's path 'baz.txt' does not match glob pattern '**/*.doc'"),
+				rule.NewViolation("file's path 'quux.txt' does not match glob pattern '**/*.doc'"),
 			},
 		},
 	}

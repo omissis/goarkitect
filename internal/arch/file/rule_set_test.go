@@ -198,43 +198,43 @@ func Test_It_Checks_A_Set_Of_Files_Names_Matches_A_Glob_Pattern(t *testing.T) {
 		{
 			desc: "check that a set of files' names match a glob pattern when it's actually there",
 			filenames: []string{
-				filepath.Join(basePath, "test/project3/baz.go"),
-				filepath.Join(basePath, "test/project3/quux.go"),
+				filepath.Join(basePath, "test/project3/baz.txt"),
+				filepath.Join(basePath, "test/project3/quux.txt"),
 			},
-			glob:           "*/*/*.go",
+			glob:           "*/*/*.txt",
 			wantViolations: nil,
 		},
 		{
 			desc: "check that a set of files' names match a glob pattern when it's not actually there",
 			filenames: []string{
-				filepath.Join(basePath, "test/project3/baz.ts"),
-				filepath.Join(basePath, "test/project3/quux.ts"),
+				filepath.Join(basePath, "test/project3/baz.doc"),
+				filepath.Join(basePath, "test/project3/quux.doc"),
 			},
-			glob:           "*/*/*.ts",
+			glob:           "*/*/*.doc",
 			wantViolations: nil,
 		},
 		{
 			desc: "check that a set of files' names do not match a glob pattern when it's actually there",
 			filenames: []string{
-				filepath.Join(basePath, "test/project3/baz.go"),
-				filepath.Join(basePath, "test/project3/quux.go"),
+				filepath.Join(basePath, "test/project3/baz.txt"),
+				filepath.Join(basePath, "test/project3/quux.txt"),
 			},
-			glob: "*/*/*.ts",
+			glob: "*/*/*.doc",
 			wantViolations: []rule.Violation{
-				rule.NewViolation("file's path 'baz.go' does not match glob pattern '*/*/*.ts'"),
-				rule.NewViolation("file's path 'quux.go' does not match glob pattern '*/*/*.ts'"),
+				rule.NewViolation("file's path 'baz.txt' does not match glob pattern '*/*/*.doc'"),
+				rule.NewViolation("file's path 'quux.txt' does not match glob pattern '*/*/*.doc'"),
 			},
 		},
 		{
 			desc: "check that a set of files' names do not match a glob pattern when it's not actually there",
 			filenames: []string{
-				filepath.Join(basePath, "test/project3/baz.ts"),
-				filepath.Join(basePath, "test/project3/quux.ts"),
+				filepath.Join(basePath, "test/project3/baz.doc"),
+				filepath.Join(basePath, "test/project3/quux.doc"),
 			},
-			glob: "*/*/*.go",
+			glob: "*/*/*.txt",
 			wantViolations: []rule.Violation{
-				rule.NewViolation("file's path 'baz.ts' does not match glob pattern '*/*/*.go'"),
-				rule.NewViolation("file's path 'quux.ts' does not match glob pattern '*/*/*.go'"),
+				rule.NewViolation("file's path 'baz.doc' does not match glob pattern '*/*/*.txt'"),
+				rule.NewViolation("file's path 'quux.doc' does not match glob pattern '*/*/*.txt'"),
 			},
 		},
 	}

@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 )
 
-func Exist() *Expression {
-	return &Expression{
-		evaluate: func(rb rule.Builder, filePath string) bool {
+func Exist(opts ...Option) *Expression {
+	return NewExpression(
+		func(rb rule.Builder, filePath string) bool {
 			if _, err := os.Stat(filePath); err != nil {
 				if !os.IsNotExist(err) {
 					rb.AddError(err)
@@ -20,9 +20,9 @@ func Exist() *Expression {
 
 			return false
 		},
-		getViolation: func(filePath string, negated bool) rule.Violation {
+		func(filePath string, options options) rule.Violation {
 			format := "file '%s' does not exist"
-			if negated {
+			if options.negated {
 				format = "file '%s' does exist"
 			}
 
@@ -30,5 +30,6 @@ func Exist() *Expression {
 				fmt.Sprintf(format, filepath.Base(filePath)),
 			)
 		},
-	}
+		opts...,
+	)
 }

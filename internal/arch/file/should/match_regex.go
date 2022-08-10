@@ -7,18 +7,18 @@ import (
 	"regexp"
 )
 
-func MatchRegex(res string) *Expression {
+func MatchRegex(res string, opts ...Option) *Expression {
 	rx := regexp.MustCompile(res)
 
-	return &Expression{
-		evaluate: func(_ rule.Builder, filePath string) bool {
+	return NewExpression(
+		func(_ rule.Builder, filePath string) bool {
 			return !rx.MatchString(
 				filepath.Base(filePath),
 			)
 		},
-		getViolation: func(filePath string, negated bool) rule.Violation {
+		func(filePath string, options options) rule.Violation {
 			format := "file's name '%s' does not match regex '%s'"
-			if negated {
+			if options.negated {
 				format = "file's name '%s' does match regex '%s'"
 			}
 
@@ -30,5 +30,6 @@ func MatchRegex(res string) *Expression {
 				),
 			)
 		},
-	}
+		opts...,
+	)
 }
