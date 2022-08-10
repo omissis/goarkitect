@@ -16,10 +16,15 @@ func MatchRegex(res string) *Expression {
 				filepath.Base(filePath),
 			)
 		},
-		getViolation: func(filePath string) rule.Violation {
+		getViolation: func(filePath string, negated bool) rule.Violation {
+			format := "file's name '%s' does not match regex '%s'"
+			if negated {
+				format = "file's name '%s' does match regex '%s'"
+			}
+
 			return rule.NewViolation(
 				fmt.Sprintf(
-					"file's name '%s' does not match regex '%s'",
+					format,
 					filepath.Base(filePath),
 					res,
 				),

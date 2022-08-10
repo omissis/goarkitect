@@ -96,7 +96,7 @@ func Test_It_Checks_A_Set_Of_Files_Do_Not_Exist(t *testing.T) {
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
 			vs, errs := file.Set(tC.filenames...).
-				Should(fs.NotExist()).
+				Should(fs.Not(fs.Exist())).
 				Because("testing reasons")
 
 			if !cmp.Equal(vs, tC.wantViolations, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {

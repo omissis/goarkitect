@@ -16,10 +16,15 @@ func MatchGlob(glob string, basePath string) *Expression {
 
 			return !match
 		},
-		getViolation: func(filePath string) rule.Violation {
+		getViolation: func(filePath string, negated bool) rule.Violation {
+			format := "file's path '%s' does not match glob pattern '%s'"
+			if negated {
+				format = "file's path '%s' does match glob pattern '%s'"
+			}
+
 			return rule.NewViolation(
 				fmt.Sprintf(
-					"file's path '%s' does not match glob pattern '%s'",
+					format,
 					filepath.Base(filePath),
 					glob,
 				),

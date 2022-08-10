@@ -16,13 +16,14 @@ func StartWith(prefix string) *Expression {
 
 			return le <= lf && fileName[:le] != prefix
 		},
-		getViolation: func(filePath string) rule.Violation {
+		getViolation: func(filePath string, negated bool) rule.Violation {
+			format := "file's name '%s' does not start with '%s'"
+			if negated {
+				format = "file's name '%s' does start with '%s'"
+			}
+
 			return rule.NewViolation(
-				fmt.Sprintf(
-					"file's name '%s' does not start with '%s'",
-					filepath.Base(filePath),
-					prefix,
-				),
+				fmt.Sprintf(format, filepath.Base(filePath), prefix),
 			)
 		},
 	}

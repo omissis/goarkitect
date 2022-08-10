@@ -59,6 +59,7 @@ func Test_MatchGlob(t *testing.T) {
 		t.Run(tC.desc, func(t *testing.T) {
 			mg := should.MatchGlob(tC.glob, basePath)
 			got := mg.Evaluate(tC.ruleBuilder)
+
 			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {
 				t.Errorf("want = %+v, got = %+v", tC.want, got)
 			}

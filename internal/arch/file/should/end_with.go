@@ -17,13 +17,14 @@ func EndWith(suffix string) *Expression {
 
 			return ls <= lf && fileName[lf-ls:] != suffix
 		},
-		getViolation: func(filePath string) rule.Violation {
+		getViolation: func(filePath string, negated bool) rule.Violation {
+			format := "file's name '%s' does not end with '%s'"
+			if negated {
+				format = "file's name '%s' does end with '%s'"
+			}
+
 			return rule.NewViolation(
-				fmt.Sprintf(
-					"file's name '%s' does not end with '%s'",
-					filepath.Base(filePath),
-					suffix,
-				),
+				fmt.Sprintf(format, filepath.Base(filePath), suffix),
 			)
 		},
 	}

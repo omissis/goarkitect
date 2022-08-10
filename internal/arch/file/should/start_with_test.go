@@ -36,6 +36,7 @@ func Test_StartWith(t *testing.T) {
 		t.Run(tC.desc, func(t *testing.T) {
 			ew := should.StartWith(tC.prefix)
 			got := ew.Evaluate(tC.ruleBuilder)
+
 			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {
 				t.Errorf("want = %+v, got = %+v", tC.want, got)
 			}
