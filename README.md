@@ -24,7 +24,7 @@ if a file:
 - [x] content matches regex
 - [ ] content matches template
 - [x] content contains a value
-- [ ] is gitignored
+- [x] is gitignored
 - [ ] is gitcrypted
 - [ ] has specific permissions
 
