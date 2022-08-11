@@ -13,6 +13,7 @@ if a folder:
 - [ ] contains a files matching a glob pattern
 - [ ] is gitignored
 - [ ] is gitcrypted
+- [ ] has specific permissions
 
 if a file:
 - [x] exists
@@ -22,9 +23,10 @@ if a file:
 - [x] content matches value
 - [x] content matches regex
 - [ ] content matches template
-- [ ] content contains a value
+- [x] content contains a value
 - [ ] is gitignored
 - [ ] is gitcrypted
+- [ ] has specific permissions
 
 if a set of files:
 - [x] exists

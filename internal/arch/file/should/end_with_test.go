@@ -15,6 +15,7 @@ func Test_EndWith(t *testing.T) {
 		desc        string
 		ruleBuilder *file.RuleBuilder
 		suffix      string
+		options     []should.Option
 		want        []rule.Violation
 	}{
 		{
@@ -31,36 +32,22 @@ func Test_EndWith(t *testing.T) {
 				rule.NewViolation("file's name 'foobar' does not end with 'baz'"),
 			},
 		},
-	}
-	for _, tC := range testCases {
-		t.Run(tC.desc, func(t *testing.T) {
-			ew := should.EndWith(tC.suffix)
-			got := ew.Evaluate(tC.ruleBuilder)
-
-			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {
-				t.Errorf("want = %+v, got = %+v", tC.want, got)
-			}
-		})
-	}
-}
-
-func Test_NotEndWith(t *testing.T) {
-	testCases := []struct {
-		desc        string
-		ruleBuilder *file.RuleBuilder
-		suffix      string
-		want        []rule.Violation
-	}{
 		{
-			desc:        "foobar does not end with baz",
+			desc:        "negated: foobar does not end with baz",
 			ruleBuilder: file.One("foobar"),
 			suffix:      "baz",
-			want:        nil,
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: nil,
 		},
 		{
-			desc:        "foobar ends with bar",
+			desc:        "negated: foobar ends with bar",
 			ruleBuilder: file.One("foobar"),
 			suffix:      "bar",
+			options: []should.Option{
+				should.Negated{},
+			},
 			want: []rule.Violation{
 				rule.NewViolation("file's name 'foobar' does end with 'bar'"),
 			},
@@ -68,7 +55,7 @@ func Test_NotEndWith(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			ew := should.Not(should.EndWith(tC.suffix))
+			ew := should.EndWith(tC.suffix, tC.options...)
 			got := ew.Evaluate(tC.ruleBuilder)
 
 			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {

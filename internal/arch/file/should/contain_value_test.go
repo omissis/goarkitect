@@ -48,6 +48,38 @@ func Test_ContainValue(t *testing.T) {
 				rule.NewViolation("file 'foobar.txt' does not contain the value 'something else'"),
 			},
 		},
+		{
+			desc:        "negated: file 'foobar.txt' contains the value 'bar'",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
+			value:       "bar",
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: []rule.Violation{
+				rule.NewViolation("file 'foobar.txt' does contain the value 'bar'"),
+			},
+		},
+		{
+			desc:        "negated: file 'foobar.txt' contains the value 'bar', ignoring case",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
+			value:       "BAR",
+			options: []should.Option{
+				should.IgnoreCase{},
+				should.Negated{},
+			},
+			want: []rule.Violation{
+				rule.NewViolation("file 'foobar.txt' does contain the value 'BAR'"),
+			},
+		},
+		{
+			desc:        "negated: file 'foobar.txt' does not contain the value 'something else'",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
+			value:       "something else",
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: nil,
+		},
 	}
 
 	for _, tC := range testCases {

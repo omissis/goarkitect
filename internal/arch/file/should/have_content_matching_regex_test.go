@@ -79,6 +79,15 @@ func Test_HaveContentMatchingRegex(t *testing.T) {
 				rule.NewViolation("file 'baz.txt' does not have all lines matching regex '^bar.+'"),
 			},
 		},
+		{
+			desc:        "negated: content of file 'foobar.txt' does not match regex",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
+			regexp:      "^something\\ else.+",
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: nil,
+		},
 	}
 
 	for _, tC := range testCases {

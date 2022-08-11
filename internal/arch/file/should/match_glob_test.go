@@ -31,6 +31,7 @@ func Test_MatchGlob(t *testing.T) {
 		desc        string
 		ruleBuilder *file.RuleBuilder
 		glob        string
+		options     []should.Option
 		want        []rule.Violation
 	}{
 		{
@@ -54,10 +55,40 @@ func Test_MatchGlob(t *testing.T) {
 				rule.NewViolation("file's path 'quux.txt' does not match glob pattern '**/*.doc'"),
 			},
 		},
+		{
+			desc:        "negated: project3 does not match '*.xls'",
+			ruleBuilder: newRuleBuilder(),
+			glob:        "*/*/*.xls",
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: nil,
+		},
+		{
+			desc:        "negated: project3 does not match 'test/*/*.xls'",
+			ruleBuilder: newRuleBuilder(),
+			glob:        "test/*/*.xls",
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: nil,
+		},
+		{
+			desc:        "negated: project3 does match 'test/*/*.txt'",
+			ruleBuilder: newRuleBuilder(),
+			glob:        "test/*/*.txt",
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: []rule.Violation{
+				rule.NewViolation("file's path 'baz.txt' does match glob pattern 'test/*/*.txt'"),
+				rule.NewViolation("file's path 'quux.txt' does match glob pattern 'test/*/*.txt'"),
+			},
+		},
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			mg := should.MatchGlob(tC.glob, basePath)
+			mg := should.MatchGlob(tC.glob, basePath, tC.options...)
 			got := mg.Evaluate(tC.ruleBuilder)
 
 			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {

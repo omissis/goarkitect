@@ -79,6 +79,15 @@ func Test_HaveContentMatching(t *testing.T) {
 				rule.NewViolation("file 'baz.txt' does not have all lines matching 'something else'"),
 			},
 		},
+		{
+			desc:        "negated: content of file 'foobar.txt' does not match expected content",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
+			content:     "something else\n",
+			options: []should.Option{
+				should.Negated{},
+			},
+			want: nil,
+		},
 	}
 
 	for _, tC := range testCases {
