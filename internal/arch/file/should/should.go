@@ -8,13 +8,12 @@ import (
 
 // TODO: use errors
 var (
-	ErrEmptyOpts      = fmt.Errorf("empty options")
-	ErrEmptySeparator = fmt.Errorf("empty separator")
+	ErrEmptyOpts = fmt.Errorf("empty options")
 )
 
 type Expression interface {
 	Evaluate(rb rule.Builder) []rule.Violation
-	applyOption(opt Option)
+	applyOption(opt Option) error
 	doEvaluate(rb rule.Builder, filePath string) bool
 	getViolation(filePath string) rule.Violation
 }
@@ -50,57 +49,65 @@ func (e *baseExpression) evaluate(
 	return violations
 }
 
-func (e *baseExpression) applyOption(opt Option) {
-	opt.apply(&e.options)
+func (e *baseExpression) applyOption(opt Option) error {
+	return opt.apply(&e.options)
 }
 
 func Not(expr Expression) Expression {
-	expr.applyOption(Negated{})
+	if err := expr.applyOption(Negated{}); err != nil {
+		panic(err)
+	}
 
 	return expr
 }
 
 type Option interface {
-	apply(opts *options)
+	apply(opts *options) error
 }
 
 type Negated struct{}
 
-func (opt Negated) apply(opts *options) {
+func (opt Negated) apply(opts *options) error {
 	if opts == nil {
-		return
+		return ErrEmptyOpts
 	}
 
 	opts.negated = !opts.negated
+
+	return nil
 }
 
 type IgnoreCase struct{}
 
-func (opt IgnoreCase) apply(opts *options) {
+func (opt IgnoreCase) apply(opts *options) error {
 	if opts == nil {
-		return
+		return ErrEmptyOpts
 	}
 
 	opts.ignoreCase = true
+
+	return nil
 }
 
 type IgnoreNewLinesAtTheEndOfFile struct{}
 
-func (opt IgnoreNewLinesAtTheEndOfFile) apply(opts *options) {
+func (opt IgnoreNewLinesAtTheEndOfFile) apply(opts *options) error {
 	if opts == nil {
-		return
+		return ErrEmptyOpts
 	}
 
 	opts.ignoreNewLinesAtTheEndOfFile = true
+
+	return nil
 }
 
 type MatchSingleLines struct {
 	Separator string
 }
 
-func (opt MatchSingleLines) apply(opts *options) {
+func (opt MatchSingleLines) apply(opts *options) error {
 	if opts == nil {
-		return
+		return ErrEmptyOpts
 	}
 
 	opts.matchSingleLines = true
@@ -109,4 +116,6 @@ func (opt MatchSingleLines) apply(opts *options) {
 	} else {
 		opts.matchSingleLinesSeparator = opt.Separator
 	}
+
+	return nil
 }
