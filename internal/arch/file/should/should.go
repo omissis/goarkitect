@@ -6,7 +6,6 @@ import (
 	"goarkitect/internal/arch/rule"
 )
 
-// TODO: use errors
 var (
 	ErrEmptyOpts = fmt.Errorf("empty options")
 )

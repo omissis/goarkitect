@@ -47,10 +47,14 @@ func (e *AreInFolderExpression) getFilesRecursive(folder string) ([]string, erro
 }
 
 func (e *AreInFolderExpression) visit(files *[]string) filepath.WalkFunc {
-	return func(path string, _ os.FileInfo, err error) error {
+	return func(path string, file os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
+		if file.IsDir() {
+			return nil
+		}
+
 		*files = append(*files, path)
 
 		return nil

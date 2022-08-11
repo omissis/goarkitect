@@ -14,6 +14,7 @@ func Test_AreInFolder(t *testing.T) {
 		desc        string
 		ruleBuilder *file.RuleBuilder
 		folder      string
+		recursive   bool
 		want        []string
 		wantErrs    []string
 	}{
@@ -21,6 +22,7 @@ func Test_AreInFolder(t *testing.T) {
 			desc:        "files in 'test/project' folder",
 			ruleBuilder: file.All(),
 			folder:      "../test/project",
+			recursive:   false,
 			want:        []string{"../test/project/Dockerfile", "../test/project/Makefile"},
 			wantErrs:    nil,
 		},
@@ -28,13 +30,30 @@ func Test_AreInFolder(t *testing.T) {
 			desc:        "files in non-existing folder",
 			ruleBuilder: file.All(),
 			folder:      "/does/not/exist",
+			recursive:   false,
 			want:        nil,
 			wantErrs:    []string{"open /does/not/exist: no such file or directory"},
+		},
+		{
+			desc:        "files in 'test' folder, recursively",
+			ruleBuilder: file.All(),
+			folder:      "../test",
+			recursive:   true,
+			want: []string{
+				"../test/config/base.yml",
+				"../test/project/Dockerfile",
+				"../test/project/Makefile",
+				"../test/project2/Dockerfile.1",
+				"../test/project2/Dockerfile.2",
+				"../test/project3/baz.txt",
+				"../test/project3/quux.txt",
+			},
+			wantErrs: nil,
 		},
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			aif := that.AreInFolder(tC.folder, false)
+			aif := that.AreInFolder(tC.folder, tC.recursive)
 			aif.Evaluate(tC.ruleBuilder)
 
 			got := tC.ruleBuilder.GetFiles()
@@ -55,5 +74,3 @@ func Test_AreInFolder(t *testing.T) {
 		})
 	}
 }
-
-// TODO: add tests for recursive files search
