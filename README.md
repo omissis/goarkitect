@@ -2,6 +2,10 @@
 
 This project gives developers the ability to describe and check the architecture of a project and check it is respected at any time.
 
+## TODO
+
+- add docs to tell what options each expression support (even better: enforce that using type system)
+
 ## Desired usecases
 
 if a folder:
@@ -25,7 +29,7 @@ if a file:
 - [ ] content matches template
 - [x] content contains a value
 - [x] is gitignored
-- [ ] is gitcrypted
+- [x] is gitcrypted
 - [ ] has specific permissions
 
 if a set of files:
