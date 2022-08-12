@@ -39,9 +39,7 @@ func Test_BeGitencrypted(t *testing.T) {
 		{
 			desc:        "negated: file 'encrypted.txt' should not be gitencrypted",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/encrypted.txt")),
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file 'encrypted.txt' is gitencrypted"),
 			},
@@ -49,10 +47,8 @@ func Test_BeGitencrypted(t *testing.T) {
 		{
 			desc:        "negated: file 'not_encrypted.txt' should not be gitencrypted",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/not_encrypted.txt")),
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 	}
 

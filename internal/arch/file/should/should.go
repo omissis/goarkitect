@@ -12,7 +12,8 @@ var (
 
 type Expression interface {
 	Evaluate(rb rule.Builder) []rule.Violation
-	applyOption(opt Option) error
+	GetErrors() []error
+	applyOption(opt Option)
 	doEvaluate(rb rule.Builder, filePath string) bool
 	getViolation(filePath string) rule.Violation
 }
@@ -30,6 +31,11 @@ type options struct {
 type baseExpression struct {
 	options      options
 	getViolation getViolationFunc
+	errors       []error
+}
+
+func (e *baseExpression) GetErrors() []error {
+	return e.errors
 }
 
 func (e *baseExpression) evaluate(
@@ -37,6 +43,10 @@ func (e *baseExpression) evaluate(
 	evaluate evaluateFunc,
 	getViolation getViolationFunc,
 ) []rule.Violation {
+	if len(e.errors) > 0 {
+		return nil
+	}
+
 	violations := make([]rule.Violation, 0)
 	for _, fp := range rb.(*file.RuleBuilder).GetFiles() {
 		result := evaluate(rb, fp)
@@ -48,14 +58,14 @@ func (e *baseExpression) evaluate(
 	return violations
 }
 
-func (e *baseExpression) applyOption(opt Option) error {
-	return opt.apply(&e.options)
+func (e *baseExpression) applyOption(opt Option) {
+	if err := opt.apply(&e.options); err != nil {
+		e.errors = append(e.errors, err)
+	}
 }
 
 func Not(expr Expression) Expression {
-	if err := expr.applyOption(Negated{}); err != nil {
-		panic(err)
-	}
+	expr.applyOption(Negated{})
 
 	return expr
 }

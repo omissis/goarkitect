@@ -42,9 +42,7 @@ func Test_MatchRegex(t *testing.T) {
 			desc:        "negated: foobar matches '[a-z]+'",
 			ruleBuilder: file.One("foobar"),
 			regexp:      "[a-z]+",
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file's name 'foobar' does match regex '[a-z]+'"),
 			},
@@ -53,9 +51,7 @@ func Test_MatchRegex(t *testing.T) {
 			desc:        "negated: foobar matches 'foobar'",
 			ruleBuilder: file.One("foobar"),
 			regexp:      "foobar",
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file's name 'foobar' does match regex 'foobar'"),
 			},
@@ -64,10 +60,8 @@ func Test_MatchRegex(t *testing.T) {
 			desc:        "negated: foobar does not match '[0-9]+'",
 			ruleBuilder: file.One("foobar"),
 			regexp:      "[0-9]+",
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 	}
 	for _, tC := range testCases {

@@ -13,14 +13,17 @@ type Builder interface {
 
 type That interface {
 	Evaluate(rule Builder)
+	GetErrors() []error
 }
 
 type Except interface {
 	Evaluate(rule Builder)
+	GetErrors() []error
 }
 
 type Should interface {
 	Evaluate(rule Builder) []Violation
+	GetErrors() []error
 }
 
 type Because string

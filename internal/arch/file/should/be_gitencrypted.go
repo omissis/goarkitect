@@ -30,7 +30,9 @@ func (e gitEncryptedExpression) doEvaluate(rb rule.Builder, filePath string) boo
 	cmd := exec.Command("git", "crypt", "status", filePath)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		panic(err)
+		rb.AddError(err)
+
+		return true
 	}
 
 	return bytes.Contains(out, []byte("not encrypted"))

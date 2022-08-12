@@ -4,7 +4,9 @@ This project gives developers the ability to describe and check the architecture
 
 ## TODO
 
-- add docs to tell what options each expression support (even better: enforce that using type system)
+- [ ] add docs to tell what options each expression support (even better: enforce that using type system)
+- [ ] replace panics with better error handling
+- [ ] review rule builder locking
 
 ## Desired usecases
 
@@ -13,8 +15,12 @@ if a folder:
 - [ ] does not exist
 - [ ] contains a specific file
 - [ ] contains a specific set of files
-- [ ] contains a files matching a regex
-- [ ] contains a files matching a glob pattern
+- [ ] contains files matching a regex
+- [ ] contains files matching a glob pattern
+- [ ] contains only a specific file
+- [ ] contains only a specific set of files
+- [ ] contains only files matching a regex
+- [ ] contains only files matching a glob pattern
 - [ ] is gitignored
 - [ ] is gitcrypted
 - [ ] has specific permissions
@@ -30,7 +36,7 @@ if a file:
 - [x] content contains a value
 - [x] is gitignored
 - [x] is gitcrypted
-- [ ] has specific permissions
+- [x] has specific permissions
 
 if a set of files:
 - [x] exists

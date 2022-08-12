@@ -18,6 +18,11 @@ func AreInFolder(folder string, recursive bool) *AreInFolderExpression {
 type AreInFolderExpression struct {
 	folder    string
 	recursive bool
+	errors    []error
+}
+
+func (e *AreInFolderExpression) GetErrors() []error {
+	return e.errors
 }
 
 func (e *AreInFolderExpression) Evaluate(rb rule.Builder) {

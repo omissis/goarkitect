@@ -36,18 +36,14 @@ func Test_EndWith(t *testing.T) {
 			desc:        "negated: foobar does not end with baz",
 			ruleBuilder: file.One("foobar"),
 			suffix:      "baz",
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 		{
 			desc:        "negated: foobar ends with bar",
 			ruleBuilder: file.One("foobar"),
 			suffix:      "bar",
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file's name 'foobar' does end with 'bar'"),
 			},

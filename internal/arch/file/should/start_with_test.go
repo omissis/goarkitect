@@ -36,18 +36,14 @@ func Test_StartWith(t *testing.T) {
 			desc:        "negated: foobar does not start with baz",
 			ruleBuilder: file.One("foobar"),
 			prefix:      "baz",
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 		{
 			desc:        "negated: foobar starts with foo",
 			ruleBuilder: file.One("foobar"),
 			prefix:      "foo",
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file's name 'foobar' does start with 'foo'"),
 			},

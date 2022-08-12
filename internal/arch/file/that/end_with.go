@@ -14,6 +14,12 @@ func EndWith(s string) *EndWithExpression {
 
 type EndWithExpression struct {
 	suffix string
+
+	errors []error
+}
+
+func (e *EndWithExpression) GetErrors() []error {
+	return e.errors
 }
 
 func (e EndWithExpression) Evaluate(rb rule.Builder) {

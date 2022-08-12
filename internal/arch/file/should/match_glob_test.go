@@ -59,27 +59,21 @@ func Test_MatchGlob(t *testing.T) {
 			desc:        "negated: project3 does not match '*.xls'",
 			ruleBuilder: newRuleBuilder(),
 			glob:        "*/*/*.xls",
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 		{
 			desc:        "negated: project3 does not match 'test/*/*.xls'",
 			ruleBuilder: newRuleBuilder(),
 			glob:        "test/*/*.xls",
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 		{
 			desc:        "negated: project3 does match 'test/*/*.txt'",
 			ruleBuilder: newRuleBuilder(),
 			glob:        "test/*/*.txt",
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file's path 'baz.txt' does match glob pattern 'test/*/*.txt'"),
 				rule.NewViolation("file's path 'quux.txt' does match glob pattern 'test/*/*.txt'"),

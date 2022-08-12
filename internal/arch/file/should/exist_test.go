@@ -32,9 +32,7 @@ func Test_Exist(t *testing.T) {
 		{
 			desc:        "negated: exist.go exists",
 			ruleBuilder: file.One("exist.go"),
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file 'exist.go' does exist"),
 			},
@@ -42,9 +40,7 @@ func Test_Exist(t *testing.T) {
 		{
 			desc:        "negated: abc.xyz does not exist",
 			ruleBuilder: file.One("abc.xyz"),
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 		},
 	}
 	for _, tC := range testCases {

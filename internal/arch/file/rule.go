@@ -86,16 +86,27 @@ func (rb *RuleBuilder) Because(b rule.Because) ([]rule.Violation, []error) {
 	rb.because = b
 
 	for _, that := range rb.thats {
+		if len(that.GetErrors()) > 0 {
+			return nil, that.GetErrors()
+		}
+
 		that.Evaluate(rb)
 	}
 
 	for _, except := range rb.excepts {
+		if len(except.GetErrors()) > 0 {
+			return nil, except.GetErrors()
+		}
+
 		except.Evaluate(rb)
 	}
 
 	for _, should := range rb.shoulds {
-		vs := should.Evaluate(rb)
-		if len(vs) > 0 {
+		if len(should.GetErrors()) > 0 {
+			return nil, should.GetErrors()
+		}
+
+		if vs := should.Evaluate(rb); len(vs) > 0 {
 			rb.violations = append(rb.violations, vs...)
 		}
 	}

@@ -32,7 +32,9 @@ func (e gitIgnoredExpression) doEvaluate(rb rule.Builder, filePath string) bool 
 		case *exec.ExitError:
 			return err.(*exec.ExitError).ExitCode() != 0
 		default:
-			panic(err)
+			rb.AddError(err)
+
+			return true
 		}
 	}
 

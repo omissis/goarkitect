@@ -7,11 +7,18 @@ import (
 
 type Expression interface {
 	Evaluate(rb rule.Builder)
+	GetErrors() []error
 }
 
 type evaluateFunc func(filePath string) bool
 
-type baseExpression struct{}
+type baseExpression struct {
+	errors []error
+}
+
+func (e *baseExpression) GetErrors() []error {
+	return e.errors
+}
 
 func (e baseExpression) evaluate(rb rule.Builder, eval evaluateFunc) {
 	frb := rb.(*file.RuleBuilder)

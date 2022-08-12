@@ -83,10 +83,8 @@ func Test_HaveContentMatching(t *testing.T) {
 			desc:        "negated: content of file 'foobar.txt' does not match expected content",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/foobar.txt")),
 			content:     "something else\n",
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 	}
 

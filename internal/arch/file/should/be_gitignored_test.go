@@ -39,9 +39,7 @@ func Test_BeGitignored(t *testing.T) {
 		{
 			desc:        "negated: file 'ignored.txt' should not be gitignored",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/ignored.txt")),
-			options: []should.Option{
-				should.Negated{},
-			},
+			options:     []should.Option{should.Negated{}},
 			want: []rule.Violation{
 				rule.NewViolation("file 'ignored.txt' is gitignored"),
 			},
@@ -49,10 +47,8 @@ func Test_BeGitignored(t *testing.T) {
 		{
 			desc:        "negated: file 'not_ignored.txt' should not be gitignored",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/not_ignored.txt")),
-			options: []should.Option{
-				should.Negated{},
-			},
-			want: nil,
+			options:     []should.Option{should.Negated{}},
+			want:        nil,
 		},
 	}
 
