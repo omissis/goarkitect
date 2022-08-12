@@ -1,7 +1,14 @@
 package file
 
 import (
+	"errors"
 	"goarkitect/internal/arch/rule"
+)
+
+var (
+	ErrRuleBuilderLocked = errors.New(
+		"this rule builder has been already used: create a new one if you want to test a new ruleset",
+	)
 )
 
 func All() *RuleBuilder {
@@ -41,7 +48,10 @@ type RuleBuilder struct {
 }
 
 func (rb *RuleBuilder) That(t rule.That) rule.Builder {
-	rb.assertNotLocked()
+	if rb.locked {
+		rb.addLockError()
+		return rb
+	}
 
 	rb.thats = []rule.That{t}
 
@@ -49,7 +59,10 @@ func (rb *RuleBuilder) That(t rule.That) rule.Builder {
 }
 
 func (rb *RuleBuilder) AndThat(t rule.That) rule.Builder {
-	rb.assertNotLocked()
+	if rb.locked {
+		rb.addLockError()
+		return rb
+	}
 
 	rb.thats = append(rb.thats, t)
 
@@ -57,7 +70,10 @@ func (rb *RuleBuilder) AndThat(t rule.That) rule.Builder {
 }
 
 func (rb *RuleBuilder) Except(s ...rule.Except) rule.Builder {
-	rb.assertNotLocked()
+	if rb.locked {
+		rb.addLockError()
+		return rb
+	}
 
 	rb.excepts = s
 
@@ -65,7 +81,10 @@ func (rb *RuleBuilder) Except(s ...rule.Except) rule.Builder {
 }
 
 func (rb *RuleBuilder) Should(e rule.Should) rule.Builder {
-	rb.assertNotLocked()
+	if rb.locked {
+		rb.addLockError()
+		return rb
+	}
 
 	rb.shoulds = []rule.Should{e}
 
@@ -73,7 +92,10 @@ func (rb *RuleBuilder) Should(e rule.Should) rule.Builder {
 }
 
 func (rb *RuleBuilder) AndShould(e rule.Should) rule.Builder {
-	rb.assertNotLocked()
+	if rb.locked {
+		rb.addLockError()
+		return rb
+	}
 
 	rb.shoulds = append(rb.shoulds, e)
 
@@ -81,7 +103,13 @@ func (rb *RuleBuilder) AndShould(e rule.Should) rule.Builder {
 }
 
 func (rb *RuleBuilder) Because(b rule.Because) ([]rule.Violation, []error) {
-	rb.assertNotLocked()
+	if rb.locked {
+		rb.addLockError()
+
+		return nil, rb.GetErrors()
+	}
+
+	rb.lock()
 
 	rb.because = b
 
@@ -111,13 +139,15 @@ func (rb *RuleBuilder) Because(b rule.Because) ([]rule.Violation, []error) {
 		}
 	}
 
-	rb.lock()
-
 	return rb.violations, rb.errors
 }
 
 func (rb *RuleBuilder) AddError(err error) {
-	rb.assertNotLocked()
+	for _, err := range rb.errors {
+		if errors.Is(err, ErrRuleBuilderLocked) {
+			return
+		}
+	}
 
 	rb.errors = append(rb.errors, err)
 }
@@ -131,15 +161,11 @@ func (rb *RuleBuilder) GetFiles() []string {
 }
 
 func (rb *RuleBuilder) SetFiles(files []string) {
-	rb.assertNotLocked()
-
 	rb.files = files
 }
 
-func (rb *RuleBuilder) assertNotLocked() {
-	if rb.locked {
-		panic("this rule builder has been already used: create a new one if you want to test a new ruleset")
-	}
+func (rb *RuleBuilder) addLockError() {
+	rb.AddError(ErrRuleBuilderLocked)
 }
 
 func (rb *RuleBuilder) lock() {

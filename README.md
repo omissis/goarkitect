@@ -5,8 +5,7 @@ This project gives developers the ability to describe and check the architecture
 ## TODO
 
 - [ ] add docs to tell what options each expression support (even better: enforce that using type system)
-- [ ] replace panics with better error handling
-- [ ] review rule builder locking
+- [ ] add support for setting violations severity levels
 
 ## Desired usecases
 
