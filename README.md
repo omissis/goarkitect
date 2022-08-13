@@ -44,8 +44,8 @@ if a set of files:
 - [x] names do not match a regex
 - [x] paths matching a glob pattern exist
 - [x] paths matching a glob pattern do not exist
-- [ ] is gitignored
-- [ ] is gitcrypted
+- [x] is gitignored
+- [x] is gitcrypted
 
 if all files that respect some conditions:
 - [x] start with a given suffix
@@ -56,8 +56,8 @@ if all files that respect some conditions:
 - [x] names do not match a regex
 - [x] paths matching a glob pattern exist
 - [x] paths matching a glob pattern do not exist
-- [ ] are gitignored
-- [ ] are gitcrypted
+- [x] are gitignored
+- [x] are gitcrypted
 
 if a package:
 - [ ] depends on another package
