@@ -7,28 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
-
-	"github.com/mitchellh/cli"
-	"golang.org/x/exp/slices"
-	"gopkg.in/yaml.v3"
 )
-
-// configs contains a list of files where ruleset are specified
-type configFiles []string
-
-func (i *configFiles) String() string {
-	return strings.Join(*i, ",")
-}
-
-func (i *configFiles) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
-
-func VerifyFactory() (cli.Command, error) {
-	return &verifyCommand{}, nil
-}
 
 type verifyCommand struct {
 	configFiles configFiles
@@ -44,16 +23,8 @@ func (vc *verifyCommand) Run(args []string) int {
 
 	for _, configFile := range vc.configFiles {
 		fmt.Printf("CONFIG FILE %s\n", configFile)
-		// TODO: recognize if config is relative or absolute, then adjust configFile accordingly
-		configData, err := os.ReadFile(configFile)
-		if err != nil {
-			log.Fatal(err)
-		}
 
-		var conf config.Root
-		if err := yaml.Unmarshal(configData, &conf); err != nil {
-			log.Fatal(err)
-		}
+		conf := loadConfig[config.Root](configFile)
 
 		results := config.Execute(conf)
 
@@ -65,15 +36,6 @@ func (vc *verifyCommand) Run(args []string) int {
 
 func (vc *verifyCommand) Synopsis() string {
 	return "Verify the ruleset against a project"
-}
-
-func (vc *verifyCommand) getCwd() string {
-	cwd, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return cwd
 }
 
 // parseFlags returns the list of config files, the output format and the base path
@@ -91,49 +53,11 @@ func (vc *verifyCommand) parseFlags() {
 	}
 
 	if len(cfs) < 1 {
-		cfs = []string{filepath.Join(vc.getCwd(), ".goarkitect.yaml")}
+		cfs = []string{filepath.Join(getWd(), ".goarkitect.yaml")}
 	}
 
 	vc.output = out
-	vc.configFiles = vc.listConfigFiles(cfs)
-}
-
-func (vc *verifyCommand) listConfigFiles(cfs []string) []string {
-	configFiles := make([]string, 0)
-
-	for _, cf := range cfs {
-		fileInfo, err := os.Stat(cf)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if !fileInfo.IsDir() {
-			configFiles = append(configFiles, cf)
-			continue
-		}
-
-		if err := filepath.Walk(cf, vc.visitConfigFolder(&configFiles)); err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	slices.Sort(configFiles)
-
-	return slices.Compact(configFiles)
-}
-
-func (vc *verifyCommand) visitConfigFolder(files *[]string) filepath.WalkFunc {
-	return func(path string, file os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !file.IsDir() && filepath.Ext(path) == ".yaml" {
-			*files = append(*files, path)
-		}
-
-		return nil
-	}
+	vc.configFiles = listConfigFiles(cfs)
 }
 
 func (vc *verifyCommand) printResults(results []config.RuleExecutionResult) {

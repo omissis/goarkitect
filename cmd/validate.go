@@ -3,6 +3,8 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
+	"fmt"
 	"goarkitect/internal/schema/santhosh"
 	"log"
 	"os"
@@ -10,8 +12,6 @@ import (
 
 	"github.com/mitchellh/cli"
 	"github.com/santhosh-tekuri/jsonschema"
-	"golang.org/x/exp/slices"
-	"gopkg.in/yaml.v3"
 )
 
 func ValidateFactory() (cli.Command, error) {
@@ -19,6 +19,8 @@ func ValidateFactory() (cli.Command, error) {
 }
 
 type validateCommand struct {
+	configFiles configFiles
+	output      string
 }
 
 func (vc *validateCommand) Help() string {
@@ -26,32 +28,23 @@ func (vc *validateCommand) Help() string {
 }
 
 func (vc *validateCommand) Run(args []string) int {
-	basePath := vc.getCwd()
+	basePath := getWd()
 
-	ruleset := vc.parseArgs(basePath, args)
+	vc.parseFlags()
 
 	schema := vc.loadSchema(basePath)
 
-	for _, subject := range ruleset {
-		// TODO: print in debug mode
-		// log.Printf("validating %s", subject)
+	for _, configFile := range vc.configFiles {
+		fmt.Printf("CONFIG FILE %s\n", configFile)
 
-		configPath := filepath.Join(basePath, subject)
-
-		configData, err := os.ReadFile(configPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		var conf interface{}
-		if err := yaml.Unmarshal(configData, &conf); err != nil {
-			log.Fatal(err)
-		}
+		conf := loadConfig[any](configFile)
 
 		if err := schema.ValidateInterface(conf); err != nil {
-			vc.logValidationError(err, subject, conf)
+			vc.logValidationError(err, conf)
 
 			log.Fatal(err)
+		} else {
+			fmt.Println("ok")
 		}
 	}
 
@@ -62,55 +55,25 @@ func (vc *validateCommand) Synopsis() string {
 	return "Validate the configuration file(s)"
 }
 
-func (vc *validateCommand) getCwd() string {
-	basePath, err := os.Getwd()
-	if err != nil {
+// parseFlags returns the list of config files, the output format and the base path
+func (vc *validateCommand) parseFlags() {
+	out := ""
+
+	flagSet := flag.NewFlagSet("validate", flag.ExitOnError)
+
+	flagSet.StringVar(&out, "output", "text", "format of the output")
+
+	if err := flagSet.Parse(os.Args[2:]); err != nil {
 		log.Fatal(err)
 	}
 
-	return basePath
-}
-
-func (vc *validateCommand) parseArgs(basePath string, args []string) []string {
-	if len(args) < 1 {
-		return []string{".goarkitect.yaml"}
+	cfs := flagSet.Args()
+	if len(cfs) < 1 {
+		cfs = []string{".goarkitect.yaml"}
 	}
 
-	ruleset := make([]string, 0)
-
-	for _, arg := range args {
-		fileInfo, err := os.Stat(arg)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if !fileInfo.IsDir() {
-			ruleset = append(ruleset, arg)
-			continue
-		}
-
-		if err := filepath.Walk(arg, vc.visitFolder(&ruleset)); err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	slices.Sort(ruleset)
-
-	return slices.Compact(ruleset)
-}
-
-func (e *validateCommand) visitFolder(files *[]string) filepath.WalkFunc {
-	return func(path string, file os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !file.IsDir() {
-			*files = append(*files, path)
-		}
-
-		return nil
-	}
+	vc.output = out
+	vc.configFiles = listConfigFiles(cfs)
 }
 
 func (vc *validateCommand) loadSchema(basePath string) *jsonschema.Schema {
@@ -134,7 +97,7 @@ func (vc *validateCommand) loadSchema(basePath string) *jsonschema.Schema {
 	return schema
 }
 
-func (vc *validateCommand) logValidationError(err error, subject string, conf any) {
+func (vc *validateCommand) logValidationError(err error, conf any) {
 	ptrPaths := santhosh.GetPtrPaths(err.(*jsonschema.ValidationError))
 	for _, path := range ptrPaths {
 		value, err := json.Marshal(santhosh.GetValueAtPath(conf, path))
@@ -143,8 +106,7 @@ func (vc *validateCommand) logValidationError(err error, subject string, conf an
 		}
 
 		log.Printf(
-			"file '%s': path '%s' contains an invalid configuration value: %+v\n",
-			subject,
+			"path '%s' contains an invalid configuration value: %+v\n",
 			santhosh.JoinPtrPath(path),
 			string(value),
 		)
