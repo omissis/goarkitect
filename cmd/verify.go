@@ -21,7 +21,7 @@ type verifyCommand struct {
 }
 
 func (vc *verifyCommand) Help() string {
-	return "Usage: goarkitect verify [options] [ruleset(s)]"
+	return "TBD"
 }
 
 func (vc *verifyCommand) Run(args []string) int {
