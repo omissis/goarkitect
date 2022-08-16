@@ -15,18 +15,18 @@ func All() *RuleBuilder {
 	return NewRuleBuilder()
 }
 
-func One(filename string) *RuleBuilder {
+func One(filePath string) *RuleBuilder {
 	rb := NewRuleBuilder()
 
-	rb.files = []string{filename}
+	rb.files = []string{filePath}
 
 	return rb
 }
 
-func Set(filenames ...string) *RuleBuilder {
+func Set(filePaths ...string) *RuleBuilder {
 	rb := NewRuleBuilder()
 
-	rb.SetFiles(filenames)
+	rb.SetFiles(filePaths)
 
 	return rb
 }
@@ -48,14 +48,7 @@ type RuleBuilder struct {
 }
 
 func (rb *RuleBuilder) That(t rule.That) rule.Builder {
-	if rb.locked {
-		rb.addLockError()
-		return rb
-	}
-
-	rb.thats = []rule.That{t}
-
-	return rb
+	return rb.AndThat(t)
 }
 
 func (rb *RuleBuilder) AndThat(t rule.That) rule.Builder {
@@ -81,14 +74,7 @@ func (rb *RuleBuilder) Except(s ...rule.Except) rule.Builder {
 }
 
 func (rb *RuleBuilder) Should(e rule.Should) rule.Builder {
-	if rb.locked {
-		rb.addLockError()
-		return rb
-	}
-
-	rb.shoulds = []rule.Should{e}
-
-	return rb
+	return rb.AndShould(e)
 }
 
 func (rb *RuleBuilder) AndShould(e rule.Should) rule.Builder {

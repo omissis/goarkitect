@@ -10,9 +10,9 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-func HaveContentMatching(want []byte, opts ...Option) *haveContentMatchingExpression {
+func HaveContentMatching(value []byte, opts ...Option) *haveContentMatchingExpression {
 	expr := &haveContentMatchingExpression{
-		want: want,
+		value: value,
 	}
 
 	for _, opt := range opts {
@@ -25,7 +25,7 @@ func HaveContentMatching(want []byte, opts ...Option) *haveContentMatchingExpres
 type haveContentMatchingExpression struct {
 	baseExpression
 
-	want []byte
+	value []byte
 }
 
 func (e haveContentMatchingExpression) Evaluate(rb rule.Builder) []rule.Violation {
@@ -42,18 +42,18 @@ func (e haveContentMatchingExpression) doEvaluate(rb rule.Builder, filePath stri
 
 	if e.options.ignoreNewLinesAtTheEndOfFile {
 		data = bytes.TrimRight(data, "\n")
-		e.want = bytes.TrimRight(e.want, "\n")
+		e.value = bytes.TrimRight(e.value, "\n")
 	}
 
 	if e.options.ignoreCase {
 		data = bytes.ToLower(data)
-		e.want = bytes.ToLower(e.want)
+		e.value = bytes.ToLower(e.value)
 	}
 
 	if e.options.matchSingleLines {
 		linesData := bytes.Split(data, []byte(e.options.matchSingleLinesSeparator))
 		for _, ld := range linesData {
-			if slices.Compare(ld, e.want) != 0 {
+			if slices.Compare(ld, e.value) != 0 {
 				return true
 			}
 		}
@@ -61,7 +61,7 @@ func (e haveContentMatchingExpression) doEvaluate(rb rule.Builder, filePath stri
 		return false
 	}
 
-	return slices.Compare(data, e.want) != 0
+	return slices.Compare(data, e.value) != 0
 }
 
 func (e haveContentMatchingExpression) getViolation(filePath string) rule.Violation {
@@ -80,6 +80,6 @@ func (e haveContentMatchingExpression) getViolation(filePath string) rule.Violat
 	}
 
 	return rule.NewViolation(
-		fmt.Sprintf(format, filepath.Base(filePath), e.want),
+		fmt.Sprintf(format, filepath.Base(filePath), e.value),
 	)
 }

@@ -1,0 +1,495 @@
+{
+    "title": "goarkitect config",
+    "type": "object",
+    "properties": {
+        "rules": {
+            "type": "array",
+            "description": "list of rules",
+            "items": {
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/fileRule"
+                    }
+                ]
+            }
+        }
+    },
+    "required": [
+        "rules"
+    ],
+    "definitions": {
+        "fileExceptThis": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^this$"
+                },
+                "filePath": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "kind",
+                "filePath"
+            ]
+        },
+        "fileThatAreInFolder": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^are_in_folder$"
+                },
+                "folder": {
+                    "type": "string"
+                },
+                "recursive": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "required": [
+                "kind",
+                "folder"
+            ]
+        },
+        "fileThatEndWith": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^end_with$"
+                },
+                "suffix": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "kind",
+                "suffix"
+            ]
+        },
+        "fileMatcherAll": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^all$"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileMatcherSet": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^set$"
+                },
+                "filePaths": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            },
+            "required": [
+                "kind",
+                "filePaths"
+            ]
+        },
+        "fileMatcherOne": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^one$"
+                },
+                "filePath": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "kind",
+                "filePath"
+            ]
+        },
+        "fileRule": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string",
+                    "pattern": "^file$"
+                },
+                "matcher": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/fileMatcherAll"
+                        },
+                        {
+                            "$ref": "#/definitions/fileMatcherSet"
+                        },
+                        {
+                            "$ref": "#/definitions/fileMatcherOne"
+                        }
+                    ]
+                },
+                "thats": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "oneOf": [
+                            {
+                                "$ref": "#/definitions/fileThatAreInFolder"
+                            },
+                            {
+                                "$ref": "#/definitions/fileThatEndWith"
+                            }
+                        ]
+                    }
+                },
+                "excepts": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "oneOf": [
+                            {
+                                "$ref": "#/definitions/fileExceptThis"
+                            }
+                        ]
+                    }
+                },
+                "shoulds": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "oneOf": [
+                            {
+                                "$ref": "#/definitions/fileShouldBeGitencrypted"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldBeGitignored"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldContainValue"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldEndWith"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldExist"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldHaveContentMatchingRegex"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldHaveContentMatching"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldHavePermissions"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldMatchGlob"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldMatchRegex"
+                            },
+                            {
+                                "$ref": "#/definitions/fileShouldStartWith"
+                            }
+                        ]
+                    }
+                },
+                "because": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "kind",
+                "matcher",
+                "because"
+            ]
+        },
+        "fileShouldBeGitencrypted": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^be_gitencrypted$"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileShouldBeGitignored": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^be_gitignored$"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileShouldContainValue": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^contain_value$"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind",
+                "value"
+            ]
+        },
+        "fileShouldEndWith": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^end_with$"
+                },
+                "suffix": {
+                    "type": "string"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind",
+                "suffix"
+            ]
+        },
+        "fileShouldExist": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^exist$"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileShouldHaveContentMatchingRegex": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^have_content_matching_regex$"
+                },
+                "regex": {
+                    "type": "string"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind",
+                "regex"
+            ]
+        },
+        "fileShouldHaveContentMatching": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^have_content_matching$"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind",
+                "value"
+            ]
+        },
+        "fileShouldHavePermissions": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^have_permissions$"
+                },
+                "permissions": {
+                    "type": "string",
+                    "pattern": "^[d-][rwx-]{9}$"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileShouldMatchGlob": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^match_glob$"
+                },
+                "glob": {
+                    "type": "string"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind",
+                "glob"
+            ]
+        },
+        "fileShouldMatchRegex": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^match_regex$"
+                },
+                "regex": {
+                    "type": "string"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind",
+                "regex"
+            ]
+        },
+        "fileShouldStartWith": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^start_with$"
+                },
+                "prefix": {
+                    "type": "string"
+                },
+                "options": {
+                    "$ref": "#/definitions/fileShouldOptions"
+                }
+            },
+            "required": [
+                "kind",
+                "prefix"
+            ]
+        },
+        "fileShouldOptionNegated": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^negated$"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileShouldOptionIgnoreCase": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^ignore_case$"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileShouldOptionIgnoreNewLinesAtTheEndOfFile": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^ignore_new_lines_at_the_end_of_file$"
+                }
+            },
+            "required": [
+                "kind"
+            ]
+        },
+        "fileShouldOptionMatchSingleLines": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^match_single_lines$"
+                },
+                "separator": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "kind",
+                "separator"
+            ]
+        },
+        "fileShouldOptions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/fileShouldOptionNegated"
+                    },
+                    {
+                        "$ref": "#/definitions/fileShouldOptionIgnoreCase"
+                    },
+                    {
+                        "$ref": "#/definitions/fileShouldOptionIgnoreNewLinesAtTheEndOfFile"
+                    },
+                    {
+                        "$ref": "#/definitions/fileShouldOptionMatchSingleLines"
+                    }
+                ]
+            }
+        }
+    }
+}

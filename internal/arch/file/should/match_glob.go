@@ -31,7 +31,21 @@ func (e matchGlobExpression) Evaluate(rb rule.Builder) []rule.Violation {
 }
 
 func (e matchGlobExpression) doEvaluate(rb rule.Builder, filePath string) bool {
-	match, err := filepath.Match(filepath.Join(e.basePath, e.glob), filePath)
+	abs1, err := filepath.Abs(filepath.Join(e.basePath, e.glob))
+	if err != nil {
+		rb.AddError(err)
+
+		return true
+	}
+
+	abs2, err := filepath.Abs(filePath)
+	if err != nil {
+		rb.AddError(err)
+
+		return true
+	}
+
+	match, err := filepath.Match(abs1, abs2)
 	if err != nil {
 		rb.AddError(err)
 	}

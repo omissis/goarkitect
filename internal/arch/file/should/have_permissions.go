@@ -15,16 +15,16 @@ var (
 	)
 )
 
-func HavePermissions(want string, opts ...Option) *havePermissionsExpression {
-	rx := regexp.MustCompile("[d-][rwx-]{9}")
+func HavePermissions(permissions string, opts ...Option) *havePermissionsExpression {
+	rx := regexp.MustCompile("^[d-][rwx-]{9}$")
 
 	errs := make([]error, 0)
-	if !rx.MatchString(want) {
+	if !rx.MatchString(permissions) {
 		errs = append(errs, ErrInvalidPermissions)
 	}
 
 	expr := &havePermissionsExpression{
-		want: want,
+		permissions: permissions,
 		baseExpression: baseExpression{
 			errors: errs,
 		},
@@ -40,7 +40,7 @@ func HavePermissions(want string, opts ...Option) *havePermissionsExpression {
 type havePermissionsExpression struct {
 	baseExpression
 
-	want string
+	permissions string
 }
 
 func (e havePermissionsExpression) Evaluate(rb rule.Builder) []rule.Violation {
@@ -55,7 +55,7 @@ func (e havePermissionsExpression) doEvaluate(rb rule.Builder, filePath string) 
 		return true
 	}
 
-	return e.want != info.Mode().String()
+	return e.permissions != info.Mode().String()
 }
 
 func (e havePermissionsExpression) getViolation(filePath string) rule.Violation {
@@ -71,6 +71,6 @@ func (e havePermissionsExpression) getViolation(filePath string) rule.Violation 
 	}
 
 	return rule.NewViolation(
-		fmt.Sprintf(format, iNodeType, filepath.Base(filePath), e.want),
+		fmt.Sprintf(format, iNodeType, filepath.Base(filePath), e.permissions),
 	)
 }

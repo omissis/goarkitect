@@ -56,11 +56,10 @@ func (e *AreInFolderExpression) visit(files *[]string) filepath.WalkFunc {
 		if err != nil {
 			return err
 		}
-		if file.IsDir() {
-			return nil
-		}
 
-		*files = append(*files, path)
+		if !file.IsDir() {
+			*files = append(*files, path)
+		}
 
 		return nil
 	}

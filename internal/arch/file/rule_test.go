@@ -4,8 +4,8 @@ import (
 	"goarkitect/internal/arch/file"
 	fe "goarkitect/internal/arch/file/except"
 	fs "goarkitect/internal/arch/file/should"
+	ft "goarkitect/internal/arch/file/that"
 	"goarkitect/internal/arch/rule"
-	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -13,11 +13,6 @@ import (
 )
 
 func Test_It_Checks_All_Conditions(t *testing.T) {
-	basePath, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	testCases := []struct {
 		desc           string
 		ruleBuilder    rule.Builder
@@ -39,7 +34,7 @@ func Test_It_Checks_All_Conditions(t *testing.T) {
 		},
 		{
 			desc:           "check that all files in folder except one match all conditions",
-			ruleBuilder:    file.All().Except(fe.This("./test/set/Test3file")),
+			ruleBuilder:    file.All().That(ft.AreInFolder("./test/all", false)).Except(fe.This("./test/all/Test3file")),
 			wantViolations: nil,
 		},
 	}
@@ -48,16 +43,16 @@ func Test_It_Checks_All_Conditions(t *testing.T) {
 		t.Run(tC.desc, func(t *testing.T) {
 			vs, errs := tC.ruleBuilder.
 				Should(fs.Not(fs.BeGitencrypted())).
-				Should(fs.Not(fs.BeGitignored())).
-				Should(fs.ContainValue([]byte("foo"))).
-				Should(fs.EndWith("file")).
-				Should(fs.Exist()).
-				Should(fs.HaveContentMatching([]byte("foo"), fs.IgnoreNewLinesAtTheEndOfFile{})).
-				Should(fs.HaveContentMatchingRegex("[0-9]+", fs.IgnoreNewLinesAtTheEndOfFile{})).
-				Should(fs.HavePermissions("-rwxr-xr-x")).
-				Should(fs.MatchGlob("test/one/*", basePath)).
-				Should(fs.MatchRegex("[A-z0-9]+")).
-				Should(fs.StartWith("Test")).
+				AndShould(fs.Not(fs.BeGitignored())).
+				AndShould(fs.ContainValue([]byte("foo"))).
+				AndShould(fs.EndWith("file")).
+				AndShould(fs.Exist()).
+				AndShould(fs.HaveContentMatching([]byte("foo"), fs.IgnoreNewLinesAtTheEndOfFile{})).
+				AndShould(fs.HaveContentMatchingRegex("[A-z0-9]+", fs.IgnoreNewLinesAtTheEndOfFile{})).
+				AndShould(fs.HavePermissions("-rw-r--r--")).
+				AndShould(fs.MatchGlob("test/*/*", ".")).
+				AndShould(fs.MatchRegex("[A-z0-9]+")).
+				AndShould(fs.StartWith("Test")).
 				Because("I want to test all expressions together")
 
 			if !cmp.Equal(vs, tC.wantViolations, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {

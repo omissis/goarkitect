@@ -3,22 +3,34 @@ package except
 import (
 	"goarkitect/internal/arch/rule"
 	"path/filepath"
+	"strings"
 )
 
-func This(value string) *ThisExpression {
+func This(filePath string) *ThisExpression {
 	return &ThisExpression{
-		value: value,
+		filePath: filePath,
 	}
 }
 
 type ThisExpression struct {
 	baseExpression
 
-	value string
+	filePath string
 }
 
 func (e ThisExpression) Evaluate(rb rule.Builder) {
 	e.evaluate(rb, func(filePath string) bool {
-		return filepath.Base(filePath) != e.value
+		if filepath.IsAbs(e.filePath) {
+			absFilePath, err := filepath.Abs(filePath)
+			if err != nil {
+				rb.AddError(err)
+
+				return true
+			}
+
+			return absFilePath != e.filePath
+		}
+
+		return !strings.HasSuffix(filepath.Clean(filePath), filepath.Clean(e.filePath))
 	})
 }
