@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mitchellh/cli"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
@@ -21,10 +20,6 @@ func (i *configFiles) String() string {
 func (i *configFiles) Set(value string) error {
 	*i = append(*i, value)
 	return nil
-}
-
-func VerifyFactory() (cli.Command, error) {
-	return &verifyCommand{}, nil
 }
 
 func getWd() string {

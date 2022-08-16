@@ -7,7 +7,13 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/mitchellh/cli"
 )
+
+func VerifyFactory() (cli.Command, error) {
+	return &verifyCommand{}, nil
+}
 
 type verifyCommand struct {
 	configFiles configFiles
