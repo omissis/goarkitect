@@ -1,0 +1,44 @@
+---
+rules:
+  - name: mandatory files should exist
+    kind: file
+    matcher:
+      kind: "set"
+      filePaths:
+        - .envrc.dist
+        - .goarkitect.yaml
+        - .tool-versions.dist
+        - go.mod
+        - go.sum
+        - main.go
+        - README.md
+    shoulds:
+      - kind: exist
+    because: "they are mandatory for the project to work"
+  - name: all files in "cmd/" folder are go files
+    kind: file
+    matcher:
+      kind: all
+    thats:
+      - kind: are_in_folder
+        folder: ./cmd
+        recursive: false
+    excepts:
+      - kind: this
+        filePath: .DS_Store
+    shoulds:
+      - kind: end_with
+        suffix: .go
+    because: "only go files are allowed by the project layout"
+  - name: some dev files and folders are git ignored
+    kind: file
+    matcher:
+      kind: set
+      filePaths:
+        - .envrc
+        - .idea
+        - .tool-versions
+        - .vscode
+    shoulds:
+      - kind: be_gitignored
+    because: "every developer should be able to choose what behaviors and configurations run on their machine"
