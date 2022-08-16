@@ -1,6 +1,7 @@
 {
     "title": "goarkitect config",
     "type": "object",
+    "additionalProperties": false,
     "properties": {
         "rules": {
             "type": "array",
@@ -21,6 +22,7 @@
     "definitions": {
         "fileExceptThis": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -37,6 +39,7 @@
         },
         "fileThatAreInFolder": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -57,6 +60,7 @@
         },
         "fileThatEndWith": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -73,6 +77,7 @@
         },
         "fileMatcherAll": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -85,6 +90,7 @@
         },
         "fileMatcherSet": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -106,6 +112,7 @@
         },
         "fileMatcherOne": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -122,6 +129,7 @@
         },
         "fileRule": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "name": {
                     "type": "string"
@@ -223,6 +231,7 @@
         },
         "fileShouldBeGitencrypted": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -238,6 +247,7 @@
         },
         "fileShouldBeGitignored": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -253,6 +263,7 @@
         },
         "fileShouldContainValue": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -272,6 +283,7 @@
         },
         "fileShouldEndWith": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -291,6 +303,7 @@
         },
         "fileShouldExist": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -306,6 +319,7 @@
         },
         "fileShouldHaveContentMatchingRegex": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -325,6 +339,7 @@
         },
         "fileShouldHaveContentMatching": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -344,6 +359,7 @@
         },
         "fileShouldHavePermissions": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -363,6 +379,7 @@
         },
         "fileShouldMatchGlob": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -382,6 +399,7 @@
         },
         "fileShouldMatchRegex": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -401,6 +419,7 @@
         },
         "fileShouldStartWith": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -420,6 +439,7 @@
         },
         "fileShouldOptionNegated": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -432,6 +452,7 @@
         },
         "fileShouldOptionIgnoreCase": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -444,6 +465,7 @@
         },
         "fileShouldOptionIgnoreNewLinesAtTheEndOfFile": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
@@ -456,6 +478,7 @@
         },
         "fileShouldOptionMatchSingleLines": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "kind": {
                     "type": "string",
