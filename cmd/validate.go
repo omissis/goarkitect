@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"goarkitect/internal/schema/santhosh"
 	"log"
 	"os"
 	"path/filepath"
+
+	"goarkitect/internal/schema/santhosh"
 
 	"github.com/mitchellh/cli"
 	"github.com/santhosh-tekuri/jsonschema"

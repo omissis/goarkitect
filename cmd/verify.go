@@ -3,10 +3,12 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"goarkitect/internal/config"
 	"log"
 	"os"
 	"path/filepath"
+
+	"goarkitect/internal/arch/rule"
+	"goarkitect/internal/config"
 
 	"github.com/mitchellh/cli"
 )
@@ -25,6 +27,8 @@ func (vc *verifyCommand) Help() string {
 }
 
 func (vc *verifyCommand) Run(args []string) int {
+	exitCode := 0
+
 	vc.parseFlags()
 
 	for _, configFile := range vc.configFiles {
@@ -35,9 +39,13 @@ func (vc *verifyCommand) Run(args []string) int {
 		results := config.Execute(conf)
 
 		vc.printResults(results)
+
+		if vc.hasErrors(results) {
+			exitCode = 1
+		}
 	}
 
-	return 0
+	return exitCode
 }
 
 func (vc *verifyCommand) Synopsis() string {
@@ -85,4 +93,16 @@ func (vc *verifyCommand) printResults(results []config.RuleExecutionResult) {
 			fmt.Println("- None")
 		}
 	}
+}
+
+func (vc *verifyCommand) hasErrors(results []config.RuleExecutionResult) bool {
+	for _, r := range results {
+		for _, v := range r.Violations {
+			if v.Severity() == rule.Error.String() {
+				return true
+			}
+		}
+	}
+
+	return false
 }

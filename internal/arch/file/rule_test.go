@@ -1,12 +1,13 @@
 package file_test
 
 import (
+	"testing"
+
 	"goarkitect/internal/arch/file"
 	fe "goarkitect/internal/arch/file/except"
-	fs "goarkitect/internal/arch/file/should"
+	fs "goarkitect/internal/arch/file/expect"
 	ft "goarkitect/internal/arch/file/that"
 	"goarkitect/internal/arch/rule"
-	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"

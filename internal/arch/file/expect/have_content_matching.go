@@ -1,11 +1,12 @@
-package should
+package expect
 
 import (
 	"bytes"
 	"fmt"
-	"goarkitect/internal/arch/rule"
 	"os"
 	"path/filepath"
+
+	"goarkitect/internal/arch/rule"
 
 	"golang.org/x/exp/slices"
 )
@@ -28,7 +29,7 @@ type haveContentMatchingExpression struct {
 	value []byte
 }
 
-func (e haveContentMatchingExpression) Evaluate(rb rule.Builder) []rule.Violation {
+func (e haveContentMatchingExpression) Evaluate(rb rule.Builder) []rule.CoreViolation {
 	return e.evaluate(rb, e.doEvaluate, e.getViolation)
 }
 
@@ -64,7 +65,7 @@ func (e haveContentMatchingExpression) doEvaluate(rb rule.Builder, filePath stri
 	return slices.Compare(data, e.value) != 0
 }
 
-func (e haveContentMatchingExpression) getViolation(filePath string) rule.Violation {
+func (e haveContentMatchingExpression) getViolation(filePath string) rule.CoreViolation {
 	format := "file '%s' does not have content matching '%s'"
 
 	if e.options.matchSingleLines {
@@ -79,7 +80,7 @@ func (e haveContentMatchingExpression) getViolation(filePath string) rule.Violat
 		format = "file '%s' does have all lines matching '%s'"
 	}
 
-	return rule.NewViolation(
+	return rule.NewCoreViolation(
 		fmt.Sprintf(format, filepath.Base(filePath), e.value),
 	)
 }

@@ -1,10 +1,11 @@
-package should_test
+package expect_test
 
 import (
-	"goarkitect/internal/arch/file"
-	"goarkitect/internal/arch/file/should"
-	"goarkitect/internal/arch/rule"
 	"testing"
+
+	"goarkitect/internal/arch/file"
+	"goarkitect/internal/arch/file/expect"
+	"goarkitect/internal/arch/rule"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -15,8 +16,8 @@ func Test_StartWith(t *testing.T) {
 		desc        string
 		ruleBuilder *file.RuleBuilder
 		prefix      string
-		options     []should.Option
-		want        []rule.Violation
+		options     []expect.Option
+		want        []rule.CoreViolation
 	}{
 		{
 			desc:        "foobar starts with foo",
@@ -28,33 +29,33 @@ func Test_StartWith(t *testing.T) {
 			desc:        "foobar does not start with baz",
 			ruleBuilder: file.One("foobar"),
 			prefix:      "baz",
-			want: []rule.Violation{
-				rule.NewViolation("file's name 'foobar' does not start with 'baz'"),
+			want: []rule.CoreViolation{
+				rule.NewCoreViolation("file's name 'foobar' does not start with 'baz'"),
 			},
 		},
 		{
 			desc:        "negated: foobar does not start with baz",
 			ruleBuilder: file.One("foobar"),
 			prefix:      "baz",
-			options:     []should.Option{should.Negated{}},
+			options:     []expect.Option{expect.Negated{}},
 			want:        nil,
 		},
 		{
 			desc:        "negated: foobar starts with foo",
 			ruleBuilder: file.One("foobar"),
 			prefix:      "foo",
-			options:     []should.Option{should.Negated{}},
-			want: []rule.Violation{
-				rule.NewViolation("file's name 'foobar' does start with 'foo'"),
+			options:     []expect.Option{expect.Negated{}},
+			want: []rule.CoreViolation{
+				rule.NewCoreViolation("file's name 'foobar' does start with 'foo'"),
 			},
 		},
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			ew := should.StartWith(tC.prefix, tC.options...)
+			ew := expect.StartWith(tC.prefix, tC.options...)
 			got := ew.Evaluate(tC.ruleBuilder)
 
-			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {
+			if !cmp.Equal(got, tC.want, cmp.AllowUnexported(rule.CoreViolation{}), cmpopts.EquateEmpty()) {
 				t.Errorf("want = %+v, got = %+v", tC.want, got)
 			}
 		})

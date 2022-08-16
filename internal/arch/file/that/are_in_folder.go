@@ -1,11 +1,12 @@
 package that
 
 import (
-	"goarkitect/internal/arch/file"
-	"goarkitect/internal/arch/rule"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"goarkitect/internal/arch/file"
+	"goarkitect/internal/arch/rule"
 )
 
 func AreInFolder(folder string, recursive bool) *AreInFolderExpression {

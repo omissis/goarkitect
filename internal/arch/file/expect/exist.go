@@ -1,10 +1,11 @@
-package should
+package expect
 
 import (
 	"fmt"
-	"goarkitect/internal/arch/rule"
 	"os"
 	"path/filepath"
+
+	"goarkitect/internal/arch/rule"
 )
 
 func Exist(opts ...Option) *existExpression {
@@ -21,7 +22,7 @@ type existExpression struct {
 	baseExpression
 }
 
-func (e existExpression) Evaluate(rb rule.Builder) []rule.Violation {
+func (e existExpression) Evaluate(rb rule.Builder) []rule.CoreViolation {
 	return e.evaluate(rb, e.doEvaluate, e.getViolation)
 }
 
@@ -37,13 +38,13 @@ func (e existExpression) doEvaluate(rb rule.Builder, filePath string) bool {
 	return false
 }
 
-func (e existExpression) getViolation(filePath string) rule.Violation {
+func (e existExpression) getViolation(filePath string) rule.CoreViolation {
 	format := "file '%s' does not exist"
 	if e.options.negated {
 		format = "file '%s' does exist"
 	}
 
-	return rule.NewViolation(
+	return rule.NewCoreViolation(
 		fmt.Sprintf(format, filepath.Base(filePath)),
 	)
 }

@@ -4,8 +4,12 @@ type Builder interface {
 	That(t That) Builder
 	AndThat(t That) Builder
 	Except(s ...Except) Builder
-	Should(e Should) Builder
-	AndShould(e Should) Builder
+	Must(e Expect) Builder
+	AndMust(e Expect) Builder
+	Should(e Expect) Builder
+	AndShould(e Expect) Builder
+	Could(e Expect) Builder
+	AndCould(e Expect) Builder
 	Because(b Because) ([]Violation, []error)
 	AddError(err error)
 	GetErrors() []error
@@ -21,23 +25,9 @@ type Except interface {
 	GetErrors() []error
 }
 
-type Should interface {
-	Evaluate(rule Builder) []Violation
+type Expect interface {
+	Evaluate(rule Builder) []CoreViolation
 	GetErrors() []error
 }
 
 type Because string
-
-func NewViolation(message string) Violation {
-	return Violation{
-		message: message,
-	}
-}
-
-type Violation struct {
-	message string
-}
-
-func (v Violation) String() string {
-	return v.message
-}

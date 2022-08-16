@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
+
 	"goarkitect/internal/arch/file"
 	"goarkitect/internal/arch/rule"
 
 	fe "goarkitect/internal/arch/file/except"
-	"goarkitect/internal/arch/file/should"
-	fs "goarkitect/internal/arch/file/should"
+	fs "goarkitect/internal/arch/file/expect"
 	ft "goarkitect/internal/arch/file/that"
 )
 
@@ -20,7 +20,9 @@ type Rule struct {
 	Matcher Matcher  `yaml:"matcher" json:"matcher"`
 	Thats   []That   `yaml:"thats" json:"thats"`
 	Excepts []Except `yaml:"excepts" json:"excepts"`
-	Shoulds []Should `yaml:"shoulds" json:"shoulds"`
+	Musts   []Expect `yaml:"musts" json:"musts"`
+	Shoulds []Expect `yaml:"shoulds" json:"shoulds"`
+	Coulds  []Expect `yaml:"coulds" json:"coulds"`
 	Because string   `yaml:"because" json:"because"`
 }
 type Matcher struct {
@@ -38,7 +40,7 @@ type Except struct {
 	Kind     string `yaml:"kind" json:"kind"`
 	FilePath string `yaml:"filePath" json:"filePath"`
 }
-type Should struct {
+type Expect struct {
 	Kind        string         `yaml:"kind" json:"kind"`
 	Value       string         `yaml:"value" json:"value"`
 	Suffix      string         `yaml:"suffix" json:"suffix"`
@@ -47,9 +49,9 @@ type Should struct {
 	Glob        string         `yaml:"glob" json:"glob"`
 	Prefix      string         `yaml:"prefix" json:"prefix"`
 	BasePath    string         `yaml:"basePath" json:"basePath"`
-	Options     []ShouldOption `yaml:"options" json:"options"`
+	Options     []ExpectOption `yaml:"options" json:"options"`
 }
-type ShouldOption struct {
+type ExpectOption struct {
 	Kind      string `yaml:"kind" json:"kind"`
 	Separator string `yaml:"separator" json:"separator"`
 }
@@ -120,52 +122,97 @@ func ExecuteFileRule(conf Rule) ([]rule.Violation, []error) {
 		}
 	}
 
-	for _, s := range conf.Shoulds {
-		opts := make([]should.Option, len(s.Options))
-		for i, opt := range s.Options {
-			switch opt.Kind {
-			case "negated":
-				opts[i] = fs.Negated{}
-			case "ignore_case":
-				opts[i] = fs.IgnoreCase{}
-			case "ignore_new_lines_at_the_end_of_file":
-				opts[i] = fs.IgnoreNewLinesAtTheEndOfFile{}
-			case "match_single_lines":
-				opts[i] = fs.MatchSingleLines{
-					Separator: opt.Separator,
-				}
-			default:
-				return nil, []error{fmt.Errorf("unknown 'should.option' kind: '%s'", opt.Kind)}
-			}
+	errs := []error{}
+
+	for _, m := range conf.Musts {
+		opts, err := getOpts(m)
+		if err != nil {
+			errs = append(errs, err)
 		}
 
-		switch s.Kind {
-		case "be_gitencrypted":
-			rb.Should(fs.BeGitencrypted(opts...))
-		case "be_gitignored":
-			rb.Should(fs.BeGitignored(opts...))
-		case "contain_value":
-			rb.Should(fs.ContainValue([]byte(s.Value), opts...))
-		case "end_with":
-			rb.Should(fs.EndWith(s.Suffix, opts...))
-		case "exist":
-			rb.Should(fs.Exist())
-		case "have_content_matching_regex":
-			rb.Should(fs.HaveContentMatchingRegex(s.Regex, opts...))
-		case "have_content_matching":
-			rb.Should(fs.HaveContentMatching([]byte(s.Value), opts...))
-		case "have_permissions":
-			rb.Should(fs.HavePermissions(s.Permissions, opts...))
-		case "match_glob":
-			rb.Should(fs.MatchGlob(s.Glob, s.BasePath, opts...))
-		case "match_regex":
-			rb.Should(fs.MatchRegex(s.Regex, opts...))
-		case "start_with":
-			rb.Should(fs.StartWith(s.Prefix, opts...))
-		default:
-			return nil, []error{fmt.Errorf("unknown 'should' kind: '%s'", s.Kind)}
+		if err := applyExpects(rb.Must, m, opts); err != nil {
+			errs = append(errs, err)
 		}
 	}
 
+	for _, s := range conf.Shoulds {
+		opts, err := getOpts(s)
+		if err != nil {
+			errs = append(errs, err)
+		}
+
+		if err := applyExpects(rb.Should, s, opts); err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	for _, c := range conf.Coulds {
+		opts, err := getOpts(c)
+		if err != nil {
+			errs = append(errs, err)
+		}
+
+		if err := applyExpects(rb.Could, c, opts); err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	if len(errs) > 0 {
+		return nil, errs
+	}
+
 	return rb.Because(rule.Because(conf.Because))
+}
+
+func applyExpects(expectFn func(e rule.Expect) rule.Builder, expect Expect, opts []fs.Option) error {
+	switch expect.Kind {
+	case "be_gitencrypted":
+		expectFn(fs.BeGitencrypted(opts...))
+	case "be_gitignored":
+		expectFn(fs.BeGitignored(opts...))
+	case "contain_value":
+		expectFn(fs.ContainValue([]byte(expect.Value), opts...))
+	case "end_with":
+		expectFn(fs.EndWith(expect.Suffix, opts...))
+	case "exist":
+		expectFn(fs.Exist())
+	case "have_content_matching_regex":
+		expectFn(fs.HaveContentMatchingRegex(expect.Regex, opts...))
+	case "have_content_matching":
+		expectFn(fs.HaveContentMatching([]byte(expect.Value), opts...))
+	case "have_permissions":
+		expectFn(fs.HavePermissions(expect.Permissions, opts...))
+	case "match_glob":
+		expectFn(fs.MatchGlob(expect.Glob, expect.BasePath, opts...))
+	case "match_regex":
+		expectFn(fs.MatchRegex(expect.Regex, opts...))
+	case "start_with":
+		expectFn(fs.StartWith(expect.Prefix, opts...))
+	default:
+		return fmt.Errorf("unknown 'should' kind: '%s'", expect.Kind)
+	}
+
+	return nil
+}
+
+func getOpts(e Expect) ([]fs.Option, error) {
+	opts := make([]fs.Option, len(e.Options))
+	for i, opt := range e.Options {
+		switch opt.Kind {
+		case "negated":
+			opts[i] = fs.Negated{}
+		case "ignore_case":
+			opts[i] = fs.IgnoreCase{}
+		case "ignore_new_lines_at_the_end_of_file":
+			opts[i] = fs.IgnoreNewLinesAtTheEndOfFile{}
+		case "match_single_lines":
+			opts[i] = fs.MatchSingleLines{
+				Separator: opt.Separator,
+			}
+		default:
+			return nil, fmt.Errorf("unknown 'should.option' kind: '%s'", opt.Kind)
+		}
+	}
+
+	return opts, nil
 }

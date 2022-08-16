@@ -1,12 +1,13 @@
-package should
+package expect
 
 import (
 	"bytes"
 	"fmt"
-	"goarkitect/internal/arch/rule"
 	"os"
 	"path/filepath"
 	"regexp"
+
+	"goarkitect/internal/arch/rule"
 )
 
 func HaveContentMatchingRegex(regex string, opts ...Option) *haveContentMatchingRegex {
@@ -27,7 +28,7 @@ type haveContentMatchingRegex struct {
 	regex string
 }
 
-func (e haveContentMatchingRegex) Evaluate(rb rule.Builder) []rule.Violation {
+func (e haveContentMatchingRegex) Evaluate(rb rule.Builder) []rule.CoreViolation {
 	return e.evaluate(rb, e.doEvaluate, e.getViolation)
 }
 
@@ -61,7 +62,7 @@ func (e haveContentMatchingRegex) doEvaluate(rb rule.Builder, filePath string) b
 	return !rx.Match(data)
 }
 
-func (e haveContentMatchingRegex) getViolation(filePath string) rule.Violation {
+func (e haveContentMatchingRegex) getViolation(filePath string) rule.CoreViolation {
 	format := "file '%s' does not have content matching regex '%s'"
 
 	if e.options.matchSingleLines {
@@ -76,7 +77,7 @@ func (e haveContentMatchingRegex) getViolation(filePath string) rule.Violation {
 		format = "file '%s' does have all lines matching regex '%s'"
 	}
 
-	return rule.NewViolation(
+	return rule.NewCoreViolation(
 		fmt.Sprintf(format, filepath.Base(filePath), e.regex),
 	)
 }

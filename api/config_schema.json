@@ -37,6 +37,44 @@
                 "filePath"
             ]
         },
+        "fileExpect": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/fileShouldBeGitencrypted"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldBeGitignored"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldContainValue"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldEndWith"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldExist"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldHaveContentMatchingRegex"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldHaveContentMatching"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldHavePermissions"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldMatchGlob"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldMatchRegex"
+                },
+                {
+                    "$ref": "#/definitions/fileShouldStartWith"
+                }
+            ]
+        },
         "fileThatAreInFolder": {
             "type": "object",
             "additionalProperties": false,
@@ -177,45 +215,22 @@
                         ]
                     }
                 },
+                "musts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/fileExpect"
+                    }
+                },
                 "shoulds": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "oneOf": [
-                            {
-                                "$ref": "#/definitions/fileShouldBeGitencrypted"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldBeGitignored"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldContainValue"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldEndWith"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldExist"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldHaveContentMatchingRegex"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldHaveContentMatching"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldHavePermissions"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldMatchGlob"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldMatchRegex"
-                            },
-                            {
-                                "$ref": "#/definitions/fileShouldStartWith"
-                            }
-                        ]
+                        "$ref": "#/definitions/fileExpect"
+                    }
+                },
+                "coulds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/fileExpect"
                     }
                 },
                 "because": {

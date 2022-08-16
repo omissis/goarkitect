@@ -1,9 +1,10 @@
-package should
+package expect
 
 import (
 	"fmt"
-	"goarkitect/internal/arch/rule"
 	"path/filepath"
+
+	"goarkitect/internal/arch/rule"
 )
 
 func EndWith(suffix string, opts ...Option) *endWithExpression {
@@ -24,7 +25,7 @@ type endWithExpression struct {
 	suffix string
 }
 
-func (e endWithExpression) Evaluate(rb rule.Builder) []rule.Violation {
+func (e endWithExpression) Evaluate(rb rule.Builder) []rule.CoreViolation {
 	return e.evaluate(rb, e.doEvaluate, e.getViolation)
 }
 
@@ -37,13 +38,13 @@ func (e endWithExpression) doEvaluate(rb rule.Builder, filePath string) bool {
 	return ls <= lf && fileName[lf-ls:] != e.suffix
 }
 
-func (e endWithExpression) getViolation(filePath string) rule.Violation {
+func (e endWithExpression) getViolation(filePath string) rule.CoreViolation {
 	format := "file's name '%s' does not end with '%s'"
 	if e.options.negated {
 		format = "file's name '%s' does end with '%s'"
 	}
 
-	return rule.NewViolation(
+	return rule.NewCoreViolation(
 		fmt.Sprintf(format, filepath.Base(filePath), e.suffix),
 	)
 }

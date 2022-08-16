@@ -1,9 +1,10 @@
-package should
+package expect
 
 import (
 	"fmt"
-	"goarkitect/internal/arch/rule"
 	"path/filepath"
+
+	"goarkitect/internal/arch/rule"
 )
 
 func MatchGlob(glob string, basePath string, opts ...Option) *matchGlobExpression {
@@ -26,7 +27,7 @@ type matchGlobExpression struct {
 	glob     string
 }
 
-func (e matchGlobExpression) Evaluate(rb rule.Builder) []rule.Violation {
+func (e matchGlobExpression) Evaluate(rb rule.Builder) []rule.CoreViolation {
 	return e.evaluate(rb, e.doEvaluate, e.getViolation)
 }
 
@@ -53,13 +54,13 @@ func (e matchGlobExpression) doEvaluate(rb rule.Builder, filePath string) bool {
 	return !match
 }
 
-func (e matchGlobExpression) getViolation(filePath string) rule.Violation {
+func (e matchGlobExpression) getViolation(filePath string) rule.CoreViolation {
 	format := "file's path '%s' does not match glob pattern '%s'"
 	if e.options.negated {
 		format = "file's path '%s' does match glob pattern '%s'"
 	}
 
-	return rule.NewViolation(
+	return rule.NewCoreViolation(
 		fmt.Sprintf(
 			format,
 			filepath.Base(filePath),

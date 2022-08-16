@@ -1,11 +1,12 @@
-package should
+package expect
 
 import (
 	"bytes"
 	"fmt"
-	"goarkitect/internal/arch/rule"
 	"os"
 	"path/filepath"
+
+	"goarkitect/internal/arch/rule"
 )
 
 func ContainValue(value []byte, opts ...Option) *containValueExpression {
@@ -26,7 +27,7 @@ type containValueExpression struct {
 	value []byte
 }
 
-func (e containValueExpression) Evaluate(rb rule.Builder) []rule.Violation {
+func (e containValueExpression) Evaluate(rb rule.Builder) []rule.CoreViolation {
 	return e.evaluate(rb, e.doEvaluate, e.getViolation)
 }
 
@@ -46,14 +47,14 @@ func (e containValueExpression) doEvaluate(rb rule.Builder, filePath string) boo
 	return !bytes.Contains(data, e.value)
 }
 
-func (e containValueExpression) getViolation(filePath string) rule.Violation {
+func (e containValueExpression) getViolation(filePath string) rule.CoreViolation {
 	format := "file '%s' does not contain the value '%s'"
 
 	if e.options.negated {
 		format = "file '%s' does contain the value '%s'"
 	}
 
-	return rule.NewViolation(
+	return rule.NewCoreViolation(
 		fmt.Sprintf(format, filepath.Base(filePath), e.value),
 	)
 }

@@ -1,8 +1,9 @@
 package santhosh_test
 
 import (
-	"goarkitect/internal/schema/santhosh"
 	"testing"
+
+	"goarkitect/internal/schema/santhosh"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"

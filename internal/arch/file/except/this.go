@@ -1,9 +1,10 @@
 package except
 
 import (
-	"goarkitect/internal/arch/rule"
 	"path/filepath"
 	"strings"
+
+	"goarkitect/internal/arch/rule"
 )
 
 func This(filePath string) *ThisExpression {

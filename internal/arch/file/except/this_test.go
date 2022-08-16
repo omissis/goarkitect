@@ -1,10 +1,11 @@
 package except_test
 
 import (
+	"testing"
+
 	"goarkitect/internal/arch/file"
 	"goarkitect/internal/arch/file/except"
 	"goarkitect/internal/arch/rule"
-	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"

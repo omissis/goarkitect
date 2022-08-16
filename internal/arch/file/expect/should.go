@@ -1,32 +1,34 @@
-package should
+package expect
 
 import (
 	"fmt"
+
 	"goarkitect/internal/arch/file"
 	"goarkitect/internal/arch/rule"
 )
 
-var (
-	ErrEmptyOpts = fmt.Errorf("empty options")
-)
+var ErrEmptyOpts = fmt.Errorf("empty options")
 
 type Expression interface {
-	Evaluate(rb rule.Builder) []rule.Violation
+	Evaluate(rb rule.Builder) []rule.CoreViolation
 	GetErrors() []error
 	applyOption(opt Option)
 	doEvaluate(rb rule.Builder, filePath string) bool
-	getViolation(filePath string) rule.Violation
+	getViolation(filePath string) rule.CoreViolation
 }
 
-type evaluateFunc func(rb rule.Builder, filePath string) bool
-type getViolationFunc func(filePath string) rule.Violation
-type options struct {
-	negated                      bool
-	ignoreCase                   bool
-	ignoreNewLinesAtTheEndOfFile bool
-	matchSingleLines             bool
-	matchSingleLinesSeparator    string
-}
+type (
+	evaluateFunc     func(rb rule.Builder, filePath string) bool
+	getViolationFunc func(filePath string) rule.CoreViolation
+	options          struct {
+		severity                     rule.Severity
+		negated                      bool
+		ignoreCase                   bool
+		ignoreNewLinesAtTheEndOfFile bool
+		matchSingleLines             bool
+		matchSingleLinesSeparator    string
+	}
+)
 
 type baseExpression struct {
 	options      options
@@ -42,12 +44,12 @@ func (e *baseExpression) evaluate(
 	rb rule.Builder,
 	evaluate evaluateFunc,
 	getViolation getViolationFunc,
-) []rule.Violation {
+) []rule.CoreViolation {
 	if len(e.errors) > 0 {
 		return nil
 	}
 
-	violations := make([]rule.Violation, 0)
+	violations := make([]rule.CoreViolation, 0)
 	for _, fp := range rb.(*file.RuleBuilder).GetFiles() {
 		result := evaluate(rb, fp)
 		if (!e.options.negated && result) || (e.options.negated && !result) {

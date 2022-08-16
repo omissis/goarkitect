@@ -1,9 +1,10 @@
 package that
 
 import (
+	"strings"
+
 	"goarkitect/internal/arch/file"
 	"goarkitect/internal/arch/rule"
-	"strings"
 )
 
 func EndWith(s string) *EndWithExpression {

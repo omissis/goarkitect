@@ -1,10 +1,11 @@
-package should
+package expect
 
 import (
 	"fmt"
-	"goarkitect/internal/arch/rule"
 	"os/exec"
 	"path/filepath"
+
+	"goarkitect/internal/arch/rule"
 )
 
 func BeGitignored(opts ...Option) *gitIgnoredExpression {
@@ -21,7 +22,7 @@ type gitIgnoredExpression struct {
 	baseExpression
 }
 
-func (e gitIgnoredExpression) Evaluate(rb rule.Builder) []rule.Violation {
+func (e gitIgnoredExpression) Evaluate(rb rule.Builder) []rule.CoreViolation {
 	return e.evaluate(rb, e.doEvaluate, e.getViolation)
 }
 
@@ -41,14 +42,14 @@ func (e gitIgnoredExpression) doEvaluate(rb rule.Builder, filePath string) bool 
 	return false
 }
 
-func (e gitIgnoredExpression) getViolation(filePath string) rule.Violation {
+func (e gitIgnoredExpression) getViolation(filePath string) rule.CoreViolation {
 	format := "file '%s' is not gitignored"
 
 	if e.options.negated {
 		format = "file '%s' is gitignored"
 	}
 
-	return rule.NewViolation(
+	return rule.NewCoreViolation(
 		fmt.Sprintf(format, filepath.Base(filePath)),
 	)
 }

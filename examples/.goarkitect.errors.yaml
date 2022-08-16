@@ -1,3 +1,4 @@
+# Each rule in this file contains a config that will trigger a warning
 ---
 rules:
   - name: mandatory files should exist
@@ -5,6 +6,7 @@ rules:
     matcher:
       kind: "set"
       filePaths:
+        - wrong.json
         - .envrc.dist
         - .goarkitect.yaml
         - .tool-versions.dist
@@ -15,7 +17,7 @@ rules:
     musts:
       - kind: exist
     because: "they are mandatory for the project to work"
-  - name: all files in "cmd/" folder are go files
+  - name: all files in "cmd/" folder are js files
     kind: file
     matcher:
       kind: all
@@ -26,11 +28,11 @@ rules:
     excepts:
       - kind: this
         filePath: .DS_Store
-    musts:
+    shoulds:
       - kind: end_with
-        suffix: .go
+        suffix: .js
     because: "only go files are allowed by the project layout"
-  - name: some dev files and folders are git ignored
+  - name: some dev files and folders are not git ignored
     kind: file
     matcher:
       kind: set
@@ -39,6 +41,8 @@ rules:
         - .idea
         - .tool-versions
         - .vscode
-    musts:
+    shoulds:
       - kind: be_gitignored
+        options:
+          - kind: negated
     because: "every developer should be able to choose what behaviors and configurations run on their machine"

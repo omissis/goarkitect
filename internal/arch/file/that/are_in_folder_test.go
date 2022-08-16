@@ -1,9 +1,10 @@
 package that_test
 
 import (
+	"testing"
+
 	"goarkitect/internal/arch/file"
 	"goarkitect/internal/arch/file/that"
-	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"

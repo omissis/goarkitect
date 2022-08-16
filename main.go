@@ -1,9 +1,10 @@
 package main
 
 import (
-	"goarkitect/cmd"
 	"log"
 	"os"
+
+	"goarkitect/cmd"
 
 	"github.com/mitchellh/cli"
 )
