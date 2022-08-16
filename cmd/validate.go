@@ -58,7 +58,6 @@ func (vc *validateCommand) Synopsis() string {
 	return "Validate the configuration file(s)"
 }
 
-// parseFlags returns the list of config files, the output format and the base path
 func (vc *validateCommand) parseFlags() {
 	out := ""
 

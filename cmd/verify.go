@@ -44,7 +44,6 @@ func (vc *verifyCommand) Synopsis() string {
 	return "Verify the ruleset against a project"
 }
 
-// parseFlags returns the list of config files, the output format and the base path
 func (vc *verifyCommand) parseFlags() {
 	cfs := configFiles{}
 	out := ""
