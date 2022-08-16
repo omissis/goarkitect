@@ -1,0 +1,71 @@
+---
+rules:
+  - name: all expressions
+    kind: file
+    matcher:
+      kind: all
+    thats:
+      - kind: are_in_folder
+        folder: ./test/all
+        recursive: false
+      - kind: end_with
+        suffix: file
+    excepts:
+      - kind: this
+        filePath: ./test/all/Test3file
+    shoulds:
+      - kind: be_gitencrypted
+        options:
+          - kind: negated
+      - kind: be_gitignored
+        options:
+          - kind: negated
+      - kind: contain_value
+        value: foo
+      - kind: end_with
+        suffix: file
+      - kind: exist
+      - kind: have_content_matching
+        value: foo
+        options:
+          - kind: ignore_new_lines_at_the_end_of_file
+          - kind: ignore_case
+      - kind: have_content_matching_regex
+        regex: "[0-9]+"
+        options:
+          - kind: ignore_new_lines_at_the_end_of_file
+          - kind: ignore_case
+      - kind: have_permissions
+        permissions: "-rwxr-xr-x"
+      - kind: match_glob
+        glob: "test/one/*"
+      - kind: match_regex
+        regex: "[A-z0-9]+"
+      - kind: start_with
+        prefix: Test
+    because: "it is an example"
+  - name: makefile exists
+    kind: file
+    matcher:
+      kind: one
+      filePath: /tmp/example/Makefile
+    thats: []
+    excepts: []
+    shoulds:
+      - kind: exist
+    because: "it is an example"
+  - name: a set of files ends with file suffix
+    kind: file
+    matcher:
+      kind: set
+      filePaths: [
+        "./test/all/Test1file",
+        "./test/all/Test2file",
+        "./test/all/Test3file"
+      ]
+    thats: []
+    excepts: []
+    shoulds:
+      - kind: end_with
+        suffix: file
+    because: "it is an example"
