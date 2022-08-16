@@ -28,6 +28,7 @@ func (vc *validateCommand) Help() string {
 }
 
 func (vc *validateCommand) Run(args []string) int {
+	exitCode := 0
 	basePath := getWd()
 
 	vc.parseFlags()
@@ -42,13 +43,15 @@ func (vc *validateCommand) Run(args []string) int {
 		if err := schema.ValidateInterface(conf); err != nil {
 			vc.logValidationError(err, conf)
 
-			log.Fatal(err)
-		} else {
-			fmt.Println("ok")
+			exitCode = 1
 		}
 	}
 
-	return 0
+	if exitCode == 0 {
+		fmt.Println("ok")
+	}
+
+	return exitCode
 }
 
 func (vc *validateCommand) Synopsis() string {
@@ -100,15 +103,22 @@ func (vc *validateCommand) loadSchema(basePath string) *jsonschema.Schema {
 func (vc *validateCommand) logValidationError(err error, conf any) {
 	ptrPaths := santhosh.GetPtrPaths(err.(*jsonschema.ValidationError))
 	for _, path := range ptrPaths {
-		value, err := json.Marshal(santhosh.GetValueAtPath(conf, path))
+		value, err := santhosh.GetValueAtPath(conf, path)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		log.Printf(
+		mvalue, err := json.Marshal(value)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf(
 			"path '%s' contains an invalid configuration value: %+v\n",
 			santhosh.JoinPtrPath(path),
-			string(value),
+			string(mvalue),
 		)
 	}
+
+	fmt.Println(err)
 }

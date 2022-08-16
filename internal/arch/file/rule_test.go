@@ -56,11 +56,11 @@ func Test_It_Checks_All_Conditions(t *testing.T) {
 				Because("I want to test all expressions together")
 
 			if !cmp.Equal(vs, tC.wantViolations, cmp.AllowUnexported(rule.Violation{}), cmpopts.EquateEmpty()) {
-				t.Errorf("Expected %v, got %v", tC.wantViolations, vs)
+				t.Errorf("expected %v, got %v", tC.wantViolations, vs)
 			}
 
 			if errs != nil {
-				t.Errorf("Expected errs to be nil, got: %+v", errs)
+				t.Errorf("expected errs to be nil, got: %+v", errs)
 			}
 		})
 	}
@@ -73,6 +73,6 @@ func Test_It_Adds_ErrRuleBuilderLocked_Only_Once(t *testing.T) {
 	rb.AddError(file.ErrRuleBuilderLocked)
 
 	if errs := rb.GetErrors(); len(errs) != 1 {
-		t.Errorf("Expected 1 error, got %d", len(errs))
+		t.Errorf("expected 1 error, got %d", len(errs))
 	}
 }

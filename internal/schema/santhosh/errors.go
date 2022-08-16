@@ -1,12 +1,15 @@
 package santhosh
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 
 	"github.com/santhosh-tekuri/jsonschema"
 	"golang.org/x/exp/slices"
 )
+
+var ErrObjTypeAssertion = errors.New("obj type assertion failed")
 
 func JoinPtrPath(path []any) string {
 	strpath := "#"
@@ -23,17 +26,27 @@ func JoinPtrPath(path []any) string {
 	return strpath
 }
 
-func GetValueAtPath(obj any, path []any) any {
+func GetValueAtPath(obj any, path []any) (any, error) {
 	for _, key := range path {
 		switch v := key.(type) {
 		case int:
-			obj = obj.([]any)[v]
+			tobj, ok := obj.([]any)
+			if !ok {
+				return nil, ErrObjTypeAssertion
+			}
+
+			obj = tobj[v]
 		case string:
-			obj = obj.(map[string]any)[v]
+			tobj, ok := obj.(map[string]any)
+			if !ok {
+				return nil, ErrObjTypeAssertion
+			}
+
+			obj = tobj[v]
 		}
 	}
 
-	return obj
+	return obj, nil
 }
 
 func GetPtrPaths(err error) [][]any {
@@ -45,13 +58,13 @@ func GetPtrPaths(err error) [][]any {
 }
 
 func extractPtrs(err *jsonschema.ValidationError) []string {
-	var ptrs []string
+	ptrs := []string{err.InstancePtr}
 
 	for _, cause := range err.Causes {
 		if len(cause.Causes) > 0 {
 			ptrs = append(ptrs, extractPtrs(cause)...)
 		} else {
-			ptrs = append(ptrs, err.InstancePtr)
+			ptrs = append(ptrs, cause.InstancePtr)
 		}
 	}
 
