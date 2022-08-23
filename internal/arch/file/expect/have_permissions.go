@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 var ErrInvalidPermissions = errors.New(

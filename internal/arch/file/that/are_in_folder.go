@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"goarkitect/internal/arch/file"
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/file"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func AreInFolder(folder string, recursive bool) *AreInFolderExpression {

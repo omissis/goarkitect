@@ -1,8 +1,8 @@
 package except
 
 import (
-	"goarkitect/internal/arch/file"
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/file"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 type Expression interface {

@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func ContainValue(value []byte, opts ...Option) *containValueExpression {

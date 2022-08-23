@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func This(filePath string) *ThisExpression {

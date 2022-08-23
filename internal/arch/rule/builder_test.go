@@ -3,13 +3,13 @@ package rule_test
 import (
 	"testing"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func Test_NewViolation(t *testing.T) {
 	v := rule.NewViolation("message", rule.Error)
-	if v.String() != "message" {
-		t.Errorf("NewViolation(\"message\") returns %v, want %v", v.String(), "message")
+	if v.String() != "[ERROR] message" {
+		t.Errorf("NewViolation(\"message\") returns %v, want %v", v.String(), "[ERROR] message")
 	}
 }
 

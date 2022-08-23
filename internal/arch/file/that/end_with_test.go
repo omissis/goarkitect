@@ -3,9 +3,9 @@ package that_test
 import (
 	"testing"
 
-	"goarkitect/internal/arch/file"
-	"goarkitect/internal/arch/file/that"
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/file"
+	"github.com/omissis/goarkitect/internal/arch/file/that"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func MatchGlob(glob string, basePath string, opts ...Option) *matchGlobExpression {

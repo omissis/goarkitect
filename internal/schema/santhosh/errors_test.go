@@ -3,7 +3,7 @@ package santhosh_test
 import (
 	"testing"
 
-	"goarkitect/internal/schema/santhosh"
+	"github.com/omissis/goarkitect/internal/schema/santhosh"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"

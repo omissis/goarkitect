@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func BeGitencrypted(opts ...Option) *gitEncryptedExpression {

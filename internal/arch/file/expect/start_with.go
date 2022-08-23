@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func StartWith(prefix string, opts ...Option) *startWithExpression {

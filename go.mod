@@ -1,4 +1,4 @@
-module goarkitect
+module github.com/omissis/goarkitect
 
 go 1.18
 

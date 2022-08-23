@@ -3,11 +3,11 @@ package file_test
 import (
 	"testing"
 
-	"goarkitect/internal/arch/file"
-	fe "goarkitect/internal/arch/file/except"
-	fs "goarkitect/internal/arch/file/expect"
-	ft "goarkitect/internal/arch/file/that"
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/file"
+	fe "github.com/omissis/goarkitect/internal/arch/file/except"
+	fs "github.com/omissis/goarkitect/internal/arch/file/expect"
+	ft "github.com/omissis/goarkitect/internal/arch/file/that"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"

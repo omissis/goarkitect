@@ -3,7 +3,7 @@ package file
 import (
 	"errors"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 var ErrRuleBuilderLocked = errors.New(

@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 
 	"golang.org/x/exp/slices"
 )

@@ -3,12 +3,12 @@ package config
 import (
 	"fmt"
 
-	"goarkitect/internal/arch/file"
-	"goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/arch/file"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 
-	fe "goarkitect/internal/arch/file/except"
-	fs "goarkitect/internal/arch/file/expect"
-	ft "goarkitect/internal/arch/file/that"
+	fe "github.com/omissis/goarkitect/internal/arch/file/except"
+	fs "github.com/omissis/goarkitect/internal/arch/file/expect"
+	ft "github.com/omissis/goarkitect/internal/arch/file/that"
 )
 
 type Root struct {
