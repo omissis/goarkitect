@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/omissis/goarkitect/internal/logx"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
@@ -25,7 +25,7 @@ func (i *configFiles) Set(value string) error {
 func getWd() string {
 	cwd, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		logx.Fatal(err)
 	}
 
 	return cwd
@@ -37,7 +37,7 @@ func listConfigFiles(cfs []string) []string {
 	for _, cf := range cfs {
 		fileInfo, err := os.Stat(cf)
 		if err != nil {
-			log.Fatal(err)
+			logx.Fatal(err)
 		}
 
 		if !fileInfo.IsDir() {
@@ -46,7 +46,7 @@ func listConfigFiles(cfs []string) []string {
 		}
 
 		if err := filepath.Walk(cf, visitConfigFolder(&configFiles)); err != nil {
-			log.Fatal(err)
+			logx.Fatal(err)
 		}
 	}
 
@@ -74,11 +74,11 @@ func loadConfig[T any](file string) T {
 
 	configData, err := os.ReadFile(file)
 	if err != nil {
-		log.Fatal(err)
+		logx.Fatal(err)
 	}
 
 	if err := yaml.Unmarshal(configData, &conf); err != nil {
-		log.Fatal(err)
+		logx.Fatal(err)
 	}
 
 	return conf

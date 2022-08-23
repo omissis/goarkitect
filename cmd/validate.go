@@ -1,22 +1,22 @@
 package cmd
 
 import (
-	"bytes"
-	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
-	"log"
 	"os"
-	"path/filepath"
 
-	"goarkitect/internal/schema/santhosh"
+	"github.com/omissis/goarkitect/internal/jsonx"
+	"github.com/omissis/goarkitect/internal/logx"
+	"github.com/omissis/goarkitect/internal/schema/santhosh"
 
 	"github.com/mitchellh/cli"
-	"github.com/santhosh-tekuri/jsonschema"
 )
 
-func ValidateFactory() (cli.Command, error) {
-	return &validateCommand{}, nil
+func ValidateFactory(output string) (cli.Command, error) {
+	return &validateCommand{
+		output: output,
+	}, nil
 }
 
 type validateCommand struct {
@@ -34,22 +34,23 @@ func (vc *validateCommand) Run(args []string) int {
 
 	vc.parseFlags()
 
-	schema := vc.loadSchema(basePath)
+	if len(vc.configFiles) == 0 {
+		logx.Fatal(errors.New("no config files found"))
+	}
+
+	schema, err := santhosh.LoadSchema(basePath)
+	if err != nil {
+		logx.Fatal(err)
+	}
 
 	for _, configFile := range vc.configFiles {
-		fmt.Printf("CONFIG FILE %s\n", configFile)
-
 		conf := loadConfig[any](configFile)
 
 		if err := schema.ValidateInterface(conf); err != nil {
-			vc.logValidationError(err, conf)
+			vc.printResults(err, conf, configFile)
 
 			exitCode = 1
 		}
-	}
-
-	if exitCode == 0 {
-		fmt.Println("ok")
 	}
 
 	return exitCode
@@ -60,14 +61,10 @@ func (vc *validateCommand) Synopsis() string {
 }
 
 func (vc *validateCommand) parseFlags() {
-	out := ""
-
-	flagSet := flag.NewFlagSet("validate", flag.ExitOnError)
-
-	flagSet.StringVar(&out, "output", "text", "format of the output")
+	flagSet := flag.NewFlagSet("validate", flag.ContinueOnError)
 
 	if err := flagSet.Parse(os.Args[2:]); err != nil {
-		log.Fatal(err)
+		logx.Fatal(err)
 	}
 
 	cfs := flagSet.Args()
@@ -75,50 +72,53 @@ func (vc *validateCommand) parseFlags() {
 		cfs = []string{".goarkitect.yaml"}
 	}
 
-	vc.output = out
 	vc.configFiles = listConfigFiles(cfs)
 }
 
-func (vc *validateCommand) loadSchema(basePath string) *jsonschema.Schema {
-	schemaPath := filepath.Join(basePath, "api/config_schema.json")
+func (vc *validateCommand) printResults(err error, conf any, configFile string) {
+	ptrPaths := santhosh.GetPtrPaths(err)
 
-	data, err := os.ReadFile(schemaPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	switch vc.output {
+	case "text":
+		// TODO: improve formatting
+		fmt.Printf("CONFIG FILE %s\n", configFile)
 
-	compiler := jsonschema.NewCompiler()
-	if err := compiler.AddResource(schemaPath, bytes.NewReader(data)); err != nil {
-		log.Fatal(err)
-	}
+		for _, path := range ptrPaths {
+			value, serr := santhosh.GetValueAtPath(conf, path)
+			if serr != nil {
+				logx.Fatal(serr)
+			}
 
-	schema, err := compiler.Compile(schemaPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return schema
-}
-
-func (vc *validateCommand) logValidationError(err error, conf any) {
-	ptrPaths := santhosh.GetPtrPaths(err.(*jsonschema.ValidationError))
-	for _, path := range ptrPaths {
-		value, err := santhosh.GetValueAtPath(conf, path)
-		if err != nil {
-			log.Fatal(err)
+			// TODO: improve this output
+			fmt.Printf(
+				"path '%s' contains an invalid configuration value: %+v\n",
+				santhosh.JoinPtrPath(path),
+				value,
+			)
 		}
 
-		mvalue, err := json.Marshal(value)
-		if err != nil {
-			log.Fatal(err)
+		fmt.Println(err)
+	case "json":
+		for _, path := range ptrPaths {
+			value, serr := santhosh.GetValueAtPath(conf, path)
+			if serr != nil {
+				logx.Fatal(serr)
+			}
+
+			fmt.Println(
+				jsonx.Marshal(
+					map[string]any{
+						"file":    configFile,
+						"message": "path contains an invalid configuration value",
+						"path":    santhosh.JoinPtrPath(path),
+						"value":   value,
+					},
+				),
+			)
 		}
 
-		fmt.Printf(
-			"path '%s' contains an invalid configuration value: %+v\n",
-			santhosh.JoinPtrPath(path),
-			string(mvalue),
-		)
+		fmt.Println(jsonx.Marshal(err))
+	default:
+		logx.Fatal(fmt.Errorf("unknown output format: '%s'", vc.output))
 	}
-
-	fmt.Println(err)
 }

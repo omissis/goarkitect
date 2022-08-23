@@ -1,25 +1,41 @@
 package main
 
 import (
-	"log"
+	"flag"
 	"os"
 
-	"goarkitect/cmd"
+	"github.com/omissis/goarkitect/cmd"
+	"github.com/omissis/goarkitect/internal/logx"
 
 	"github.com/mitchellh/cli"
 )
 
 func main() {
-	c := cli.NewCLI("app", "0.1.0-dev")
+	out := "text"
+
+	flagSet := flag.NewFlagSet("global", flag.ContinueOnError)
+	flagSet.StringVar(&out, "output", "text", "format of the output")
+
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
+		logx.Fatal(err)
+	}
+
+	logx.SetFormat(out)
+
+	c := cli.NewCLI("app", "unknown")
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"validate": cmd.ValidateFactory,
-		"verify":   cmd.VerifyFactory,
+		"validate": func() (cli.Command, error) {
+			return cmd.ValidateFactory(out)
+		},
+		"verify": func() (cli.Command, error) {
+			return cmd.VerifyFactory(out)
+		},
 	}
 
 	exitStatus, err := c.Run()
 	if err != nil {
-		log.Println(err)
+		logx.Fatal(err)
 	}
 
 	os.Exit(exitStatus)
