@@ -3,9 +3,10 @@ package cmd
 import (
 	"path/filepath"
 
+	"github.com/spf13/cobra"
+
 	"github.com/omissis/goarkitect/cmd/validate"
 	"github.com/omissis/goarkitect/internal/schema/santhosh"
-	"github.com/spf13/cobra"
 )
 
 func NewValidateCommand(output *string) *cobra.Command {

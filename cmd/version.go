@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/omissis/goarkitect/internal/jsonx"
 	"github.com/omissis/goarkitect/internal/logx"
-	"github.com/spf13/cobra"
 )
 
 func NewVersionCommand(output *string, versions map[string]string) *cobra.Command {

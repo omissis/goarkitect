@@ -3,9 +3,10 @@ package cmd
 import (
 	"path/filepath"
 
+	"github.com/spf13/cobra"
+
 	"github.com/omissis/goarkitect/cmd/verify"
 	"github.com/omissis/goarkitect/internal/config"
-	"github.com/spf13/cobra"
 )
 
 func NewVerifyCommand(output *string) *cobra.Command {

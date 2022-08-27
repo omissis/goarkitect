@@ -7,7 +7,7 @@ import (
 	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
-func MatchGlob(glob string, basePath string, opts ...Option) *matchGlobExpression {
+func MatchGlob(glob, basePath string, opts ...Option) *matchGlobExpression {
 	expr := &matchGlobExpression{
 		basePath: basePath,
 		glob:     glob,

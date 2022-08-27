@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/omissis/goarkitect/internal/cobrax"
 	"github.com/spf13/cobra"
+
+	"github.com/omissis/goarkitect/internal/cobrax"
 )
 
 type rootConfig struct {

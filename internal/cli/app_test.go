@@ -4,9 +4,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/omissis/goarkitect/internal/cli"
 	flag "github.com/spf13/pflag"
 	"golang.org/x/exp/slices"
+
+	"github.com/omissis/goarkitect/internal/cli"
 )
 
 func Test_NewApp_Fail(t *testing.T) {

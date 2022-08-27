@@ -12,7 +12,7 @@ import (
 
 var ErrProjectDoesNotRespectRules = errors.New("project does not respect defined rules")
 
-func PrintResults(output string, configFile string, results []config.RuleExecutionResult) {
+func PrintResults(output, configFile string, results []config.RuleExecutionResult) {
 	switch output {
 	case "text":
 		// TODO: improve formatting

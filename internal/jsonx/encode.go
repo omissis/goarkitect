@@ -15,7 +15,6 @@ func Marshal(v ...any) string {
 		}
 
 		ret[i] = string(b)
-
 	}
 
 	return strings.Join(ret, " ")

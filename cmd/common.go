@@ -5,13 +5,16 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/omissis/goarkitect/internal/logx"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
+
+	"github.com/omissis/goarkitect/internal/logx"
 )
 
-var ErrNoOutputFormat = errors.New("output cannot be nil")
-var ErrNoConfigFileFound = errors.New("no config files found")
+var (
+	ErrNoOutputFormat    = errors.New("output cannot be nil")
+	ErrNoConfigFileFound = errors.New("no config files found")
+)
 
 func getWd() string {
 	cwd, err := os.Getwd()

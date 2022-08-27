@@ -7,9 +7,11 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
-var ErrEmptyAppName = errors.New("app name cannot be empty")
-var ErrEmptyCommands = errors.New("app must have at least one command")
-var ErrNoCommandSpecified = errors.New("app command was not specified")
+var (
+	ErrEmptyAppName       = errors.New("app name cannot be empty")
+	ErrEmptyCommands      = errors.New("app must have at least one command")
+	ErrNoCommandSpecified = errors.New("app command was not specified")
+)
 
 func NewApp(
 	name string,
