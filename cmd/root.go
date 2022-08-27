@@ -39,8 +39,8 @@ func NewRootCommand(versions map[string]string) *RootCommand {
 
 	cobrax.BindFlags(root.Command, v, envPrefix)
 
-	// root.AddCommand()
 	root.AddCommand(NewValidateCommand(&root.config.Output))
+	root.AddCommand(NewVerifyCommand(&root.config.Output))
 	root.AddCommand(NewVersionCommand(&root.config.Output, versions))
 
 	return root
