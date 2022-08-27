@@ -1,5 +1,9 @@
 # GoArkitect
 
+<p align="center">
+<img src="docs/assets/goarkitect.logo.jpg" alt="crkitect" title="goarkitect" />
+</p>
+
 This project gives developers the ability to describe and check the architecture of a project and check it is respected at any time.
 
 ## Example usage
