@@ -24,3 +24,7 @@ goarkitect verify
 # verify that the current folder follows the rules specified in the .ark/ folder and outputs the result in json
 goarkitect verify .ark/ --output=json
 ```
+
+## Example configuration
+
+See the [examples folder](./examples/) to see how a configuration file looks like.
