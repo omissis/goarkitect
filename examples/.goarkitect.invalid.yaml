@@ -1,0 +1,19 @@
+# This file contains non-allowed keys
+---
+rules:
+  - WRONG_name: mandatory files should exist
+    WRONG_kind: file
+    WRONG_matcher:
+      WRONG_kind: "set"
+      WRONG_filePaths:
+        - wrong.json
+        - .envrc.dist
+        - .goarkitect.yaml
+        - .tool-versions.dist
+        - go.mod
+        - go.sum
+        - main.go
+        - README.md
+    WRONG_musts:
+      - WRONG_kind: exist
+    WRONG_because: "they are mandatory for the project to work"
