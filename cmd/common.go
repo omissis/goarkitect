@@ -1,26 +1,17 @@
 package cmd
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/omissis/goarkitect/internal/logx"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
 
-// configs contains a list of files where ruleset are specified
-type configFiles []string
-
-func (i *configFiles) String() string {
-	return strings.Join(*i, ",")
-}
-
-func (i *configFiles) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
+var ErrNoOutputFormat = errors.New("output cannot be nil")
+var ErrNoConfigFileFound = errors.New("no config files found")
 
 func getWd() string {
 	cwd, err := os.Getwd()

@@ -4,50 +4,37 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/omissis/goarkitect/internal/cli"
 	"github.com/omissis/goarkitect/internal/jsonx"
 	"github.com/omissis/goarkitect/internal/logx"
+	"github.com/spf13/cobra"
 )
 
-func NewVersionCommand(output *string, versions map[string]string) cli.Command {
-	return &versionCommand{
-		output:   output,
-		versions: versions,
+func NewVersionCommand(output *string, versions map[string]string) *cobra.Command {
+	return &cobra.Command{
+		Use:   "version",
+		Short: "Display version information about goarkitect",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(_ *cobra.Command, _ []string) error {
+			if output == nil {
+				return ErrNoOutputFormat
+			}
+
+			switch *output {
+			case "text":
+				for k, v := range versions {
+					fmt.Printf("%s: %s\n", strings.Title(k), v)
+				}
+			case "json":
+				fmt.Println(
+					jsonx.Marshal(
+						versions,
+					),
+				)
+			default:
+				logx.Fatal(fmt.Errorf("unknown output format: '%s', supported ones are: json, text", *output))
+			}
+
+			return nil
+		},
 	}
-}
-
-type versionCommand struct {
-	output   *string
-	versions map[string]string
-}
-
-func (vc *versionCommand) Name() string {
-	return "version"
-}
-
-func (vc *versionCommand) Help() string {
-	return "TBD"
-}
-
-func (vc *versionCommand) Run(args []string) error {
-	switch *vc.output {
-	case "text":
-		for k, v := range vc.versions {
-			fmt.Printf("%s: %s\n", strings.Title(k), v)
-		}
-	case "json":
-		fmt.Println(
-			jsonx.Marshal(
-				vc.versions,
-			),
-		)
-	default:
-		logx.Fatal(fmt.Errorf("unknown output format: '%s'", vc.output))
-	}
-
-	return nil
-}
-
-func (vc *versionCommand) Synopsis() string {
-	return "Print version information"
 }

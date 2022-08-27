@@ -1,129 +1,49 @@
 package cmd
 
 import (
-	"errors"
-	"flag"
-	"fmt"
-	"os"
+	"path/filepath"
 
-	"github.com/omissis/goarkitect/internal/cli"
-	"github.com/omissis/goarkitect/internal/jsonx"
-	"github.com/omissis/goarkitect/internal/logx"
+	"github.com/omissis/goarkitect/cmd/validate"
 	"github.com/omissis/goarkitect/internal/schema/santhosh"
+	"github.com/spf13/cobra"
 )
 
-var ErrHasValidationErrors = errors.New("schema has validation errors")
-
-func NewValidateCommand(output *string) cli.Command {
-	return &validateCommand{
-		output: output,
-	}
-}
-
-type validateCommand struct {
-	configFiles configFiles
-	output      *string
-}
-
-func (vc *validateCommand) Name() string {
-	return "validate"
-}
-
-func (vc *validateCommand) Help() string {
-	return "TBD"
-}
-
-func (vc *validateCommand) Run(args []string) error {
-	basePath := getWd()
-
-	vc.parseFlags()
-
-	if len(vc.configFiles) == 0 {
-		return errors.New("no config files found")
-	}
-
-	schema, err := santhosh.LoadSchema(basePath)
-	if err != nil {
-		return err
-	}
-
-	hasErrors := error(nil)
-	for _, configFile := range vc.configFiles {
-		conf := loadConfig[any](configFile)
-
-		if err := schema.ValidateInterface(conf); err != nil {
-			vc.printResults(err, conf, configFile)
-
-			hasErrors = ErrHasValidationErrors
-		}
-	}
-
-	return hasErrors
-}
-
-func (vc *validateCommand) Synopsis() string {
-	return "Validate the configuration file(s)"
-}
-
-func (vc *validateCommand) parseFlags() {
-	flagSet := flag.NewFlagSet("validate", flag.ContinueOnError)
-
-	if err := flagSet.Parse(cli.GetArgs(os.Args, 2)); err != nil {
-		logx.Fatal(err)
-	}
-
-	cfs := flagSet.Args()
-	if len(cfs) < 1 {
-		cfs = []string{".goarkitect.yaml"}
-	}
-
-	vc.configFiles = listConfigFiles(cfs)
-}
-
-func (vc *validateCommand) printResults(err error, conf any, configFile string) {
-	ptrPaths := santhosh.GetPtrPaths(err)
-
-	switch *vc.output {
-	case "text":
-		// TODO: improve formatting
-		fmt.Printf("CONFIG FILE %s\n", configFile)
-
-		for _, path := range ptrPaths {
-			value, serr := santhosh.GetValueAtPath(conf, path)
-			if serr != nil {
-				logx.Fatal(serr)
+func NewValidateCommand(output *string) *cobra.Command {
+	return &cobra.Command{
+		Use:   "validate",
+		Short: "Validate the configuration file(s)",
+		RunE: func(_ *cobra.Command, args []string) error {
+			if output == nil {
+				return ErrNoOutputFormat
 			}
 
-			// TODO: improve this output
-			fmt.Printf(
-				"path '%s' contains an invalid configuration value: %+v\n",
-				santhosh.JoinPtrPath(path),
-				value,
-			)
-		}
-
-		fmt.Println(err)
-	case "json":
-		for _, path := range ptrPaths {
-			value, serr := santhosh.GetValueAtPath(conf, path)
-			if serr != nil {
-				logx.Fatal(serr)
+			basePath := getWd()
+			schema, err := santhosh.LoadSchema(basePath)
+			if err != nil {
+				return err
 			}
 
-			fmt.Println(
-				jsonx.Marshal(
-					map[string]any{
-						"file":    configFile,
-						"message": "path contains an invalid configuration value",
-						"path":    santhosh.JoinPtrPath(path),
-						"value":   value,
-					},
-				),
-			)
-		}
+			if len(args) == 0 {
+				args = append(args, filepath.Join(basePath, ".goarkitect.yaml"))
+			}
 
-		fmt.Println(jsonx.Marshal(err))
-	default:
-		logx.Fatal(fmt.Errorf("unknown output format: '%s'", vc.output))
+			cfs := listConfigFiles(args)
+			if len(cfs) == 0 {
+				return ErrNoConfigFileFound
+			}
+
+			hasErrors := error(nil)
+			for _, cf := range cfs {
+				conf := loadConfig[any](cf)
+
+				if err := schema.ValidateInterface(conf); err != nil {
+					validate.PrintResults(*output, err, conf, cf)
+
+					hasErrors = validate.ErrHasValidationErrors
+				}
+			}
+
+			return hasErrors
+		},
 	}
 }

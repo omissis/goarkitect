@@ -1,11 +1,9 @@
 package main
 
 import (
-	"github.com/omissis/goarkitect/cmd"
-	"github.com/omissis/goarkitect/internal/cli"
-	"github.com/omissis/goarkitect/internal/logx"
+	"log"
 
-	flag "github.com/spf13/pflag"
+	"github.com/omissis/goarkitect/cmd"
 )
 
 var (
@@ -17,31 +15,15 @@ var (
 )
 
 func main() {
-	out := "text"
-
-	flagSet := flag.NewFlagSet("global", flag.ContinueOnError)
-	flagSet.StringVar(&out, "output", "text", "format of the output")
-
-	app, err := cli.NewApp(
-		"goarkitect",
-		[]cli.Command{
-			cmd.NewValidateCommand(&out),
-			cmd.NewVerifyCommand(&out),
-			cmd.NewVersionCommand(&out, map[string]string{
-				"version":   Version,
-				"gitCommit": GitCommit,
-				"buildTime": BuildTime,
-				"goVersion": GoVersion,
-				"osArch":    OsArch,
-			}),
-		},
-		flagSet,
-	)
-	if err != nil {
-		logx.Fatal(err)
+	versions := map[string]string{
+		"version":   Version,
+		"gitCommit": GitCommit,
+		"buildTime": BuildTime,
+		"goVersion": GoVersion,
+		"osArch":    OsArch,
 	}
 
-	if err := app.Run(); err != nil {
-		logx.Fatal(err)
+	if err := cmd.NewRootCommand(versions).Execute(); err != nil {
+		log.Fatal(err)
 	}
 }
