@@ -5,8 +5,8 @@ This project gives developers the ability to describe and check the architecture
 ## Example usage
 
 ```sh
-# validate the default config file (.goarkitect.yaml)
-goarkitect validate
+# validate the default config file (.goarkitect.yaml) and outputs the result in json
+goarkitect validate --output=json
 
 # validate the custom .ark.yaml config file
 goarkitect validate .ark.yaml
@@ -18,5 +18,5 @@ goarkitect validate .ark.yaml .ark/
 goarkitect verify
 
 # verify that the current folder follows the rules specified in the .ark/ folder and outputs the result in json
-goarkitect verify -config=.ark -output=json
+goarkitect verify .ark/ --output=json
 ```
