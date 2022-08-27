@@ -1,13 +1,19 @@
 package main
 
 import (
-	"flag"
-	"os"
-
 	"github.com/omissis/goarkitect/cmd"
+	"github.com/omissis/goarkitect/internal/cli"
 	"github.com/omissis/goarkitect/internal/logx"
 
-	"github.com/mitchellh/cli"
+	flag "github.com/spf13/pflag"
+)
+
+var (
+	Version   string = "unknown"
+	GitCommit string = "unknown"
+	BuildTime string = "unknown"
+	GoVersion string = "unknown"
+	OsArch    string = "unknown"
 )
 
 func main() {
@@ -16,27 +22,26 @@ func main() {
 	flagSet := flag.NewFlagSet("global", flag.ContinueOnError)
 	flagSet.StringVar(&out, "output", "text", "format of the output")
 
-	if err := flagSet.Parse(os.Args[1:]); err != nil {
-		logx.Fatal(err)
-	}
-
-	logx.SetFormat(out)
-
-	c := cli.NewCLI("app", "unknown")
-	c.Args = os.Args[1:]
-	c.Commands = map[string]cli.CommandFactory{
-		"validate": func() (cli.Command, error) {
-			return cmd.ValidateFactory(out)
+	app, err := cli.NewApp(
+		"goarkitect",
+		[]cli.Command{
+			cmd.NewValidateCommand(&out),
+			cmd.NewVerifyCommand(&out),
+			cmd.NewVersionCommand(&out, map[string]string{
+				"version":   Version,
+				"gitCommit": GitCommit,
+				"buildTime": BuildTime,
+				"goVersion": GoVersion,
+				"osArch":    OsArch,
+			}),
 		},
-		"verify": func() (cli.Command, error) {
-			return cmd.VerifyFactory(out)
-		},
-	}
-
-	exitStatus, err := c.Run()
+		flagSet,
+	)
 	if err != nil {
 		logx.Fatal(err)
 	}
 
-	os.Exit(exitStatus)
+	if err := app.Run(); err != nil {
+		logx.Fatal(err)
+	}
 }

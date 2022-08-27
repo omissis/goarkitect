@@ -6,54 +6,59 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/omissis/goarkitect/internal/cli"
 	"github.com/omissis/goarkitect/internal/jsonx"
 	"github.com/omissis/goarkitect/internal/logx"
 	"github.com/omissis/goarkitect/internal/schema/santhosh"
-
-	"github.com/mitchellh/cli"
 )
 
-func ValidateFactory(output string) (cli.Command, error) {
+var ErrHasValidationErrors = errors.New("schema has validation errors")
+
+func NewValidateCommand(output *string) cli.Command {
 	return &validateCommand{
 		output: output,
-	}, nil
+	}
 }
 
 type validateCommand struct {
 	configFiles configFiles
-	output      string
+	output      *string
+}
+
+func (vc *validateCommand) Name() string {
+	return "validate"
 }
 
 func (vc *validateCommand) Help() string {
 	return "TBD"
 }
 
-func (vc *validateCommand) Run(args []string) int {
-	exitCode := 0
+func (vc *validateCommand) Run(args []string) error {
 	basePath := getWd()
 
 	vc.parseFlags()
 
 	if len(vc.configFiles) == 0 {
-		logx.Fatal(errors.New("no config files found"))
+		return errors.New("no config files found")
 	}
 
 	schema, err := santhosh.LoadSchema(basePath)
 	if err != nil {
-		logx.Fatal(err)
+		return err
 	}
 
+	hasErrors := error(nil)
 	for _, configFile := range vc.configFiles {
 		conf := loadConfig[any](configFile)
 
 		if err := schema.ValidateInterface(conf); err != nil {
 			vc.printResults(err, conf, configFile)
 
-			exitCode = 1
+			hasErrors = ErrHasValidationErrors
 		}
 	}
 
-	return exitCode
+	return hasErrors
 }
 
 func (vc *validateCommand) Synopsis() string {
@@ -63,7 +68,7 @@ func (vc *validateCommand) Synopsis() string {
 func (vc *validateCommand) parseFlags() {
 	flagSet := flag.NewFlagSet("validate", flag.ContinueOnError)
 
-	if err := flagSet.Parse(os.Args[2:]); err != nil {
+	if err := flagSet.Parse(cli.GetArgs(os.Args, 2)); err != nil {
 		logx.Fatal(err)
 	}
 
@@ -78,7 +83,7 @@ func (vc *validateCommand) parseFlags() {
 func (vc *validateCommand) printResults(err error, conf any, configFile string) {
 	ptrPaths := santhosh.GetPtrPaths(err)
 
-	switch vc.output {
+	switch *vc.output {
 	case "text":
 		// TODO: improve formatting
 		fmt.Printf("CONFIG FILE %s\n", configFile)

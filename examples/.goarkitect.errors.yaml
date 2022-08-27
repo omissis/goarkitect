@@ -14,7 +14,7 @@ rules:
         - go.sum
         - main.go
         - README.md
-    musts:
+    mustsa:
       - kind: exist
     because: "they are mandatory for the project to work"
   - name: all files in "cmd/" folder are js files

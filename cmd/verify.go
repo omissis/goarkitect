@@ -8,37 +8,41 @@ import (
 	"path/filepath"
 
 	"github.com/omissis/goarkitect/internal/arch/rule"
+	"github.com/omissis/goarkitect/internal/cli"
 	"github.com/omissis/goarkitect/internal/config"
 	"github.com/omissis/goarkitect/internal/jsonx"
 	"github.com/omissis/goarkitect/internal/logx"
-
-	"github.com/mitchellh/cli"
 )
 
-func VerifyFactory(output string) (cli.Command, error) {
-	return &validateCommand{
+var ErrProjectDoesNotRespectRules = errors.New("project does not respect defined rules")
+
+func NewVerifyCommand(output *string) cli.Command {
+	return &verifyCommand{
 		output: output,
-	}, nil
+	}
 }
 
 type verifyCommand struct {
 	configFiles configFiles
-	output      string
+	output      *string
+}
+
+func (vc *verifyCommand) Name() string {
+	return "verify"
 }
 
 func (vc *verifyCommand) Help() string {
 	return "TBD"
 }
 
-func (vc *verifyCommand) Run(args []string) int {
-	exitCode := 0
-
+func (vc *verifyCommand) Run(args []string) error {
 	vc.parseFlags()
 
 	if len(vc.configFiles) == 0 {
-		logx.Fatal(errors.New("no config files found"))
+		return errors.New("no config files found")
 	}
 
+	hasErrors := error(nil)
 	for _, configFile := range vc.configFiles {
 		conf := loadConfig[config.Root](configFile)
 
@@ -47,11 +51,11 @@ func (vc *verifyCommand) Run(args []string) int {
 		vc.printResults(configFile, results)
 
 		if vc.hasErrors(results) {
-			exitCode = 1
+			hasErrors = ErrProjectDoesNotRespectRules
 		}
 	}
 
-	return exitCode
+	return hasErrors
 }
 
 func (vc *verifyCommand) Synopsis() string {
@@ -65,7 +69,7 @@ func (vc *verifyCommand) parseFlags() {
 
 	flagSet.Var(&cfs, "config", "path to the config file or folder")
 
-	if err := flagSet.Parse(os.Args[2:]); err != nil {
+	if err := flagSet.Parse(cli.GetArgs(os.Args, 2)); err != nil {
 		logx.Fatal(err)
 	}
 
@@ -77,7 +81,7 @@ func (vc *verifyCommand) parseFlags() {
 }
 
 func (vc *verifyCommand) printResults(configFile string, results []config.RuleExecutionResult) {
-	switch vc.output {
+	switch *vc.output {
 	case "text":
 		// TODO: improve formatting
 		fmt.Printf("CONFIG FILE %s\n", configFile)
