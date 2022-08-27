@@ -1,0 +1,45 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildTime={{.Date}} -X main.goVersion={{.Env.GO_VERSION}} -X main.osArch={{.Env.OS_ARCH}}
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+brews:
+  - name: goarkitect
+    tap:
+      owner: omissis
+      name: homebrew-goarkitect
+    skip_upload: auto
+    folder: Formula
+    homepage: 'https://gihub.com/omissis/goarkitect'
+    description: 'Goarkitect binary'
+    test: |
+      system "#{bin}/goarkitect"
+    install: |
+      bin.install 'goarkitect'
+dockers:
+  - image_templates:
+    - omissis/goarkitect

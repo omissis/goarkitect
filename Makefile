@@ -9,11 +9,6 @@ ifeq ("$(shell uname -m)", "arm64")
 	_GOARCH = "arm64"
 endif
 
-_GOARK_GIT_COMMIT = $(shell git rev-list -1 HEAD)
-_GOARK_BUILD_TIME = $(shell date)
-_GOARK_GO_VERSION = $(shell go version | cut -d ' ' -f 3)
-_GOARK_OS_ARCH = $(shell go version | cut -d ' ' -f 4)
-
 #1: docker image
 #2: make target
 define run-docker
@@ -81,19 +76,13 @@ lint-go:
 test:
 	@go test ./...
 
-.PHONY: build
+.PHONY: release-local release
 
-build: check-variable-GOARK_VERSION
-	go build \
-		-ldflags "\
-			-X 'main.Version=$${GOARK_VERSION}' \
-			-X 'main.GitCommit=$$(git rev-list -1 HEAD)' \
-			-X 'main.BuildTime=$$(date)' \
-			-X 'main.GoVersion=$$(go version | cut -d ' ' -f 3)' \
-			-X 'main.OsArch=$$(go version | cut -d ' ' -f 4)' \
-		" \
-		-o ${_PROJECT_DIRECTORY}/bin/${_PROJECTNAME} \
-		main.go
+release-local:
+	@GO_VERSION=$$(go version | cut -d ' ' -f 3) OS_ARCH=$$(go version | cut -d ' ' -f 4) goreleaser release --debug --snapshot --rm-dist
+
+release:
+	@GO_VERSION=$$(go version | cut -d ' ' -f 3) OS_ARCH=$$(go version | cut -d ' ' -f 4) goreleaser --debug release --rm-dist
 
 # Helpers
 

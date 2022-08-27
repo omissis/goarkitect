@@ -4,7 +4,7 @@
 <img src="docs/assets/goarkitect.logo.jpg" alt="crkitect" title="goarkitect" />
 </p>
 
-This project gives developers the ability to describe and check the architecture of a project and check it is respected at any time.
+This project gives developers the ability to describe and check many architectural constraints of a project using a composable set of rules described in one or multiple yaml files.
 
 ## Example usage
 

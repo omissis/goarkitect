@@ -7,20 +7,20 @@ import (
 )
 
 var (
-	Version   string = "unknown"
-	GitCommit string = "unknown"
-	BuildTime string = "unknown"
-	GoVersion string = "unknown"
-	OsArch    string = "unknown"
+	version   string = "unknown"
+	gitCommit string = "unknown"
+	buildTime string = "unknown"
+	goVersion string = "unknown"
+	osArch    string = "unknown"
 )
 
 func main() {
 	versions := map[string]string{
-		"version":   Version,
-		"gitCommit": GitCommit,
-		"buildTime": BuildTime,
-		"goVersion": GoVersion,
-		"osArch":    OsArch,
+		"version":   version,
+		"gitCommit": gitCommit,
+		"buildTime": buildTime,
+		"goVersion": goVersion,
+		"osArch":    osArch,
 	}
 
 	if err := cmd.NewRootCommand(versions).Execute(); err != nil {
