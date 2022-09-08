@@ -3,14 +3,14 @@ package file_test
 import (
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/omissis/goarkitect/internal/arch/file"
 	fe "github.com/omissis/goarkitect/internal/arch/file/except"
 	fs "github.com/omissis/goarkitect/internal/arch/file/expect"
 	ft "github.com/omissis/goarkitect/internal/arch/file/that"
 	"github.com/omissis/goarkitect/internal/arch/rule"
-
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func Test_It_Checks_All_Conditions(t *testing.T) {

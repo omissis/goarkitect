@@ -3,11 +3,11 @@ package santhosh_test
 import (
 	"testing"
 
-	"github.com/omissis/goarkitect/internal/schema/santhosh"
-
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/santhosh-tekuri/jsonschema"
+
+	"github.com/omissis/goarkitect/internal/schema/santhosh"
 )
 
 func Test_JoinPtrPath(t *testing.T) {

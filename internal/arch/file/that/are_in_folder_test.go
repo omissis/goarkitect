@@ -3,11 +3,11 @@ package that_test
 import (
 	"testing"
 
-	"github.com/omissis/goarkitect/internal/arch/file"
-	"github.com/omissis/goarkitect/internal/arch/file/that"
-
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+
+	"github.com/omissis/goarkitect/internal/arch/file"
+	"github.com/omissis/goarkitect/internal/arch/file/that"
 )
 
 func Test_AreInFolder(t *testing.T) {

@@ -36,6 +36,7 @@ func listConfigFiles(cfs []string) []string {
 
 		if !fileInfo.IsDir() {
 			configFiles = append(configFiles, cf)
+
 			continue
 		}
 

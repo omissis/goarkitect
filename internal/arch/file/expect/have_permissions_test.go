@@ -5,12 +5,12 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/omissis/goarkitect/internal/arch/file"
 	"github.com/omissis/goarkitect/internal/arch/file/expect"
 	"github.com/omissis/goarkitect/internal/arch/rule"
-
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func Test_HavePermissions(t *testing.T) {

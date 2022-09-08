@@ -47,7 +47,7 @@ mod-check-upgrades:
 mod-upgrade:
 	@go get -u ./... && go mod tidy
 
-.PHONY: fmt fumpt imports
+.PHONY: fmt fumpt imports gci
 
 fmt:
 	@find . -name "*.go" -type f -not -path '*/vendor/*' \
@@ -60,9 +60,15 @@ fumpt:
 	| xargs -I {} sh -c 'echo "formatting {}.." && gofumpt -w -extra {}'
 
 imports:
-	@goimports -w -e -local github.com/omissis main.go
-	@goimports -w -e -local github.com/omissis cmd/
-	@goimports -w -e -local github.com/omissis internal/
+	@goimports -v -w -e -local github.com/omissis main.go
+	@goimports -v -w -e -local github.com/omissis cmd/
+	@goimports -v -w -e -local github.com/omissis internal/
+
+gci:
+	@find . -name "*.go" -type f -not -path '*/vendor/*' \
+	| sed 's/^\.\///g' \
+	| xargs -I {} sh -c 'echo "formatting imports for {}.." && \
+	gci write --skip-generated -s standard -s default -s "prefix(github.com/omissis)" {}'
 
 .PHONY: lint lint-go
 

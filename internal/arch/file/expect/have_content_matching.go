@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/omissis/goarkitect/internal/arch/rule"
-
 	"golang.org/x/exp/slices"
+
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 func HaveContentMatching(value []byte, opts ...Option) *haveContentMatchingExpression {

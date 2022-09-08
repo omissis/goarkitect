@@ -4,11 +4,10 @@ import (
 	"fmt"
 
 	"github.com/omissis/goarkitect/internal/arch/file"
-	"github.com/omissis/goarkitect/internal/arch/rule"
-
 	fe "github.com/omissis/goarkitect/internal/arch/file/except"
 	fs "github.com/omissis/goarkitect/internal/arch/file/expect"
 	ft "github.com/omissis/goarkitect/internal/arch/file/that"
+	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
 type Root struct {
