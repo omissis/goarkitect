@@ -49,5 +49,9 @@ brews:
     install: |
       bin.install 'goarkitect'
 dockers:
-  - image_templates:
-    - omissis/goarkitect
+  - skip_push: auto
+    image_templates:
+      - "omissis/goarkitect:latest"
+      - "omissis/goarkitect:{{ .Major }}"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}"
+      - "omissis/goarkitect:{{ .Tag }}"
