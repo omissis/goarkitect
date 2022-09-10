@@ -125,13 +125,19 @@ examples:
 	@go run main.go verify --output=json examples/.goarkitect.yaml
 	@echo "\n================================================================================\n"
 
-.PHONY: release-local release
+.PHONY: build release
 
-release-local:
-	@GO_VERSION=$$(go version | cut -d ' ' -f 3) OS_ARCH=$$(go version | cut -d ' ' -f 4) goreleaser release --debug --snapshot --rm-dist
+build:
+	@export GO_VERSION=$$(go version | cut -d ' ' -f 3) && \
+	export OS_ARCH=$$(go version | cut -d ' ' -f 4) && \
+	goreleaser check && \
+	goreleaser release --debug --snapshot --rm-dist
 
 release:
-	@GO_VERSION=$$(go version | cut -d ' ' -f 3) OS_ARCH=$$(go version | cut -d ' ' -f 4) goreleaser --debug release --rm-dist
+	@export GO_VERSION=$$(go version | cut -d ' ' -f 3) && \
+	export OS_ARCH=$$(go version | cut -d ' ' -f 4) && \
+	goreleaser check && \
+	goreleaser --debug release --rm-dist
 
 # Helpers
 

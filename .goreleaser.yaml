@@ -1,3 +1,5 @@
+---
+project_name: goarkitect
 before:
   hooks:
     - go mod tidy
@@ -27,6 +29,12 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+release:
+  github:
+    owner: omissis
+    name: goarkitect
+  name_template: '{{ .Tag }}'
+  prerelease: auto
 brews:
   - name: goarkitect
     tap:
