@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Update Apt Deps
+        run: apt-get update -y
+      - name: Setup Git Crypt
+        run: apt-get install -y git-crypt
       - name: Setup Golang
         uses: actions/setup-go@v3
         with:

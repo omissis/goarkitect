@@ -28,19 +28,19 @@ func Test_BeGitencrypted(t *testing.T) {
 		want        []rule.CoreViolation
 	}{
 		{
-			desc:        "file 'encrypted.txt' expect be gitencrypted",
+			desc:        "file 'encrypted.txt' is expected to be gitencrypted",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/encrypted.txt")),
 			want:        nil,
 		},
 		{
-			desc:        "file 'not_encrypted.txt' expect be gitencrypted",
+			desc:        "file 'not_encrypted.txt' is expected to be gitencrypted",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/not_encrypted.txt")),
 			want: []rule.CoreViolation{
 				rule.NewCoreViolation("file 'not_encrypted.txt' is not gitencrypted"),
 			},
 		},
 		{
-			desc:        "negated: file 'encrypted.txt' expect not be gitencrypted",
+			desc:        "negated: file 'encrypted.txt' is not expected to be gitencrypted",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/encrypted.txt")),
 			options:     []expect.Option{expect.Negated{}},
 			want: []rule.CoreViolation{
@@ -48,7 +48,7 @@ func Test_BeGitencrypted(t *testing.T) {
 			},
 		},
 		{
-			desc:        "negated: file 'not_encrypted.txt' expect not be gitencrypted",
+			desc:        "negated: file 'not_encrypted.txt' is not expected to be gitencrypted",
 			ruleBuilder: file.One(filepath.Join(basePath, "test/not_encrypted.txt")),
 			options:     []expect.Option{expect.Negated{}},
 			want:        nil,
