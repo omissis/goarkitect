@@ -29,9 +29,7 @@ func HavePermissions(permissions string, opts ...Option) *havePermissionsExpress
 		},
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }
@@ -58,8 +56,15 @@ func (e havePermissionsExpression) doEvaluate(rb rule.Builder, filePath string) 
 }
 
 func (e havePermissionsExpression) getViolation(filePath string) rule.CoreViolation {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		e.errors = append(e.errors, err)
+
+		return rule.CoreViolation{}
+	}
+
 	iNodeType := "file"
-	if info, _ := os.Stat(filePath); info.IsDir() {
+	if info.IsDir() {
 		iNodeType = "directory"
 	}
 

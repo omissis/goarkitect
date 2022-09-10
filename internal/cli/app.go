@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	flag "github.com/spf13/pflag"
@@ -45,7 +46,7 @@ type App struct {
 
 func (a *App) Run() error {
 	if err := a.flagSet.Parse(GetArgs(os.Args, 1)); err != nil {
-		return err
+		return fmt.Errorf("error parsing flags: %w", err)
 	}
 
 	args := a.flagSet.Args()
@@ -55,9 +56,13 @@ func (a *App) Run() error {
 
 	for _, cmd := range a.commands {
 		if cmd.Name() == args[0] {
-			return cmd.Run(args)
+			if err := cmd.Run(args); err != nil {
+				return fmt.Errorf("error running command '%s': %w", cmd.Name(), err)
+			}
+
+			return nil
 		}
 	}
 
-	return nil
+	return fmt.Errorf("command '%s' not found", args[0])
 }

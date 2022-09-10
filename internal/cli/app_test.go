@@ -1,7 +1,9 @@
 package cli_test
 
 import (
+	"errors"
 	"os"
+	"strings"
 	"testing"
 
 	flag "github.com/spf13/pflag"
@@ -11,6 +13,8 @@ import (
 )
 
 func Test_NewApp_Fail(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc     string
 		name     string
@@ -28,9 +32,13 @@ func Test_NewApp_Fail(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			_, err := cli.NewApp(tC.name, tC.commands, nil)
-			if err != tC.wantErr {
+			if !errors.Is(err, tC.wantErr) {
 				t.Errorf("wantErr = %v, got = %v", tC.wantErr, err)
 			}
 		})
@@ -38,17 +46,21 @@ func Test_NewApp_Fail(t *testing.T) {
 }
 
 func Test_App_Run_NoArgs(t *testing.T) {
+	t.Parallel()
+
 	app, err := cli.NewApp("test", []cli.Command{&cmd{}}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if err = app.Run(); err != cli.ErrNoCommandSpecified {
+	if err = app.Run(); !errors.Is(err, cli.ErrNoCommandSpecified) {
 		t.Errorf("wantErr = %v, got = %v", cli.ErrNoCommandSpecified, err)
 	}
 }
 
 func Test_App_Run_Args_And_Flags(t *testing.T) {
+	t.Parallel()
+
 	osArgs := slices.Clone(os.Args)
 
 	testCases := []struct {
@@ -79,7 +91,11 @@ func Test_App_Run_Args_And_Flags(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			os.Args = append(os.Args, tC.args...)
 			defer func() {
 				os.Args = slices.Clone(osArgs)
@@ -94,8 +110,8 @@ func Test_App_Run_Args_And_Flags(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if err = app.Run(); err != nil && err.Error() != tC.wantErr {
-				t.Errorf("no error wanted, got = %v", err)
+			if err = app.Run(); err != nil && !strings.Contains(err.Error(), tC.wantErr) {
+				t.Errorf("wanted err = %v, got = %v", tC.wantErr, err)
 			}
 		})
 	}

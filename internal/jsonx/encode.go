@@ -8,6 +8,7 @@ import (
 
 func Marshal(v ...any) string {
 	ret := make([]string, len(v))
+
 	for i, vv := range v {
 		b, err := json.Marshal(vv)
 		if err != nil {

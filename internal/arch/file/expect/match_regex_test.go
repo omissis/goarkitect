@@ -12,6 +12,8 @@ import (
 )
 
 func Test_MatchRegex(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc        string
 		ruleBuilder *file.RuleBuilder
@@ -66,7 +68,11 @@ func Test_MatchRegex(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			ew := expect.MatchRegex(tC.regexp, tC.options...)
 			got := ew.Evaluate(tC.ruleBuilder)
 

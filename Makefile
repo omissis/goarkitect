@@ -68,7 +68,7 @@ gci:
 	@find . -name "*.go" -type f -not -path '*/vendor/*' \
 	| sed 's/^\.\///g' \
 	| xargs -I {} sh -c 'echo "formatting imports for {}.." && \
-	gci write --skip-generated -s standard -s default -s "prefix(github.com/omissis)" {}'
+	gci write --skip-generated -s standard,default,"prefix(github.com/omissis)" {}'
 
 .PHONY: lint lint-go
 

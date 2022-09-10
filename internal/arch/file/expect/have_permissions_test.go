@@ -14,6 +14,8 @@ import (
 )
 
 func Test_HavePermissions(t *testing.T) {
+	t.Parallel()
+
 	basePath, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -97,7 +99,11 @@ func Test_HavePermissions(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			hcm := expect.HavePermissions(tC.permissions, tC.options...)
 			got := hcm.Evaluate(tC.ruleBuilder)
 			gotErrs := hcm.GetErrors()

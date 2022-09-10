@@ -13,9 +13,7 @@ func MatchRegex(res string, opts ...Option) *matchRegexExpression {
 		regex: regexp.MustCompile(res),
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

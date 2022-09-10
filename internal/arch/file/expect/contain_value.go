@@ -14,9 +14,7 @@ func ContainValue(value []byte, opts ...Option) *containValueExpression {
 		value: value,
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

@@ -1,5 +1,6 @@
 package rule
 
+//nolint:interfacebloat // builders are allowed to have many methods
 type Builder interface {
 	That(t That) Builder
 	AndThat(t That) Builder

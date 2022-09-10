@@ -21,9 +21,15 @@ func (e *baseExpression) GetErrors() []error {
 }
 
 func (e baseExpression) evaluate(rb rule.Builder, eval evaluateFunc) {
-	frb := rb.(*file.RuleBuilder)
+	frb, ok := rb.(*file.RuleBuilder)
+	if !ok {
+		e.errors = append(e.errors, file.ErrInvalidRuleBuilder)
+
+		return
+	}
 
 	nf := make([]string, 0)
+
 	for _, filePath := range frb.GetFiles() {
 		if eval(filePath) {
 			nf = append(nf, filePath)

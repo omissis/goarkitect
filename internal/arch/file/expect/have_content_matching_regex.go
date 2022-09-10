@@ -15,9 +15,7 @@ func HaveContentMatchingRegex(regex string, opts ...Option) *haveContentMatching
 		regex: regex,
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

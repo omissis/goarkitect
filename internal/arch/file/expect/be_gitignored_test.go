@@ -14,6 +14,8 @@ import (
 )
 
 func Test_BeGitignored(t *testing.T) {
+	t.Parallel()
+
 	basePath, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +56,11 @@ func Test_BeGitignored(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			hcm := expect.BeGitignored(tC.options...)
 			got := hcm.Evaluate(tC.ruleBuilder)
 

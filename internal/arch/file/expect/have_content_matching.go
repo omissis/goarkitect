@@ -16,9 +16,7 @@ func HaveContentMatching(value []byte, opts ...Option) *haveContentMatchingExpre
 		value: value,
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

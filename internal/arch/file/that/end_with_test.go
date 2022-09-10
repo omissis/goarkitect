@@ -12,6 +12,8 @@ import (
 )
 
 func Test_EndWith(t *testing.T) {
+	t.Parallel()
+
 	rb := func() *file.RuleBuilder {
 		rb := file.All()
 		rb.SetFiles([]string{"Dockerfile", "Makefile"})
@@ -39,7 +41,11 @@ func Test_EndWith(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			ew := that.EndWith(tC.suffix)
 			ew.Evaluate(tC.ruleBuilder)
 

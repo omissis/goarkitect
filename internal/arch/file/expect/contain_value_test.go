@@ -14,6 +14,8 @@ import (
 )
 
 func Test_ContainValue(t *testing.T) {
+	t.Parallel()
+
 	basePath, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -80,7 +82,11 @@ func Test_ContainValue(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			hcm := expect.ContainValue([]byte(tC.value), tC.options...)
 			got := hcm.Evaluate(tC.ruleBuilder)
 

@@ -19,6 +19,13 @@ linters:
   # Disable specific linter
   # https://golangci-lint.run/usage/linters/#disabled-by-default-linters--e--enable
   disable:
+    # todo
+    - exhaustruct
+    - forbidigo
+    - godox
+    - ireturn
+    - revive
+    - varnamelen
     # deprecated
     - deadcode
     - exhaustivestruct
@@ -45,6 +52,13 @@ linters-settings:
   exhaustive:
     check-generated: true
     default-signifies-exhaustive: true
+  gci:
+    sections:
+      - standard # Standard section: captures all standard packages.
+      - default # Default section: contains all imports that could not be matched to another section type.
+      - prefix(github.com/omissis) # Custom section: groups all imports with the specified Prefix.
+    skip-generated: true
+    custom-order: true
   godot:
     scope: all
     exclude:
@@ -253,7 +267,7 @@ linters-settings:
       - name: line-length-limit
         severity: warning
         disabled: false
-        arguments: [80]
+        arguments: [120]
       # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#max-public-structs
       - name: max-public-structs
         severity: warning
@@ -432,11 +446,16 @@ issues:
         - dupl
         - errcheck
         - forcetypeassert
+        - funlen
+        - goconst
         - gocyclo
         - goerr113
         - gosec
         - lll
         - maintidx
+    - path: main\.go
+      linters:
+        - gochecknoglobals
 
   # Independently of option `exclude` we use default exclude patterns,
   # it can be disabled by this option.

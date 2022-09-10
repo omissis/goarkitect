@@ -1,4 +1,4 @@
-package cmd
+package cmdutil
 
 import (
 	"errors"
@@ -12,11 +12,12 @@ import (
 )
 
 var (
-	ErrNoOutputFormat    = errors.New("output cannot be nil")
-	ErrNoConfigFileFound = errors.New("no config files found")
+	ErrNoOutputFormat      = errors.New("output cannot be nil")
+	ErrNoConfigFileFound   = errors.New("no config files found")
+	ErrUnknownOutputFormat = errors.New("unknown output format, supported ones are: json, text")
 )
 
-func getWd() string {
+func GetWd() string {
 	cwd, err := os.Getwd()
 	if err != nil {
 		logx.Fatal(err)
@@ -25,7 +26,7 @@ func getWd() string {
 	return cwd
 }
 
-func listConfigFiles(cfs []string) []string {
+func ListConfigFiles(cfs []string) []string {
 	configFiles := make([]string, 0)
 
 	for _, cf := range cfs {
@@ -64,7 +65,7 @@ func visitConfigFolder(files *[]string) filepath.WalkFunc {
 	}
 }
 
-func loadConfig[T any](file string) T {
+func LoadConfig[T any](file string) T {
 	var conf T
 
 	configData, err := os.ReadFile(file)

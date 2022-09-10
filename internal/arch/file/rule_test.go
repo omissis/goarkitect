@@ -14,6 +14,8 @@ import (
 )
 
 func Test_It_Checks_All_Conditions(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc           string
 		ruleBuilder    rule.Builder
@@ -41,7 +43,11 @@ func Test_It_Checks_All_Conditions(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			vs, errs := tC.ruleBuilder.
 				Should(fs.Not(fs.BeGitencrypted())).
 				AndShould(fs.Not(fs.BeGitignored())).
@@ -68,6 +74,8 @@ func Test_It_Checks_All_Conditions(t *testing.T) {
 }
 
 func Test_It_Adds_ErrRuleBuilderLocked_Only_Once(t *testing.T) {
+	t.Parallel()
+
 	rb := file.NewRuleBuilder()
 
 	rb.AddError(file.ErrRuleBuilderLocked)

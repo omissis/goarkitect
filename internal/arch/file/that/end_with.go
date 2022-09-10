@@ -24,9 +24,15 @@ func (e *EndWithExpression) GetErrors() []error {
 }
 
 func (e EndWithExpression) Evaluate(rb rule.Builder) {
-	frb := rb.(*file.RuleBuilder)
+	frb, ok := rb.(*file.RuleBuilder)
+	if !ok {
+		e.errors = append(e.errors, file.ErrInvalidRuleBuilder)
+
+		return
+	}
 
 	files := make([]string, 0)
+
 	for _, f := range frb.GetFiles() {
 		if strings.HasSuffix(f, e.suffix) {
 			files = append(files, f)

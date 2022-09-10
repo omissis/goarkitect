@@ -12,9 +12,7 @@ func EndWith(suffix string, opts ...Option) *endWithExpression {
 		suffix: suffix,
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

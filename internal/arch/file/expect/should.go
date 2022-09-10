@@ -12,6 +12,7 @@ var ErrEmptyOpts = fmt.Errorf("empty options")
 type Expression interface {
 	Evaluate(rb rule.Builder) []rule.CoreViolation
 	GetErrors() []error
+	applyOptions(opts []Option)
 	applyOption(opt Option)
 	doEvaluate(rb rule.Builder, filePath string) bool
 	getViolation(filePath string) rule.CoreViolation
@@ -21,7 +22,6 @@ type (
 	evaluateFunc     func(rb rule.Builder, filePath string) bool
 	getViolationFunc func(filePath string) rule.CoreViolation
 	options          struct {
-		severity                     rule.Severity
 		negated                      bool
 		ignoreCase                   bool
 		ignoreNewLinesAtTheEndOfFile bool
@@ -32,7 +32,7 @@ type (
 
 type baseExpression struct {
 	options      options
-	getViolation getViolationFunc
+	getViolation getViolationFunc //nolint:unused // false positive
 	errors       []error
 }
 
@@ -45,12 +45,20 @@ func (e *baseExpression) evaluate(
 	evaluate evaluateFunc,
 	getViolation getViolationFunc,
 ) []rule.CoreViolation {
+	frb, ok := rb.(*file.RuleBuilder)
+	if !ok {
+		e.errors = append(e.errors, file.ErrInvalidRuleBuilder)
+
+		return nil
+	}
+
 	if len(e.errors) > 0 {
 		return nil
 	}
 
 	violations := make([]rule.CoreViolation, 0)
-	for _, fp := range rb.(*file.RuleBuilder).GetFiles() {
+
+	for _, fp := range frb.GetFiles() {
 		result := evaluate(rb, fp)
 		if (!e.options.negated && result) || (e.options.negated && !result) {
 			violations = append(violations, getViolation(fp))
@@ -58,6 +66,12 @@ func (e *baseExpression) evaluate(
 	}
 
 	return violations
+}
+
+func (e *baseExpression) applyOptions(opts []Option) {
+	for _, opt := range opts {
+		e.applyOption(opt)
+	}
 }
 
 func (e *baseExpression) applyOption(opt Option) {

@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	version   string = "unknown"
-	gitCommit string = "unknown"
-	buildTime string = "unknown"
-	goVersion string = "unknown"
-	osArch    string = "unknown"
+	version   = "unknown"
+	gitCommit = "unknown"
+	buildTime = "unknown"
+	goVersion = "unknown"
+	osArch    = "unknown"
 )
 
 func main() {

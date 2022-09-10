@@ -14,6 +14,8 @@ import (
 )
 
 func Test_BeGitencrypted(t *testing.T) {
+	t.Parallel()
+
 	basePath, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +56,11 @@ func Test_BeGitencrypted(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			hcm := expect.BeGitencrypted(tC.options...)
 			got := hcm.Evaluate(tC.ruleBuilder)
 

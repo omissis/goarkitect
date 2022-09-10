@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/omissis/goarkitect/cmd/cmdutil"
 	"github.com/omissis/goarkitect/cmd/verify"
 	"github.com/omissis/goarkitect/internal/config"
 )
@@ -15,21 +16,21 @@ func NewVerifyCommand(output *string) *cobra.Command {
 		Short: "Verify the ruleset against a project",
 		RunE: func(_ *cobra.Command, args []string) error {
 			if output == nil {
-				return ErrNoOutputFormat
+				return cmdutil.ErrNoOutputFormat
 			}
 
 			if len(args) == 0 {
-				args = append(args, filepath.Join(getWd(), ".goarkitect.yaml"))
+				args = append(args, filepath.Join(cmdutil.GetWd(), ".goarkitect.yaml"))
 			}
 
-			cfs := listConfigFiles(args)
+			cfs := cmdutil.ListConfigFiles(args)
 			if len(cfs) == 0 {
-				return ErrNoConfigFileFound
+				return cmdutil.ErrNoConfigFileFound
 			}
 
 			hasErrors := error(nil)
 			for _, cf := range cfs {
-				conf := loadConfig[config.Root](cf)
+				conf := cmdutil.LoadConfig[config.Root](cf)
 
 				results := config.Execute(conf)
 

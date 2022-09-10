@@ -14,6 +14,8 @@ import (
 )
 
 func Test_MatchGlob(t *testing.T) {
+	t.Parallel()
+
 	basePath, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -25,6 +27,7 @@ func Test_MatchGlob(t *testing.T) {
 			filepath.Join(basePath, "test/project3/baz.txt"),
 			filepath.Join(basePath, "test/project3/quux.txt"),
 		})
+
 		return rb
 	}
 
@@ -82,7 +85,11 @@ func Test_MatchGlob(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			mg := expect.MatchGlob(tC.glob, basePath, tC.options...)
 			got := mg.Evaluate(tC.ruleBuilder)
 

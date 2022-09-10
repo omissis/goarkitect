@@ -1,6 +1,7 @@
 package santhosh_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -11,6 +12,8 @@ import (
 )
 
 func Test_JoinPtrPath(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc string
 		path []any
@@ -43,9 +46,12 @@ func Test_JoinPtrPath(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
-			got := santhosh.JoinPtrPath(tC.path)
-			if got != tC.want {
+			t.Parallel()
+
+			if got := santhosh.JoinPtrPath(tC.path); got != tC.want {
 				t.Errorf("got %v, want %v", got, tC.want)
 			}
 		})
@@ -53,6 +59,8 @@ func Test_JoinPtrPath(t *testing.T) {
 }
 
 func Test_GetValueAtPath(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc    string
 		obj     any
@@ -96,12 +104,16 @@ func Test_GetValueAtPath(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			got, err := santhosh.GetValueAtPath(tC.obj, tC.path)
 			if got != tC.want {
 				t.Errorf("got %v, want %v", got, tC.want)
 			}
-			if err != tC.wantErr {
+			if !errors.Is(err, tC.wantErr) {
 				t.Errorf("got error %v, want %v", err, tC.wantErr)
 			}
 		})
@@ -109,6 +121,8 @@ func Test_GetValueAtPath(t *testing.T) {
 }
 
 func Test_GetPtrPaths(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc string
 		err  *jsonschema.ValidationError
@@ -149,7 +163,11 @@ func Test_GetPtrPaths(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			got := santhosh.GetPtrPaths(tC.err)
 			if !cmp.Equal(got, tC.want, cmpopts.EquateEmpty()) {
 				t.Errorf("expected %v, got %v", tC.want, got)

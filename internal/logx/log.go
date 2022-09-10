@@ -1,6 +1,7 @@
 package logx
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -8,12 +9,17 @@ import (
 	"github.com/omissis/goarkitect/internal/jsonx"
 )
 
-var format string = "text"
+var (
+	//nolint:gochecknoglobals // it's global to keep logx simple and close to stdlib's
+	format = "text"
+
+	ErrUnknownOutputFormat = errors.New("unknown output format, supported ones are: json, text")
+)
 
 func SetFormat(f string) {
 	if f != "text" && f != "json" {
 		log.Fatal(
-			fmt.Errorf("format '%s' is not valid, accepted options are: json, text", f),
+			fmt.Errorf("'%s' :%w", f, ErrUnknownOutputFormat),
 		)
 	}
 
@@ -24,6 +30,7 @@ func Fatal(v error) {
 	switch format {
 	case "text":
 		log.Fatal(v)
+
 	case "json":
 		log.Fatal(
 			jsonx.Marshal(
@@ -34,6 +41,7 @@ func Fatal(v error) {
 				},
 			),
 		)
+
 	default:
 		log.Fatalf("invalid format value: '%s'", format)
 	}

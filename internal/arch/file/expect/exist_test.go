@@ -12,6 +12,8 @@ import (
 )
 
 func Test_Exist(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc        string
 		ruleBuilder *file.RuleBuilder
@@ -45,7 +47,11 @@ func Test_Exist(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			e := expect.Exist(tC.options...)
 			got := e.Evaluate(tC.ruleBuilder)
 

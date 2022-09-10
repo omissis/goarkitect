@@ -11,9 +11,7 @@ import (
 func Exist(opts ...Option) *existExpression {
 	expr := &existExpression{}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

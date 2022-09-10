@@ -12,6 +12,8 @@ import (
 )
 
 func Test_EndWith(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc        string
 		ruleBuilder *file.RuleBuilder
@@ -51,7 +53,11 @@ func Test_EndWith(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			ew := expect.EndWith(tC.suffix, tC.options...)
 			got := ew.Evaluate(tC.ruleBuilder)
 

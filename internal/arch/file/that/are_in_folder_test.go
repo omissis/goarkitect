@@ -1,6 +1,7 @@
 package that_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -11,6 +12,8 @@ import (
 )
 
 func Test_AreInFolder(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		desc        string
 		ruleBuilder *file.RuleBuilder
@@ -52,7 +55,11 @@ func Test_AreInFolder(t *testing.T) {
 		},
 	}
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			aif := that.AreInFolder(tC.folder, tC.recursive)
 			aif.Evaluate(tC.ruleBuilder)
 
@@ -67,7 +74,7 @@ func Test_AreInFolder(t *testing.T) {
 			}
 
 			for i := 0; i < len(gotErrs); i++ {
-				if gotErrs[i].Error() != tC.wantErrs[i] {
+				if !strings.Contains(gotErrs[i].Error(), tC.wantErrs[i]) {
 					t.Errorf("wantErr[%d] = %+v, gotErr[%d] = %+v", i, tC.wantErrs[i], i, gotErrs[i].Error())
 				}
 			}

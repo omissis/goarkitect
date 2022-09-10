@@ -14,6 +14,8 @@ import (
 )
 
 func Test_HaveContentMatchingRegex(t *testing.T) {
+	t.Parallel()
+
 	basePath, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -90,7 +92,11 @@ func Test_HaveContentMatchingRegex(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
+		tC := tC
+
 		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+
 			hcm := expect.HaveContentMatchingRegex(tC.regexp, tC.options...)
 			got := hcm.Evaluate(tC.ruleBuilder)
 

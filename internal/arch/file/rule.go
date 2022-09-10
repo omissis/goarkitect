@@ -6,8 +6,11 @@ import (
 	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
-var ErrRuleBuilderLocked = errors.New(
-	"this rule builder has been already used: create a new one if you want to test a new ruleset",
+var (
+	ErrRuleBuilderLocked = errors.New(
+		"this rule builder has been already used: create a new one if you want to test a new ruleset",
+	)
+	ErrInvalidRuleBuilder = errors.New("invalid rule builder type")
 )
 
 func All() *RuleBuilder {
@@ -55,6 +58,7 @@ func (rb *RuleBuilder) That(t rule.That) rule.Builder {
 func (rb *RuleBuilder) AndThat(t rule.That) rule.Builder {
 	if rb.locked {
 		rb.addLockError()
+
 		return rb
 	}
 
@@ -66,6 +70,7 @@ func (rb *RuleBuilder) AndThat(t rule.That) rule.Builder {
 func (rb *RuleBuilder) Except(s ...rule.Except) rule.Builder {
 	if rb.locked {
 		rb.addLockError()
+
 		return rb
 	}
 
@@ -81,6 +86,7 @@ func (rb *RuleBuilder) Must(e rule.Expect) rule.Builder {
 func (rb *RuleBuilder) AndMust(e rule.Expect) rule.Builder {
 	if rb.locked {
 		rb.addLockError()
+
 		return rb
 	}
 
@@ -96,6 +102,7 @@ func (rb *RuleBuilder) Should(e rule.Expect) rule.Builder {
 func (rb *RuleBuilder) AndShould(e rule.Expect) rule.Builder {
 	if rb.locked {
 		rb.addLockError()
+
 		return rb
 	}
 
@@ -111,6 +118,7 @@ func (rb *RuleBuilder) Could(e rule.Expect) rule.Builder {
 func (rb *RuleBuilder) AndCould(e rule.Expect) rule.Builder {
 	if rb.locked {
 		rb.addLockError()
+
 		return rb
 	}
 
@@ -130,63 +138,65 @@ func (rb *RuleBuilder) Because(b rule.Because) ([]rule.Violation, []error) {
 
 	rb.because = b
 
-	for _, that := range rb.thats {
-		if len(that.GetErrors()) > 0 {
-			return nil, that.GetErrors()
-		}
-
-		that.Evaluate(rb)
+	if errs := rb.evaluateThats(); len(errs) > 0 {
+		return nil, errs
 	}
 
-	for _, except := range rb.excepts {
-		if len(except.GetErrors()) > 0 {
-			return nil, except.GetErrors()
-		}
-
-		except.Evaluate(rb)
+	if errs := rb.evaluateExcepts(); len(errs) > 0 {
+		return nil, errs
 	}
 
-	for _, must := range rb.musts {
-		if len(must.GetErrors()) > 0 {
-			return nil, must.GetErrors()
-		}
-
-		if vs := must.Evaluate(rb); len(vs) > 0 {
-			rb.violations = append(rb.violations, rb.wrapCoreViolations(vs, rule.Error)...)
-		}
+	if errs := rb.evaluateExpects(rb.musts, rule.Error); len(errs) > 0 {
+		return nil, errs
 	}
 
-	for _, should := range rb.shoulds {
-		if len(should.GetErrors()) > 0 {
-			return nil, should.GetErrors()
-		}
-
-		if vs := should.Evaluate(rb); len(vs) > 0 {
-			rb.violations = append(rb.violations, rb.wrapCoreViolations(vs, rule.Warning)...)
-		}
+	if errs := rb.evaluateExpects(rb.shoulds, rule.Warning); len(errs) > 0 {
+		return nil, errs
 	}
 
-	for _, could := range rb.coulds {
-		if len(could.GetErrors()) > 0 {
-			return nil, could.GetErrors()
-		}
-
-		if vs := could.Evaluate(rb); len(vs) > 0 {
-			rb.violations = append(rb.violations, rb.wrapCoreViolations(vs, rule.Info)...)
-		}
+	if errs := rb.evaluateExpects(rb.coulds, rule.Info); len(errs) > 0 {
+		return nil, errs
 	}
 
 	return rb.violations, rb.errors
 }
 
-func (rb *RuleBuilder) wrapCoreViolations(cvs []rule.CoreViolation, severity rule.Severity) []rule.Violation {
-	vs := make([]rule.Violation, len(cvs))
+func (rb *RuleBuilder) evaluateThats() []error {
+	for _, that := range rb.thats {
+		if len(that.GetErrors()) > 0 {
+			return that.GetErrors()
+		}
 
-	for i, cv := range cvs {
-		vs[i] = rule.NewViolation(cv.String(), severity)
+		that.Evaluate(rb)
 	}
 
-	return vs
+	return nil
+}
+
+func (rb *RuleBuilder) evaluateExcepts() []error {
+	for _, except := range rb.excepts {
+		if len(except.GetErrors()) > 0 {
+			return except.GetErrors()
+		}
+
+		except.Evaluate(rb)
+	}
+
+	return nil
+}
+
+func (rb *RuleBuilder) evaluateExpects(es []rule.Expect, severity rule.Severity) []error {
+	for _, must := range es {
+		if len(must.GetErrors()) > 0 {
+			return must.GetErrors()
+		}
+
+		if vs := must.Evaluate(rb); len(vs) > 0 {
+			rb.violations = append(rb.violations, rb.wrapCoreViolations(vs, severity)...)
+		}
+	}
+
+	return nil
 }
 
 func (rb *RuleBuilder) AddError(err error) {
@@ -217,4 +227,14 @@ func (rb *RuleBuilder) addLockError() {
 
 func (rb *RuleBuilder) lock() {
 	rb.locked = true
+}
+
+func (rb *RuleBuilder) wrapCoreViolations(cvs []rule.CoreViolation, severity rule.Severity) []rule.Violation {
+	vs := make([]rule.Violation, len(cvs))
+
+	for i, cv := range cvs {
+		vs[i] = rule.NewViolation(cv.String(), severity)
+	}
+
+	return vs
 }

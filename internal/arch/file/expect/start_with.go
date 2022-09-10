@@ -12,9 +12,7 @@ func StartWith(prefix string, opts ...Option) *startWithExpression {
 		prefix: prefix,
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

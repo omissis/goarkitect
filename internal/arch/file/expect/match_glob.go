@@ -13,9 +13,7 @@ func MatchGlob(glob, basePath string, opts ...Option) *matchGlobExpression {
 		glob:     glob,
 	}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }

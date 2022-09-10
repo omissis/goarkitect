@@ -1,6 +1,7 @@
 package expect
 
 import (
+	"errors"
 	"fmt"
 	"os/exec"
 	"path/filepath"
@@ -11,9 +12,7 @@ import (
 func BeGitignored(opts ...Option) *gitIgnoredExpression {
 	expr := &gitIgnoredExpression{}
 
-	for _, opt := range opts {
-		opt.apply(&expr.options)
-	}
+	expr.applyOptions(opts)
 
 	return expr
 }
@@ -29,14 +28,14 @@ func (e gitIgnoredExpression) Evaluate(rb rule.Builder) []rule.CoreViolation {
 func (e gitIgnoredExpression) doEvaluate(rb rule.Builder, filePath string) bool {
 	cmd := exec.Command("git", "check-ignore", "-q", filePath)
 	if err := cmd.Run(); err != nil {
-		switch err.(type) {
-		case *exec.ExitError:
-			return err.(*exec.ExitError).ExitCode() != 0
-		default:
-			rb.AddError(err)
-
-			return true
+		var terr *exec.ExitError
+		if errors.As(err, &terr) {
+			return terr.ExitCode() != 0
 		}
+
+		rb.AddError(err)
+
+		return true
 	}
 
 	return false

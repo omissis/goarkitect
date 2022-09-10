@@ -18,6 +18,7 @@ func JoinPtrPath(path []any) string {
 		switch v := key.(type) {
 		case int:
 			strpath += "/" + strconv.Itoa(v)
+
 		case string:
 			strpath += "/" + v
 		}
@@ -36,6 +37,7 @@ func GetValueAtPath(obj any, path []any) (any, error) {
 			}
 
 			obj = tobj[v]
+
 		case string:
 			tobj, ok := obj.(map[string]any)
 			if !ok {
@@ -50,11 +52,17 @@ func GetValueAtPath(obj any, path []any) (any, error) {
 }
 
 func GetPtrPaths(err error) [][]any {
-	ptrs := extractPtrs(err.(*jsonschema.ValidationError))
+	var terr *jsonschema.ValidationError
 
-	mptrs := minimizePtrs(ptrs)
+	if errors.As(err, &terr) {
+		ptrs := extractPtrs(terr)
 
-	return explodePtrs(mptrs)
+		mptrs := minimizePtrs(ptrs)
+
+		return explodePtrs(mptrs)
+	}
+
+	return nil
 }
 
 func extractPtrs(err *jsonschema.ValidationError) []string {

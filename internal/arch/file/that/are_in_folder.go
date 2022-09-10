@@ -1,7 +1,7 @@
 package that
 
 import (
-	"io/ioutil"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -27,8 +27,17 @@ func (e *AreInFolderExpression) GetErrors() []error {
 }
 
 func (e *AreInFolderExpression) Evaluate(rb rule.Builder) {
-	var files []string
-	var err error
+	var (
+		files []string
+		err   error
+	)
+
+	frb, ok := rb.(*file.RuleBuilder)
+	if !ok {
+		e.errors = append(e.errors, file.ErrInvalidRuleBuilder)
+
+		return
+	}
 
 	if e.recursive {
 		files, err = e.getFilesRecursive(e.folder)
@@ -37,16 +46,16 @@ func (e *AreInFolderExpression) Evaluate(rb rule.Builder) {
 	}
 
 	if err != nil {
-		rb.(*file.RuleBuilder).AddError(err)
+		frb.AddError(err)
 	}
 
-	rb.(*file.RuleBuilder).SetFiles(files)
+	frb.SetFiles(files)
 }
 
 func (e *AreInFolderExpression) getFilesRecursive(folder string) ([]string, error) {
 	var filenames []string
 	if err := filepath.Walk(folder, e.visit(&filenames)); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error walking the path '%s': %w", folder, err)
 	}
 
 	return filenames, nil
@@ -67,12 +76,13 @@ func (e *AreInFolderExpression) visit(files *[]string) filepath.WalkFunc {
 }
 
 func (e *AreInFolderExpression) getFiles(folder string) ([]string, error) {
-	files, err := ioutil.ReadDir(folder)
+	files, err := os.ReadDir(folder)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting files in folder '%s': %w", folder, err)
 	}
 
 	filePaths := make([]string, 0)
+
 	for _, file := range files {
 		if !file.IsDir() {
 			filePaths = append(filePaths, filepath.Join(folder, file.Name()))
