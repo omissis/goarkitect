@@ -10,17 +10,15 @@ import (
 	"github.com/omissis/goarkitect/internal/logx"
 )
 
-func NewVersionCommand(output *string, versions map[string]string) *cobra.Command {
+func NewVersionCommand(versions map[string]string) *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Display version information about goarkitect",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(_ *cobra.Command, _ []string) error {
-			if output == nil {
-				return cmdutil.ErrNoOutputFormat
-			}
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			output := cmd.Flag("output").Value.String()
 
-			switch *output {
+			switch output {
 			case "text":
 				for k, v := range versions {
 					fmt.Printf("%s: %s\n", k, v)
@@ -32,7 +30,7 @@ func NewVersionCommand(output *string, versions map[string]string) *cobra.Comman
 					),
 				)
 			default:
-				logx.Fatal(fmt.Errorf("'%s': %w", *output, cmdutil.ErrUnknownOutputFormat))
+				logx.Fatal(fmt.Errorf("'%s': %w", output, cmdutil.ErrUnknownOutputFormat))
 			}
 
 			return nil

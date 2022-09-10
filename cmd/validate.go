@@ -11,14 +11,12 @@ import (
 	"github.com/omissis/goarkitect/internal/schema/santhosh"
 )
 
-func NewValidateCommand(output *string) *cobra.Command {
+func NewValidateCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "validate",
 		Short: "Validate the configuration file(s)",
-		RunE: func(_ *cobra.Command, args []string) error {
-			if output == nil {
-				return cmdutil.ErrNoOutputFormat
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			output := cmd.Flag("output").Value.String()
 
 			basePath := cmdutil.GetWd()
 			schema, err := santhosh.LoadSchema(basePath)
@@ -40,13 +38,13 @@ func NewValidateCommand(output *string) *cobra.Command {
 				conf := cmdutil.LoadConfig[any](cf)
 
 				if err := schema.ValidateInterface(conf); err != nil {
-					validate.PrintResults(*output, err, conf, cf)
+					validate.PrintResults(output, err, conf, cf)
 
 					hasErrors = validate.ErrHasValidationErrors
 				}
 			}
 
-			validate.PrintSummary(*output, hasErrors != nil)
+			validate.PrintSummary(output, hasErrors != nil)
 
 			return hasErrors
 		},

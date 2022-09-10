@@ -10,14 +10,12 @@ import (
 	"github.com/omissis/goarkitect/internal/config"
 )
 
-func NewVerifyCommand(output *string) *cobra.Command {
+func NewVerifyCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "verify",
 		Short: "Verify the ruleset against a project",
-		RunE: func(_ *cobra.Command, args []string) error {
-			if output == nil {
-				return cmdutil.ErrNoOutputFormat
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			output := cmd.Flag("output").Value.String()
 
 			if len(args) == 0 {
 				args = append(args, filepath.Join(cmdutil.GetWd(), ".goarkitect.yaml"))
@@ -34,7 +32,7 @@ func NewVerifyCommand(output *string) *cobra.Command {
 
 				results := config.Execute(conf)
 
-				verify.PrintResults(*output, cf, results)
+				verify.PrintResults(output, cf, results)
 
 				if verify.HasErrors(results) {
 					hasErrors = verify.ErrProjectDoesNotRespectRules
