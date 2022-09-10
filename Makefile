@@ -82,6 +82,49 @@ lint-go:
 test:
 	@go test ./...
 
+.PHONY: examples
+
+examples:
+	@echo "== VALIDATE | text | config file generating violations ===========================\n"
+	@go run main.go validate examples/.goarkitect.violations.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VALIDATE | text | config file with no violations ==============================\n"
+	@go run main.go validate examples/.goarkitect.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VALIDATE | json | config file generating violations ===========================\n"
+	@go run main.go validate --output=json examples/.goarkitect.violations.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VALIDATE | json | config file with no violations ==============================\n"
+	@go run main.go validate --output=json examples/.goarkitect.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VERIFY | text | invalid config file =========================================\n"
+	@go run main.go verify examples/.goarkitect.invalid.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VERIFY | text | config file generating violations ===========================\n"
+	@go run main.go verify examples/.goarkitect.violations.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VERIFY | text | config file with no violations ==============================\n"
+	@go run main.go verify examples/.goarkitect.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VERIFY | json | invalid config file =========================================\n"
+	@go run main.go verify --output=json examples/.goarkitect.invalid.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VERIFY | json | config file generating violations ===========================\n"
+	@go run main.go verify --output=json examples/.goarkitect.violations.yaml
+	@echo "\n================================================================================\n"
+
+	@echo "== VERIFY | json | config file with no violations ==============================\n"
+	@go run main.go verify --output=json examples/.goarkitect.yaml
+	@echo "\n================================================================================\n"
+
 .PHONY: release-local release
 
 release-local:
