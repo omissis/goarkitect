@@ -27,6 +27,7 @@ endef
 env:
 	@echo 'export CGO_ENABLED=0'
 	@echo 'export GOARCH=${_GOARCH}'
+	@grep -v '^#' .env | sed 's/^/export /'
 
 .PHONY: mod-download mod-tidy mod-verify
 
