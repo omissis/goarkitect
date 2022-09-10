@@ -16,7 +16,6 @@ var ErrProjectDoesNotRespectRules = errors.New("project does not respect defined
 func PrintResults(output, configFile string, results []config.RuleExecutionResult) {
 	switch output {
 	case "text":
-		// TODO: improve formatting.
 		fmt.Printf("CONFIG FILE %s\n", configFile)
 
 		for _, r := range results {

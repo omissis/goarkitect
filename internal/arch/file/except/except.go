@@ -20,7 +20,7 @@ func (e *baseExpression) GetErrors() []error {
 	return e.errors
 }
 
-func (e baseExpression) evaluate(rb rule.Builder, eval evaluateFunc) {
+func (e *baseExpression) evaluate(rb rule.Builder, eval evaluateFunc) {
 	frb, ok := rb.(*file.RuleBuilder)
 	if !ok {
 		e.errors = append(e.errors, file.ErrInvalidRuleBuilder)

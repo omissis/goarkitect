@@ -20,23 +20,27 @@ linters:
   # https://golangci-lint.run/usage/linters/#disabled-by-default-linters--e--enable
   disable:
     # todo
-    - exhaustruct
-    - forbidigo
-    - godox
     - ireturn
     - revive
     - varnamelen
+    # unsupported
+    - rowserrcheck
+    - sqlclosecheck
+    - wastedassign
     # deprecated
     - deadcode
     - exhaustivestruct
     - golint
+    - nosnakecase
+    - structcheck
     - ifshort
     - interfacer
     - maligned
     - scopelint
     - varcheck
     # unused
-    # TBD
+    - exhaustruct
+    - forbidigo
 
 linters-settings:
   decorder:

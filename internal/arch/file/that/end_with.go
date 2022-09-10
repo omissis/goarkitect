@@ -23,7 +23,7 @@ func (e *EndWithExpression) GetErrors() []error {
 	return e.errors
 }
 
-func (e EndWithExpression) Evaluate(rb rule.Builder) {
+func (e *EndWithExpression) Evaluate(rb rule.Builder) {
 	frb, ok := rb.(*file.RuleBuilder)
 	if !ok {
 		e.errors = append(e.errors, file.ErrInvalidRuleBuilder)

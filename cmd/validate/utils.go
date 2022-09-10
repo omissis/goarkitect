@@ -49,7 +49,6 @@ func PrintResults(output string, err error, conf any, configFile string) {
 }
 
 func printTextResults(ptrPaths [][]any, err error, conf any, configFile string) {
-	// TODO: improve formatting.
 	fmt.Printf("CONFIG FILE %s\n", configFile)
 
 	for _, path := range ptrPaths {
@@ -58,7 +57,6 @@ func printTextResults(ptrPaths [][]any, err error, conf any, configFile string) 
 			logx.Fatal(serr)
 		}
 
-		// TODO: improve santhosh.JoinPtrPath output.
 		fmt.Printf(
 			"path '%s' contains an invalid configuration value: %+v\n",
 			santhosh.JoinPtrPath(path),
