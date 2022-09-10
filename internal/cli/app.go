@@ -12,6 +12,7 @@ var (
 	ErrEmptyAppName       = errors.New("app name cannot be empty")
 	ErrEmptyCommands      = errors.New("app must have at least one command")
 	ErrNoCommandSpecified = errors.New("app command was not specified")
+	ErrCommandNotFound    = errors.New("app command not found")
 )
 
 func NewApp(
@@ -64,5 +65,5 @@ func (a *App) Run() error {
 		}
 	}
 
-	return fmt.Errorf("command '%s' not found", args[0])
+	return fmt.Errorf("'%s': %w", args[0], ErrCommandNotFound)
 }

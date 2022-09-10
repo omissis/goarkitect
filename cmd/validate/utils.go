@@ -13,7 +13,6 @@ import (
 var ErrHasValidationErrors = errors.New("schema has validation errors")
 
 func PrintSummary(output string, hasErrors bool) {
-
 	switch output {
 	case "text":
 		if hasErrors {
