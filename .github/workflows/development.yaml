@@ -22,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Git Crypt
-        run: apt-get install -y git-crypt
+        run: sudo apt-get install -y git-crypt
       - name: Setup Golang
         uses: actions/setup-go@v3
         with:
