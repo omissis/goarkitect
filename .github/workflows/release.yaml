@@ -5,11 +5,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_run:
-    workflows: ["development"]
-    branches: [main]
-    types:
-      - completed
 
 permissions:
   contents: write
@@ -32,7 +27,8 @@ jobs:
         uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
-          version: latest
-          args: release --rm-dist
+          version: '1.11.2'
+          args: release --debug --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GO_VERSION: '1.19.0'
