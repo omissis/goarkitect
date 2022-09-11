@@ -4,7 +4,10 @@ name: tag
 on:
   push:
     tags:
-      - 'v*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-beta[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-alpha[0-9]+'
 
 permissions:
   contents: write
@@ -14,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  release:
+  qa:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -38,12 +41,31 @@ jobs:
           args: -v --color=always --config=.rules/.golangci.yml ./...
       - name: Run tests
         run: go test -v ./...
+  prerelease:
+    needs: qa
+    if: ${{ contains(github.ref_name, '-') }}
+    runs-on: ubuntu-22.04
+    steps:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
           version: '1.11.2'
           args: release --debug --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GO_VERSION: '1.19.0'
+  release:
+    needs: qa
+    if: ${{ !contains(github.ref_name, '-') }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          distribution: goreleaser
+          version: '1.11.2'
+          args: release --debug --rm-dist --release-notes=.changes/${{ github.ref_name }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GO_VERSION: '1.19.0'
