@@ -1,5 +1,5 @@
 _PROJECT_DIRECTORY = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-_GOLANG_IMAGE = golang:1.19.0
+_GOLANG_IMAGE = golang:1.19.1
 _PROJECTNAME = goarkitect
 _GOARCH = "amd64"
 
