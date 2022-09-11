@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         run: go test ./...
       - name: Build binaries
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
           version: '1.11.2'
