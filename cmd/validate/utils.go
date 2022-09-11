@@ -74,17 +74,25 @@ func printJSONResults(ptrPaths [][]any, err error, conf any, configFile string) 
 			logx.Fatal(serr)
 		}
 
-		fmt.Println(
-			jsonx.Marshal(
-				map[string]any{
-					"file":    configFile,
-					"message": "path contains an invalid configuration value",
-					"path":    santhosh.JoinPtrPath(path),
-					"value":   value,
-				},
-			),
+		jv, jerr := jsonx.Marshal(
+			map[string]any{
+				"file":    configFile,
+				"message": "path contains an invalid configuration value",
+				"path":    santhosh.JoinPtrPath(path),
+				"value":   value,
+			},
 		)
+		if jerr != nil {
+			logx.Fatal(jerr)
+		}
+
+		fmt.Println(jv)
 	}
 
-	fmt.Println(jsonx.Marshal(err))
+	jv, jerr := jsonx.Marshal(err)
+	if jerr != nil {
+		logx.Fatal(jerr)
+	}
+
+	fmt.Println(jv)
 }

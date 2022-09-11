@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"github.com/omissis/goarkitect/cmd"
+	"github.com/omissis/goarkitect/internal/logx"
 )
 
 var (
@@ -24,6 +23,6 @@ func main() {
 	}
 
 	if err := cmd.NewRootCommand(versions).Execute(); err != nil {
-		log.Fatal(err)
+		logx.Fatal(err)
 	}
 }

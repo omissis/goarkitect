@@ -24,11 +24,12 @@ func NewVersionCommand(versions map[string]string) *cobra.Command {
 					fmt.Printf("%s: %s\n", k, v)
 				}
 			case "json":
-				fmt.Println(
-					jsonx.Marshal(
-						versions,
-					),
-				)
+				jv, jerr := jsonx.Marshal(versions)
+				if jerr != nil {
+					logx.Fatal(jerr)
+				}
+
+				fmt.Println(jv)
 			default:
 				logx.Fatal(fmt.Errorf("'%s': %w", output, cmdutil.ErrUnknownOutputFormat))
 			}

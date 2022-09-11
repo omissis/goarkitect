@@ -2,7 +2,6 @@ package cobrax
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -20,7 +19,7 @@ func InitEnvs(envPrefix string) *viper.Viper {
 	return v
 }
 
-func BindFlags(cmd *cobra.Command, v *viper.Viper, envPrefix string) {
+func BindFlags(cmd *cobra.Command, v *viper.Viper, logger func(v error), envPrefix string) {
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
 		if strings.Contains(f.Name, "-") {
 			envSuffix := strings.ToUpper(strings.ReplaceAll(f.Name, "-", "_"))
@@ -31,7 +30,7 @@ func BindFlags(cmd *cobra.Command, v *viper.Viper, envPrefix string) {
 			}
 
 			if err := v.BindEnv(f.Name, env); err != nil {
-				log.Fatal(err)
+				logger(err)
 			}
 		}
 
@@ -39,7 +38,7 @@ func BindFlags(cmd *cobra.Command, v *viper.Viper, envPrefix string) {
 			val := v.Get(f.Name)
 
 			if err := cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val)); err != nil {
-				log.Fatal(err)
+				logger(err)
 			}
 		}
 	})

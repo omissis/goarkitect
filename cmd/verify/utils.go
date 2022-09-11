@@ -43,14 +43,17 @@ func PrintResults(output, configFile string, results []config.RuleExecutionResul
 		}
 
 	case "json":
-		fmt.Println(
-			jsonx.Marshal(
-				map[string]any{
-					"configFile": configFile,
-					"results":    results,
-				},
-			),
+		jv, jerr := jsonx.Marshal(
+			map[string]any{
+				"configFile": configFile,
+				"results":    results,
+			},
 		)
+		if jerr != nil {
+			logx.Fatal(jerr)
+		}
+
+		fmt.Println(jv)
 
 	default:
 		logx.Fatal(fmt.Errorf("'%s': %w", output, cmdutil.ErrUnknownOutputFormat))

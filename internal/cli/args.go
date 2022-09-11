@@ -10,7 +10,12 @@ func GetArgs(args []string, low int) []string {
 		nargs := normalizeArgs(args)
 		cnt := countTestFlags(nargs)
 
-		return nargs[low+cnt:]
+		if len(nargs) > low+cnt {
+			return nargs[low+cnt:]
+		}
+
+		// Getting here means the tests are invoked using unexpected flags.
+		return []string{}
 	}
 
 	return args[low:]
@@ -20,7 +25,7 @@ func normalizeArgs(args []string) []string {
 	nargs := make([]string, 0)
 
 	for _, arg := range args {
-		if arg[0] == '-' {
+		if len(arg) > 0 && arg[0] == '-' {
 			nargs = append(nargs, strings.Split(arg, "=")...)
 		} else {
 			nargs = append(nargs, arg)

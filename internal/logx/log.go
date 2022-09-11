@@ -32,15 +32,18 @@ func Fatal(v error) {
 		log.Fatal(v)
 
 	case "json":
-		log.Fatal(
-			jsonx.Marshal(
-				map[string]any{
-					"time":  time.Now().Format(time.RFC3339),
-					"level": "ERROR",
-					"msg":   v.Error(),
-				},
-			),
+		jv, jerr := jsonx.Marshal(
+			map[string]any{
+				"time":  time.Now().Format(time.RFC3339),
+				"level": "ERROR",
+				"msg":   v.Error(),
+			},
 		)
+		if jerr != nil {
+			log.Fatal(jerr)
+		}
+
+		log.Fatal(jv)
 
 	default:
 		log.Fatalf("invalid format value: '%s'", format)
