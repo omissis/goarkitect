@@ -53,7 +53,9 @@ func Test_HavePermissions(t *testing.T) {
 			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions")),
 			permissions: "dr--r--r--",
 			want: []rule.CoreViolation{
-				rule.NewCoreViolation("directory 'permissions' does not have permissions matching 'dr--r--r--'"),
+				rule.NewCoreViolation(
+					"directory 'permissions' does not have permissions matching 'dr--r--r--', 'drwxr-xr-x' found",
+				),
 			},
 		},
 		{
@@ -61,7 +63,7 @@ func Test_HavePermissions(t *testing.T) {
 			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0700.txt")),
 			permissions: "-rwxrwxrwx",
 			want: []rule.CoreViolation{
-				rule.NewCoreViolation("file '0700.txt' does not have permissions matching '-rwxrwxrwx'"),
+				rule.NewCoreViolation("file '0700.txt' does not have permissions matching '-rwxrwxrwx', '-rwx------' found"),
 			},
 		},
 		{
@@ -70,7 +72,7 @@ func Test_HavePermissions(t *testing.T) {
 			permissions: "drwxr-xr-x",
 			options:     []expect.Option{expect.Negated{}},
 			want: []rule.CoreViolation{
-				rule.NewCoreViolation("directory 'permissions' does have permissions matching 'drwxr-xr-x'"),
+				rule.NewCoreViolation("directory 'permissions' does have permissions matching 'drwxr-xr-x', 'drwxr-xr-x' found"),
 			},
 		},
 		{
@@ -79,7 +81,7 @@ func Test_HavePermissions(t *testing.T) {
 			permissions: "-rwx------",
 			options:     []expect.Option{expect.Negated{}},
 			want: []rule.CoreViolation{
-				rule.NewCoreViolation("file '0700.txt' does have permissions matching '-rwx------'"),
+				rule.NewCoreViolation("file '0700.txt' does have permissions matching '-rwx------', '-rwx------' found"),
 			},
 		},
 		{
