@@ -52,6 +52,6 @@ dockers:
   - skip_push: auto
     image_templates:
       - "omissis/goarkitect:latest"
-      - "omissis/goarkitect:{{ .Major }}"
-      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}"
+      - "omissis/goarkitect:v{{ .Major }}"
+      - "omissis/goarkitect:v{{ .Major }}.{{ .Minor }}"
       - "omissis/goarkitect:{{ .Tag }}"
