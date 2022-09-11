@@ -6,6 +6,25 @@
 
 This project gives developers the ability to describe and check  architectural constraints of a project using a composable set of rules described in one or multiple yaml files.
 
+## Installation
+
+### homebrew tap
+
+```bash
+brew tap omissis/goarkitect
+brew install goarkitect
+```
+
+### docker
+
+```bash
+docker pull omissis/goarkitect:latest
+```
+
+### manually
+
+Download the pre-compiled binaries from the [releases page](https://github.com/omissis/goarkitect/releases) and copy them to the desired location.
+
 ## Example configuration
 
 ```yaml
