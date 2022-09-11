@@ -130,13 +130,11 @@ examples:
 
 build:
 	@export GO_VERSION=$$(go version | cut -d ' ' -f 3) && \
-	export OS_ARCH=$$(go version | cut -d ' ' -f 4) && \
 	goreleaser check && \
 	goreleaser release --debug --snapshot --rm-dist
 
 release:
 	@export GO_VERSION=$$(go version | cut -d ' ' -f 3) && \
-	export OS_ARCH=$$(go version | cut -d ' ' -f 4) && \
 	goreleaser check && \
 	goreleaser --debug release --rm-dist
 

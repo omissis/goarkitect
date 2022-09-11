@@ -11,7 +11,7 @@ builds:
       - windows
       - darwin
     ldflags:
-      - -s -w -X main.version={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildTime={{.Date}} -X main.goVersion={{.Env.GO_VERSION}} -X main.osArch={{.Env.OS_ARCH}}
+      - -s -w -X main.version={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildTime={{.Date}} -X main.goVersion={{.Env.GO_VERSION}} -X main.osArch={{.Arch}}
 archives:
   - replacements:
       darwin: Darwin
