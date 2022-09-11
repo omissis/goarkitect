@@ -68,13 +68,13 @@ func (e havePermissionsExpression) getViolation(filePath string) rule.CoreViolat
 		iNodeType = "directory"
 	}
 
-	format := "%s '%s' does not have permissions matching '%s'"
+	format := "%s '%s' does not have permissions matching '%s', '%s' found"
 
 	if e.options.negated {
-		format = "%s '%s' does have permissions matching '%s'"
+		format = "%s '%s' does have permissions matching '%s', '%s' found"
 	}
 
 	return rule.NewCoreViolation(
-		fmt.Sprintf(format, iNodeType, filepath.Base(filePath), e.permissions),
+		fmt.Sprintf(format, iNodeType, filepath.Base(filePath), e.permissions, info.Mode().String()),
 	)
 }
