@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GO_VERSION: '1.19.0'
       - name: Run GoReleaser for release
-        if: ${{ contains(github.ref_name, '-') }}
+        if: ${{ !contains(github.ref_name, '-') }}
         uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
