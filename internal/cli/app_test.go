@@ -1,3 +1,4 @@
+//nolint:paralleltest // cli app does not support parallel testing
 package cli_test
 
 import (
@@ -13,8 +14,6 @@ import (
 )
 
 func Test_NewApp_Fail(t *testing.T) {
-	t.Parallel()
-
 	testCases := []struct {
 		desc     string
 		name     string
@@ -35,8 +34,6 @@ func Test_NewApp_Fail(t *testing.T) {
 		tC := tC
 
 		t.Run(tC.desc, func(t *testing.T) {
-			t.Parallel()
-
 			_, err := cli.NewApp(tC.name, tC.commands, nil)
 			if !errors.Is(err, tC.wantErr) {
 				t.Errorf("wantErr = %v, got = %v", tC.wantErr, err)
@@ -46,8 +43,6 @@ func Test_NewApp_Fail(t *testing.T) {
 }
 
 func Test_App_Run_NoArgs(t *testing.T) {
-	t.Parallel()
-
 	app, err := cli.NewApp("test", []cli.Command{&cmd{}}, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -59,8 +54,6 @@ func Test_App_Run_NoArgs(t *testing.T) {
 }
 
 func Test_App_Run_Args_And_Flags(t *testing.T) {
-	t.Parallel()
-
 	osArgs := slices.Clone(os.Args)
 
 	testCases := []struct {
@@ -94,8 +87,6 @@ func Test_App_Run_Args_And_Flags(t *testing.T) {
 		tC := tC
 
 		t.Run(tC.desc, func(t *testing.T) {
-			t.Parallel()
-
 			os.Args = append(os.Args, tC.args...)
 			defer func() {
 				os.Args = slices.Clone(osArgs)

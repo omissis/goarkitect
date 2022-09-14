@@ -81,7 +81,7 @@ lint-go:
 .PHONY: test
 
 test:
-	@go test ./...
+	@go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
 
 .PHONY: examples
 
