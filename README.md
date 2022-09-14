@@ -6,6 +6,19 @@
 
 This project gives developers the ability to describe and check  architectural constraints of a project using a composable set of rules described in one or multiple yaml files.
 
+## Badges
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/omissis/goarkitect?style=for-the-badge)
+![GitHub Workflow Status (event)](https://img.shields.io/github/workflow/status/omissis/goarkitect/development?style=for-the-badge)
+[![License](https://img.shields.io/github/license/omissis/goarkitect?style=for-the-badge)](/LICENSE.md)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/omissis/goarkitect?style=for-the-badge)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/omissis/goarkitect?style=for-the-badge)
+![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/omissis/goarkitect?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/omissis/goarkitect/total?style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/omissis/goarkitect?style=for-the-badge)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=for-the-badge)](https://conventionalcommits.org)
+[![Codecov branch](https://img.shields.io/codecov/c/github/omissis/goarkitect/main.svg?style=for-the-badge)](https://codecov.io/gh/omissis/goarkitect)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/goarkitect&style=for-the-badge)](https://artifacthub.io/packages/search?repo=goarkitect)
+
 ## Installation
 
 ### homebrew tap

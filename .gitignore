@@ -1,5 +1,6 @@
-dist/
-vendor/
 .env
 .envrc
 .tool-versions
+coverage.out
+dist/
+vendor/

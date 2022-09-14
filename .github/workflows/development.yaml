@@ -35,7 +35,9 @@ jobs:
           version: v1.49.0
           args: -v --color=always --config=.rules/.golangci.yml ./...
       - name: Run tests
-        run: go test -v ./...
+        run: go test -v  -race -covermode=atomic -coverprofile=coverage.out ./...
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
       - name: Build binaries
         uses: goreleaser/goreleaser-action@v3
         with:
