@@ -3,7 +3,7 @@ module github.com/omissis/goarkitect
 go 1.19
 
 require (
-	github.com/google/go-cmp v0.5.8
+	github.com/google/go-cmp v0.5.9
 	github.com/santhosh-tekuri/jsonschema v1.2.4
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
