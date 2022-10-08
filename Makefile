@@ -83,6 +83,17 @@ lint-go:
 test:
 	@go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
 
+.PHONY: quickbuild
+
+quickbuild:
+	@go build -o /dev/null main.go
+
+.PHONY: fix qa
+
+fix: mod-tidy fmt fumpt imports gci
+
+qa: mod-verify lint test quickbuild
+
 .PHONY: examples
 
 examples:

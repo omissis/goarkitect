@@ -52,6 +52,7 @@ func TestLoadSchema(t *testing.T) {
 			_, err := santhosh.LoadSchema(tC.basePath)
 			if (err != nil) != tC.wantErr {
 				t.Errorf("LoadSchema() error = %v, wantErr %v", err, tC.wantErr)
+
 				return
 			}
 

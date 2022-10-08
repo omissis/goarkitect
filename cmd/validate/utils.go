@@ -6,7 +6,6 @@ import (
 
 	"github.com/omissis/goarkitect/cmd/cmdutil"
 	"github.com/omissis/goarkitect/internal/schema/santhosh"
-
 	jsonx "github.com/omissis/goarkitect/internal/x/json"
 	logx "github.com/omissis/goarkitect/internal/x/log"
 )

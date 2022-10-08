@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/omissis/goarkitect/cmd"
-
 	logx "github.com/omissis/goarkitect/internal/x/log"
 )
 
