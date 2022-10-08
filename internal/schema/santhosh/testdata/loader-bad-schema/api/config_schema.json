@@ -1,0 +1,6 @@
+{
+    "$schema": "http://json-schema.org/draft-01/schema#",
+    "title": "broken goarkitect config",
+    "type": "object",
+    "additionalProperties": true
+}

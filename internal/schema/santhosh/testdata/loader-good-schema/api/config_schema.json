@@ -1,0 +1,5 @@
+{
+    "title": "broken goarkitect config",
+    "type": "object",
+    "additionalProperties": true
+}
