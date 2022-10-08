@@ -5,9 +5,10 @@ import (
 	"fmt"
 
 	"github.com/omissis/goarkitect/cmd/cmdutil"
-	"github.com/omissis/goarkitect/internal/jsonx"
-	"github.com/omissis/goarkitect/internal/logx"
 	"github.com/omissis/goarkitect/internal/schema/santhosh"
+
+	jsonx "github.com/omissis/goarkitect/internal/x/json"
+	logx "github.com/omissis/goarkitect/internal/x/log"
 )
 
 var ErrHasValidationErrors = errors.New("schema has validation errors")

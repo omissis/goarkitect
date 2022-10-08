@@ -2,7 +2,8 @@ package main
 
 import (
 	"github.com/omissis/goarkitect/cmd"
-	"github.com/omissis/goarkitect/internal/logx"
+
+	logx "github.com/omissis/goarkitect/internal/x/log"
 )
 
 var (

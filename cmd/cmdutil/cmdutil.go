@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 
-	"github.com/omissis/goarkitect/internal/logx"
+	logx "github.com/omissis/goarkitect/internal/x/log"
 )
 
 var (

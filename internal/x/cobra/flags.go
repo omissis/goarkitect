@@ -1,4 +1,4 @@
-package cobrax
+package cobra
 
 import (
 	"fmt"

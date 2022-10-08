@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/omissis/goarkitect/cmd/cmdutil"
-	"github.com/omissis/goarkitect/internal/jsonx"
-	"github.com/omissis/goarkitect/internal/logx"
+	jsonx "github.com/omissis/goarkitect/internal/x/json"
+	logx "github.com/omissis/goarkitect/internal/x/log"
 )
 
 func NewVersionCommand(versions map[string]string) *cobra.Command {

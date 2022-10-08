@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/omissis/goarkitect/internal/cobrax"
-	"github.com/omissis/goarkitect/internal/logx"
+	cobrax "github.com/omissis/goarkitect/internal/x/cobra"
+	logx "github.com/omissis/goarkitect/internal/x/log"
 )
 
 type rootConfig struct {

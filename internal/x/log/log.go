@@ -1,4 +1,4 @@
-package logx
+package log
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/omissis/goarkitect/internal/jsonx"
+	jsonx "github.com/omissis/goarkitect/internal/x/json"
 )
 
 var (
