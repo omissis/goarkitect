@@ -17,7 +17,7 @@ This project gives developers the ability to describe and check  architectural c
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/omissis/goarkitect?style=for-the-badge)](https://github.com/omissis/goarkitect/commits)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=for-the-badge)](https://conventionalcommits.org)
 [![Codecov branch](https://img.shields.io/codecov/c/github/omissis/goarkitect/main.svg?style=for-the-badge)](https://codecov.io/gh/omissis/goarkitect)
-
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/omissis/goarkitect?style=for-the-badge)](https://codeclimate.com/github/omissis/goarkitect)
 ## Installation
 
 ### homebrew tap
