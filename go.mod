@@ -8,7 +8,7 @@ require (
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.13.0
-	golang.org/x/exp v0.0.0-20221010202428-3a778c567f61
+	golang.org/x/exp v0.0.0-20221011201855-a3968a42eed6
 	gopkg.in/yaml.v3 v3.0.1
 )
 
