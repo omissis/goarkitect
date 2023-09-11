@@ -43,7 +43,7 @@ jobs:
         run: go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
       - name: Run GoReleaser for pre-release
         if: ${{ contains(github.ref_name, '-') }}
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: '1.11.2'
@@ -59,7 +59,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Run GoReleaser for release
         if: ${{ !contains(github.ref_name, '-') }}
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: '1.11.2'
