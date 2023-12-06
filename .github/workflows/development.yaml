@@ -24,7 +24,7 @@ jobs:
       - name: Setup Git Crypt
         run: sudo apt-get install -y git-crypt
       - name: Setup Golang
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: '^1.19.1'
       - name: Fix file permissions
