@@ -35,7 +35,7 @@ jobs:
       - name: Fix file permissions
         run: sudo chmod 0700 internal/arch/file/expect/test/permissions/0700.txt
       - name: Lint Go files
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v6
         with:
           version: v1.49.0
           args: -v --color=always --config=.rules/.golangci.yml ./...
