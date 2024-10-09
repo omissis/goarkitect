@@ -1,14 +1,16 @@
 module github.com/omissis/goarkitect
 
-go 1.19
+go 1.22.0
+
+toolchain go1.23.2
 
 require (
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	github.com/santhosh-tekuri/jsonschema v1.2.4
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.15.0
-	golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2
+	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c
 	gopkg.in/yaml.v3 v3.0.1
 )
 
