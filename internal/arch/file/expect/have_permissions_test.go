@@ -31,7 +31,7 @@ func Test_HavePermissions(t *testing.T) {
 	}{
 		{
 			desc:        "wrong permissions string",
-			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0700.txt")),
+			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0755.txt")),
 			permissions: "foobarbaz-",
 			want:        nil,
 			wantErrs:    []error{expect.ErrInvalidPermissions},
@@ -43,9 +43,9 @@ func Test_HavePermissions(t *testing.T) {
 			want:        nil,
 		},
 		{
-			desc:        "permissions of file '0700.txt' match expected one",
-			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0700.txt")),
-			permissions: "-rwx------",
+			desc:        "permissions of file '0755.txt' match expected one",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0755.txt")),
+			permissions: "-rwxr-xr-x",
 			want:        nil,
 		},
 		{
@@ -59,11 +59,11 @@ func Test_HavePermissions(t *testing.T) {
 			},
 		},
 		{
-			desc:        "permissions of file '0700.txt' do not match expected one",
-			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0700.txt")),
+			desc:        "permissions of file '0755.txt' do not match expected one",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0755.txt")),
 			permissions: "-rwxrwxrwx",
 			want: []rule.CoreViolation{
-				rule.NewCoreViolation("file '0700.txt' does not have permissions matching '-rwxrwxrwx', '-rwx------' found"),
+				rule.NewCoreViolation("file '0755.txt' does not have permissions matching '-rwxrwxrwx', '-rwxr-xr-x' found"),
 			},
 		},
 		{
@@ -76,12 +76,12 @@ func Test_HavePermissions(t *testing.T) {
 			},
 		},
 		{
-			desc:        "negated: permissions of file '0700.txt' match expected one",
-			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0700.txt")),
-			permissions: "-rwx------",
+			desc:        "negated: permissions of file '0755.txt' match expected one",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0755.txt")),
+			permissions: "-rwxr-xr-x",
 			options:     []expect.Option{expect.Negated{}},
 			want: []rule.CoreViolation{
-				rule.NewCoreViolation("file '0700.txt' does have permissions matching '-rwx------', '-rwx------' found"),
+				rule.NewCoreViolation("file '0755.txt' does have permissions matching '-rwxr-xr-x', '-rwxr-xr-x' found"),
 			},
 		},
 		{
@@ -92,9 +92,9 @@ func Test_HavePermissions(t *testing.T) {
 			want:        nil,
 		},
 		{
-			desc:        "negated: permissions of file '0700.txt' do not match expected one",
-			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0700.txt")),
-			permissions: "-rwxrwxrwx",
+			desc:        "negated: permissions of file '0755.txt' do not match expected one",
+			ruleBuilder: file.One(filepath.Join(basePath, "test/permissions/0755.txt")),
+			permissions: "-rw-r--r--",
 			options:     []expect.Option{expect.Negated{}},
 			want:        nil,
 		},
