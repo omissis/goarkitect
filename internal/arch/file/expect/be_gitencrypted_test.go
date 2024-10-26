@@ -2,6 +2,7 @@ package expect_test
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -14,6 +15,10 @@ import (
 )
 
 func Test_BeGitencrypted(t *testing.T) {
+	if _, err := exec.LookPath("git-crypt"); err != nil {
+		t.Skip("git-crypt is not installed")
+	}
+
 	t.Parallel()
 
 	basePath, err := os.Getwd()

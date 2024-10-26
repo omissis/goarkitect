@@ -1,6 +1,7 @@
 package file_test
 
 import (
+	"os/exec"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -48,8 +49,11 @@ func Test_It_Checks_All_Conditions(t *testing.T) {
 		t.Run(tC.desc, func(t *testing.T) {
 			t.Parallel()
 
+			if _, err := exec.LookPath("git-crypt"); err == nil {
+				tC.ruleBuilder.Should(fs.Not(fs.BeGitencrypted()))
+			}
+
 			vs, errs := tC.ruleBuilder.
-				Should(fs.Not(fs.BeGitencrypted())).
 				AndShould(fs.Not(fs.BeGitignored())).
 				AndShould(fs.ContainValue([]byte("foo"))).
 				AndShould(fs.EndWith("file")).
