@@ -46,7 +46,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: "1.26.2"
+          version: "2.4.1"
           args: release --debug --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -62,7 +62,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: "1.26.2"
+          version: "2.4.1"
           args: release --debug --rm-dist --release-notes=.changes/${{ github.ref_name }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
