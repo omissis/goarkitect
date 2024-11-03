@@ -42,7 +42,7 @@ Download the pre-compiled binaries from the [releases page](https://github.com/o
 ```yaml
 ---
 rules:
-  - name: all inner asdf manifests contain golang, possibly in its 1.19.1 version  # name of the rule, it should tell what the rule is about
+  - name: all inner asdf manifests contain golang, possibly in its 1.23.2 version  # name of the rule, it should tell what the rule is about
     kind: file # name of the matcher to use, which tells what objects it will operate on
     matcher:
       kind: all # the all kind sets the matcher to match all possible files, which will be narrowed down below
@@ -57,7 +57,7 @@ rules:
         value: golang
     shoulds: # 'shoulds' will trigger warnings, which won't cause error status codes on exit
       - kind: contain_value
-        value: golang 1.19.1
+        value: golang 1.23.2
     coulds: # 'coulds' will trigger info-level notices, and they can be seen as suggestions
       - kind: contain_value
         value: golangci-lint
