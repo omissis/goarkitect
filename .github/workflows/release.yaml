@@ -47,7 +47,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "2.4.1"
-          args: release --debug --rm-dist
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GO_VERSION: "1.23.2"
@@ -63,7 +63,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "2.4.1"
-          args: release --debug --rm-dist --release-notes=.changes/${{ github.ref_name }}.md
+          args: release --clean --release-notes=.changes/${{ github.ref_name }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GO_VERSION: "1.23.2"
