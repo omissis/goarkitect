@@ -55,10 +55,10 @@ brews:
       bin.install 'goarkitect'
 dockers:
   - image_templates:
-      - "ghcr.io/omissis/goarkitect:latest-amd64"
-      - "ghcr.io/omissis/goarkitect:{{ .Version }}-amd64"
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}.{{ .Minor }}-amd64"
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}-amd64"
+      - "omissis/goarkitect:latest-amd64"
+      - "omissis/goarkitect:{{ .Version }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}-amd64"
     dockerfile: Dockerfile
     build_flag_templates:
       - "--target=goreleaser"
@@ -70,10 +70,10 @@ dockers:
       - "--label=org.opencontainers.image.version={{ .Version }}"
     skip_push: auto
   - image_templates:
-      - "ghcr.io/omissis/goarkitect:latest-arm64"
-      - "ghcr.io/omissis/goarkitect:{{ .Version }}-arm64"
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}.{{ .Minor }}-arm64"
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}-arm64"
+      - "omissis/goarkitect:latest-arm64"
+      - "omissis/goarkitect:{{ .Version }}-arm64"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-arm64"
+      - "omissis/goarkitect:{{ .Major }}-arm64"
     goarch: arm64
     dockerfile: Dockerfile
     build_flag_templates:
@@ -86,23 +86,23 @@ dockers:
       - "--label=org.opencontainers.image.version={{ .Version }}"
     skip_push: auto
 docker_manifests:
-  - name_template: "ghcr.io/omissis/goarkitect:latest"
+  - name_template: "omissis/goarkitect:latest"
     image_templates:
-      - "ghcr.io/omissis/goarkitect:latest-amd64"
-      - "ghcr.io/omissis/goarkitect:latest-arm64"
+      - "omissis/goarkitect:latest-amd64"
+      - "omissis/goarkitect:latest-arm64"
     skip_push: auto
-  - name_template: "ghcr.io/omissis/goarkitect:{{ .Version }}"
+  - name_template: "omissis/goarkitect:{{ .Version }}"
     image_templates:
-      - "ghcr.io/omissis/goarkitect:{{ .Version }}-amd64"
-      - "ghcr.io/omissis/goarkitect:{{ .Version }}-arm64"
+      - "omissis/goarkitect:{{ .Version }}-amd64"
+      - "omissis/goarkitect:{{ .Version }}-arm64"
     skip_push: auto
-  - name_template: "ghcr.io/omissis/goarkitect:{{ .Major }}.{{ .Minor }}"
+  - name_template: "omissis/goarkitect:{{ .Major }}.{{ .Minor }}"
     image_templates:
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}.{{ .Minor }}-amd64"
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}.{{ .Minor }}-arm64"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-arm64"
     skip_push: auto
-  - name_template: "ghcr.io/omissis/goarkitect:{{ .Major }}"
+  - name_template: "omissis/goarkitect:{{ .Major }}"
     image_templates:
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}-amd64"
-      - "ghcr.io/omissis/goarkitect:{{ .Major }}-arm64"
+      - "omissis/goarkitect:{{ .Major }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}-arm64"
     skip_push: auto
