@@ -4,24 +4,24 @@ name: tag
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+-beta[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+-alpha[0-9]+'
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-beta[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-alpha[0-9]+"
 
 permissions:
   contents: write
 
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
   cancel-in-progress: true
 
 jobs:
   release:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Fetch all tags
@@ -29,28 +29,28 @@ jobs:
       - name: Setup Git Crypt
         run: sudo apt-get install -y git-crypt
       - name: Setup Golang
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: '^1.19.1'
+          go-version: "^1.23.2"
       - name: Fix file permissions
         run: sudo chmod 0755 internal/arch/file/expect/test/permissions/0755.txt
       - name: Lint Go files
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.49.0
+          version: v1.61.0
           args: -v --color=always --config=.rules/.golangci.yml ./...
       - name: Run tests
         run: go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
       - name: Run GoReleaser for pre-release
         if: ${{ contains(github.ref_name, '-') }}
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: '1.11.2'
-          args: release --debug --rm-dist
+          version: "2.4.1"
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          GO_VERSION: '1.19.1'
+          GO_VERSION: "1.23.2"
       - name: Log in to Docker Hub
         if: ${{ !contains(github.ref_name, '-') }}
         uses: docker/login-action@v2
@@ -59,11 +59,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Run GoReleaser for release
         if: ${{ !contains(github.ref_name, '-') }}
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: '1.11.2'
-          args: release --debug --rm-dist --release-notes=.changes/${{ github.ref_name }}.md
+          version: "2.4.1"
+          args: release --clean --release-notes=.changes/${{ github.ref_name }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          GO_VERSION: '1.19.1'
+          GO_VERSION: "1.23.2"

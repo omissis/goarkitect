@@ -21,48 +21,48 @@ var (
 )
 
 type Root struct {
-	Rules []Rule `yaml:"rules" json:"rules"`
+	Rules []Rule `json:"rules" yaml:"rules"`
 }
 type Rule struct {
-	Name    string   `yaml:"name" json:"name"`
-	Kind    string   `yaml:"kind" json:"kind"`
-	Matcher Matcher  `yaml:"matcher" json:"matcher"`
-	Thats   []That   `yaml:"thats" json:"thats"`
-	Excepts []Except `yaml:"excepts" json:"excepts"`
-	Musts   []Expect `yaml:"musts" json:"musts"`
-	Shoulds []Expect `yaml:"shoulds" json:"shoulds"`
-	Coulds  []Expect `yaml:"coulds" json:"coulds"`
-	Because string   `yaml:"because" json:"because"`
+	Name    string   `json:"name"    yaml:"name"`
+	Kind    string   `json:"kind"    yaml:"kind"`
+	Matcher Matcher  `json:"matcher" yaml:"matcher"`
+	Thats   []That   `json:"thats"   yaml:"thats"`
+	Excepts []Except `json:"excepts" yaml:"excepts"`
+	Musts   []Expect `json:"musts"   yaml:"musts"`
+	Shoulds []Expect `json:"shoulds" yaml:"shoulds"`
+	Coulds  []Expect `json:"coulds"  yaml:"coulds"`
+	Because string   `json:"because" yaml:"because"`
 }
 type Matcher struct {
-	Kind      string   `yaml:"kind" json:"kind"`
-	FilePath  string   `yaml:"filePath" json:"filePath"`
-	FilePaths []string `yaml:"filePaths" json:"filePaths"`
+	Kind      string   `json:"kind"      yaml:"kind"`
+	FilePath  string   `json:"filePath"  yaml:"filePath"`
+	FilePaths []string `json:"filePaths" yaml:"filePaths"`
 }
 type That struct {
-	Kind      string `yaml:"kind" json:"kind"`
-	Folder    string `yaml:"folder" json:"folder"`
-	Recursive bool   `yaml:"recursive" json:"recursive"`
-	Suffix    string `yaml:"suffix" json:"suffix"`
+	Kind      string `json:"kind"      yaml:"kind"`
+	Folder    string `json:"folder"    yaml:"folder"`
+	Recursive bool   `json:"recursive" yaml:"recursive"`
+	Suffix    string `json:"suffix"    yaml:"suffix"`
 }
 type Except struct {
-	Kind     string `yaml:"kind" json:"kind"`
-	FilePath string `yaml:"filePath" json:"filePath"`
+	Kind     string `json:"kind"     yaml:"kind"`
+	FilePath string `json:"filePath" yaml:"filePath"`
 }
 type Expect struct {
-	Kind        string         `yaml:"kind" json:"kind"`
-	Value       string         `yaml:"value" json:"value"`
-	Suffix      string         `yaml:"suffix" json:"suffix"`
-	Regex       string         `yaml:"regex" json:"regex"`
-	Permissions string         `yaml:"permissions" json:"permissions"`
-	Glob        string         `yaml:"glob" json:"glob"`
-	Prefix      string         `yaml:"prefix" json:"prefix"`
-	BasePath    string         `yaml:"basePath" json:"basePath"`
-	Options     []ExpectOption `yaml:"options" json:"options"`
+	Kind        string         `json:"kind"        yaml:"kind"`
+	Value       string         `json:"value"       yaml:"value"`
+	Suffix      string         `json:"suffix"      yaml:"suffix"`
+	Regex       string         `json:"regex"       yaml:"regex"`
+	Permissions string         `json:"permissions" yaml:"permissions"`
+	Glob        string         `json:"glob"        yaml:"glob"`
+	Prefix      string         `json:"prefix"      yaml:"prefix"`
+	BasePath    string         `json:"basePath"    yaml:"basePath"`
+	Options     []ExpectOption `json:"options"     yaml:"options"`
 }
 type ExpectOption struct {
-	Kind      string `yaml:"kind" json:"kind"`
-	Separator string `yaml:"separator" json:"separator"`
+	Kind      string `json:"kind"      yaml:"kind"`
+	Separator string `json:"separator" yaml:"separator"`
 }
 
 type ExpectFunc func(e rule.Expect) rule.Builder

@@ -1,4 +1,6 @@
----
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goreleaser/goreleaser/v2.3.2/www/docs/static/schema.json
+
+version: 2
 project_name: goarkitect
 before:
   hooks:
@@ -7,51 +9,100 @@ builds:
   - env:
       - CGO_ENABLED=0
     goos:
+      - darwin
       - linux
       - windows
-      - darwin
+    goarch:
+      - amd64
+      - arm64
     ldflags:
-      - -s -w -X main.version={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildTime={{.Date}} -X main.goVersion={{.Env.GO_VERSION}} -X main.osArch={{.Arch}}
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.gitCommit={{ .Commit }}
+      - -X main.buildTime={{ .Date }}
+      - -X main.goVersion={{ .Env.GO_VERSION }}
+      - -X main.osArch={{ .Arch }}
 archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
+  - name_template: "{{ tolower .ProjectName }}-{{ tolower .Os }}-{{ tolower .Arch }}"
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ .Branch }}"
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
 release:
   github:
     owner: omissis
     name: goarkitect
-  name_template: '{{ .Tag }}'
+  name_template: "{{ .Tag }}"
   prerelease: auto
 brews:
   - name: goarkitect
-    tap:
+    repository:
       owner: omissis
       name: homebrew-goarkitect
     skip_upload: auto
-    folder: Formula
-    homepage: 'https://gihub.com/omissis/goarkitect'
-    description: 'Goarkitect binary'
+    directory: Formula
+    homepage: "https://gihub.com/omissis/goarkitect"
+    description: "Goarkitect binary"
     test: |
       system "#{bin}/goarkitect"
     install: |
       bin.install 'goarkitect'
 dockers:
-  - skip_push: auto
+  - image_templates:
+      - "omissis/goarkitect:latest-amd64"
+      - "omissis/goarkitect:{{ .Version }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}-amd64"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--target=goreleaser"
+      - "--pull"
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+    skip_push: auto
+  - image_templates:
+      - "omissis/goarkitect:latest-arm64"
+      - "omissis/goarkitect:{{ .Version }}-arm64"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-arm64"
+      - "omissis/goarkitect:{{ .Major }}-arm64"
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--target=goreleaser"
+      - "--pull"
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+    skip_push: auto
+docker_manifests:
+  - name_template: "omissis/goarkitect:latest"
     image_templates:
-      - "omissis/goarkitect:latest"
-      - "omissis/goarkitect:v{{ .Major }}"
-      - "omissis/goarkitect:v{{ .Major }}.{{ .Minor }}"
-      - "omissis/goarkitect:{{ .Tag }}"
+      - "omissis/goarkitect:latest-amd64"
+      - "omissis/goarkitect:latest-arm64"
+    skip_push: auto
+  - name_template: "omissis/goarkitect:{{ .Version }}"
+    image_templates:
+      - "omissis/goarkitect:{{ .Version }}-amd64"
+      - "omissis/goarkitect:{{ .Version }}-arm64"
+    skip_push: auto
+  - name_template: "omissis/goarkitect:{{ .Major }}.{{ .Minor }}"
+    image_templates:
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}.{{ .Minor }}-arm64"
+    skip_push: auto
+  - name_template: "omissis/goarkitect:{{ .Major }}"
+    image_templates:
+      - "omissis/goarkitect:{{ .Major }}-amd64"
+      - "omissis/goarkitect:{{ .Major }}-arm64"
+    skip_push: auto

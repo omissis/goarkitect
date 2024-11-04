@@ -1,13 +1,13 @@
 package expect
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/omissis/goarkitect/internal/arch/file"
 	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
-var ErrEmptyOpts = fmt.Errorf("empty options")
+var ErrEmptyOpts = errors.New("empty options")
 
 type Expression interface {
 	Evaluate(rb rule.Builder) []rule.CoreViolation

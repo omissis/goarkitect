@@ -1,16 +1,8 @@
 # This file contains all available configuration options
 # with their default values (in comments).
-
-# Options for analysis running.
-run:
-  timeout: 5m
-  skip-files:
-    - ".*\\.gen\\.go$"
-  modules-download-mode: readonly
-
-# output configuration options
-output:
-  sort-results: true
+#
+# This file is not a configuration example,
+# it contains the exhaustive configuration with explanations of the options.
 
 linters:
   # Enable all available linters.
@@ -28,408 +20,50 @@ linters:
     - sqlclosecheck
     - wastedassign
     # deprecated
-    - deadcode
-    - exhaustivestruct
-    - golint
-    - nosnakecase
-    - structcheck
-    - ifshort
-    - interfacer
-    - maligned
-    - scopelint
-    - varcheck
+    - copyloopvar
+    - execinquery
+    - exportloopref
+    - gomnd
+    - intrange
     # unused
     - exhaustruct
     - forbidigo
+  disable-all: false
 
+# All available settings of specific linters.
 linters-settings:
-  decorder:
-    disable-init-func-first-check: false
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
-    disable-default-exclusions: false
-    exclude-functions: []
-  errchkjson:
-    check-error-free-encoding: false
-    report-no-exported: true
-  exhaustive:
-    check-generated: true
-    default-signifies-exhaustive: true
+  depguard:
+    rules:
+      # Name of a rule.
+      main:
+        allow:
+          - $gostd
+          - github.com/omissis
+          - github.com/santhosh-tekuri/jsonschema
+          - github.com/spf13/cobra
+          - github.com/spf13/pflag
+          - github.com/spf13/viper
+
   gci:
+    # Section configuration to compare against.
+    # Section names are case-insensitive and may contain parameters in ().
+    # The default order of sections is `standard > default > custom > blank > dot > alias > localmodule`,
+    # If `custom-order` is `true`, it follows the order of `sections` option.
+    # Default: ["standard", "default"]
     sections:
       - standard # Standard section: captures all standard packages.
       - default # Default section: contains all imports that could not be matched to another section type.
       - prefix(github.com/omissis) # Custom section: groups all imports with the specified Prefix.
-    skip-generated: true
-    custom-order: true
-  godot:
-    scope: all
-    exclude:
-      - "^fixme:"
-      - "^todo:"
-    capital: true
-    period: true
-  gofumpt:
-    lang-version: "1.19"
-    extra-rules: true
+      - blank # Blank section: contains all blank imports. This section is not present unless explicitly enabled.
+      - dot # Dot section: contains all dot imports. This section is not present unless explicitly enabled.
+      - alias # Alias section: contains all alias imports. This section is not present unless explicitly enabled.
+      - localmodule # Local module section: contains all local packages. This section is not present unless explicitly enabled.
   goimports:
+    # A comma-separated list of prefixes, which, if set, checks import paths
+    # with the given prefixes are grouped after 3rd-party packages.
+    # Default: ""
     local-prefixes: github.com/omissis
-  govet:
-    check-shadowing: true
-  grouper:
-    const-require-single-const: true
-    const-require-grouping: false
-    import-require-single-import: true
-    import-require-grouping: false
-    var-require-single-var: true
-    var-require-grouping: false
-  nolintlint:
-    require-explanation: true
-    require-specific: true
-  revive:
-    enable-all-rules: true
-    rules:
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#add-constant
-      - name: add-constant
-        severity: warning
-        disabled: false
-        arguments:
-          - maxLitCount: "3"
-            allowStrs: '""'
-            allowInts: "0,1,2"
-            allowFloats: "0.0,0.,1.0,1.,2.0,2."
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#argument-limit
-      - name: argument-limit
-        severity: warning
-        disabled: false
-        arguments: [4]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#atomic
-      - name: atomic
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#banned-characters
-      - name: banned-characters
-        severity: warning
-        disabled: false
-        arguments: ["Ω", "Σ", "σ", "7"]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#bare-return
-      - name: bare-return
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#blank-imports
-      - name: blank-imports
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#bool-literal-in-expr
-      - name: bool-literal-in-expr
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#call-to-gc
-      - name: call-to-gc
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#cognitive-complexity
-      - name: cognitive-complexity
-        severity: warning
-        disabled: false
-        arguments: [7]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#confusing-naming
-      - name: confusing-naming
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#confusing-results
-      - name: confusing-results
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#constant-logical-expr
-      - name: constant-logical-expr
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#context-as-argument
-      - name: context-as-argument
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#context-keys-type
-      - name: context-keys-type
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#cyclomatic
-      - name: cyclomatic
-        severity: warning
-        disabled: false
-        arguments: [3]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#datarace
-      - name: datarace
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#deep-exit
-      - name: deep-exit
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#defer
-      - name: defer
-        severity: warning
-        disabled: false
-        arguments:
-          - ["call-chain", "loop"]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#dot-imports
-      - name: dot-imports
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#duplicated-imports
-      - name: duplicated-imports
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#early-return
-      - name: early-return
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#empty-block
-      - name: empty-block
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#empty-lines
-      - name: empty-lines
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#error-naming
-      - name: error-naming
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#error-return
-      - name: error-return
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#error-strings
-      - name: error-strings
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#errorf
-      - name: errorf
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#exported
-      - name: exported
-        severity: warning
-        disabled: false
-        arguments:
-          - "checkPrivateReceivers"
-          - "sayRepetitiveInsteadOfStutters"
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#file-header
-      - name: file-header
-        severity: warning
-        disabled: false
-        arguments:
-          - This is the text that must appear at the top of source files.
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#flag-parameter
-      - name: flag-parameter
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#function-result-limit
-      - name: function-result-limit
-        severity: warning
-        disabled: false
-        arguments: [2]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#function-length
-      - name: function-length
-        severity: warning
-        disabled: false
-        arguments: [10, 0]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#get-return
-      - name: get-return
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#identical-branches
-      - name: identical-branches
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#if-return
-      - name: if-return
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#increment-decrement
-      - name: increment-decrement
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#indent-error-flow
-      - name: indent-error-flow
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#imports-blacklist
-      - name: imports-blacklist
-        severity: warning
-        disabled: false
-        arguments:
-          - "crypto/md5"
-          - "crypto/sha1"
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#import-shadowing
-      - name: import-shadowing
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#line-length-limit
-      - name: line-length-limit
-        severity: warning
-        disabled: false
-        arguments: [120]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#max-public-structs
-      - name: max-public-structs
-        severity: warning
-        disabled: false
-        arguments: [3]
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#modifies-parameter
-      - name: modifies-parameter
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#modifies-value-receiver
-      - name: modifies-value-receiver
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#nested-structs
-      - name: nested-structs
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#optimize-operands-order
-      - name: optimize-operands-order
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#package-comments
-      - name: package-comments
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#range
-      - name: range
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#range-val-in-closure
-      - name: range-val-in-closure
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#range-val-address
-      - name: range-val-address
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#receiver-naming
-      - name: receiver-naming
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#redefines-builtin-id
-      - name: redefines-builtin-id
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#string-of-int
-      - name: string-of-int
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#string-format
-      - name: string-format
-        severity: warning
-        disabled: false
-        arguments:
-          - - 'core.WriteError[1].Message'
-            - '/^([^A-Z]|$)/'
-            - must not start with a capital letter
-          - - 'fmt.Errorf[0]'
-            - '/(^|[^\.!?])$/'
-            - must not end in punctuation
-          - - panic
-            - '/^[^\n]*$/'
-            - must not contain line breaks
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#struct-tag
-      - name: struct-tag
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#superfluous-else
-      - name: superfluous-else
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#time-equal
-      - name: time-equal
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#time-naming
-      - name: time-naming
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#var-naming
-      - name: var-naming
-        severity: warning
-        disabled: false
-        arguments:
-          - ["ID"] # AllowList
-          - ["VM"] # DenyList
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#var-declaration
-      - name: var-declaration
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unconditional-recursion
-      - name: unconditional-recursion
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unexported-naming
-      - name: unexported-naming
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unexported-return
-      - name: unexported-return
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unhandled-error
-      - name: unhandled-error
-        severity: warning
-        disabled: false
-        arguments:
-          - "fmt.Printf"
-          - "myFunction"
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unnecessary-stmt
-      - name: unnecessary-stmt
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unreachable-code
-      - name: unreachable-code
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unused-parameter
-      - name: unused-parameter
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unused-receiver
-      - name: unused-receiver
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#useless-break
-      - name: useless-break
-        severity: warning
-        disabled: false
-      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#waitgroup-by-value
-      - name: waitgroup-by-value
-        severity: warning
-        disabled: false
-  varcheck:
-    exported-fields: true
-  varnamelen:
-    check-receiver: true
-    check-return: true
-    check-type-param: true
-    ignore-type-assert-ok: true
-    ignore-map-index-ok: true
-    ignore-chan-recv-ok: true
-    ignore-names:
-      - err
-    ignore-decls:
-      - c echo.Context
-      - t testing.T
-      - e error
-      - i int
-      - const C
-      - T any
-      - m map[string]int
-  wsl:
-    allow-cuddle-declarations: false
-    allow-multiline-assign: true
-    allow-separated-leading-comment: false
-    force-case-trailing-whitespace: 1
-    force-err-cuddling: true
+
 issues:
   # List of regexps of issue texts to exclude.
   #
@@ -437,7 +71,7 @@ issues:
   # it can be disabled by `exclude-use-default: false`.
   # To list all excluded by default patterns execute `golangci-lint run --help`
   #
-  # Default: []
+  # Default: https://golangci-lint.run/usage/false-positives/#default-exclusions
   exclude: []
 
   # Excluding configuration per-path, per-linter, per-text and per-source
@@ -445,33 +79,84 @@ issues:
     # Exclude some linters from running on tests files.
     - path: _test\.go
       linters:
-        - gochecknoglobals
-        - cyclop
-        - dupl
-        - errcheck
-        - forcetypeassert
-        - funlen
-        - goconst
         - gocyclo
-        - goerr113
+        - errcheck
+        - dupl
         - gosec
         - lll
-        - maintidx
-    - path: main\.go
+
+    # Run some linter only for test files by excluding its issues for everything else.
+    - path-except: _test\.go
+      linters:
+        - forbidigo
+
+    # Exclude known linters from partially hard-vendored code,
+    # which is impossible to exclude via `nolint` comments.
+    # `/` will be replaced by current OS file path separator to properly work on Windows.
+    - path: internal/hmac/
+      text: "weak cryptographic primitive"
+      linters:
+        - gosec
+
+    # Exclude some `staticcheck` messages.
+    - linters:
+        - staticcheck
+      text: "SA9003:"
+
+    # Exclude `lll` issues for long lines with `go:generate`.
+    - linters:
+        - lll
+      source: "^//go:generate "
+
+    - path: "main\\.go"
       linters:
         - gochecknoglobals
 
   # Independently of option `exclude` we use default exclude patterns,
   # it can be disabled by this option.
   # To list all excluded by default patterns execute `golangci-lint run --help`.
-  # Default: true.
+  # Default: true
   exclude-use-default: true
 
-  # If set to true exclude and exclude-rules regular expressions become case-sensitive.
+  # If set to true, `exclude` and `exclude-rules` regular expressions become case-sensitive.
   # Default: false
   exclude-case-sensitive: false
 
+  # Which dirs to exclude: issues from them won't be reported.
+  # Can use regexp here: `generated.*`, regexp is applied on full path,
+  # including the path prefix if one is set.
+  # Default dirs are skipped independently of this option's value (see exclude-dirs-use-default).
+  # "/" will be replaced by current OS file path separator to properly work on Windows.
+  # Default: []
+  exclude-dirs: []
+
+  # Enables exclude of directories:
+  # - vendor$, third_party$, testdata$, examples$, Godeps$, builtin$
+  # Default: true
+  exclude-dirs-use-default: true
+
+  # Which files to exclude: they will be analyzed, but issues from them won't be reported.
+  # There is no need to include all autogenerated files,
+  # we confidently recognize autogenerated files.
+  # If it's not, please let us know.
+  # "/" will be replaced by current OS file path separator to properly work on Windows.
+  # Default: []
+  exclude-files: []
+
+  # Mode of the generated files analysis.
+  #
+  # - `strict`: sources are excluded by following strictly the Go generated file convention.
+  #    Source files that have lines matching only the following regular expression will be excluded: `^// Code generated .* DO NOT EDIT\.$`
+  #    This line must appear before the first non-comment, non-blank text in the file.
+  #    https://go.dev/s/generatedcode
+  # - `lax`: sources are excluded if they contain lines `autogenerated file`, `code generated`, `do not edit`, etc.
+  # - `disable`: disable the generated files exclusion.
+  #
+  # Default: lax
+  exclude-generated: strict
+
   # The list of ids of default excludes to include or disable.
+  # https://golangci-lint.run/usage/false-positives/#default-exclusions
   # Default: []
   include: []
 
@@ -491,17 +176,151 @@ issues:
   # It's not practical to fix all existing issues at the moment of integration:
   # much better don't allow issues in new code.
   #
-  # Default: false.
+  # Default: false
   new: false
 
   # Show only new issues created after git revision `REV`.
-  # new-from-rev: HEAD
+  # Default: ""
+  new-from-rev: ""
 
   # Show only new issues created in git patch with set file path.
-  # new-from-patch: path/to/patch/file
+  # Default: ""
+  new-from-patch: ""
+
+  # Show issues in any part of update files (requires new-from-rev or new-from-patch).
+  # Default: false
+  whole-files: false
 
   # Fix found issues (if it's supported by the linter).
+  # Default: false
   fix: false
+
+# output configuration options
+output:
+  # The formats used to render issues.
+  # Formats:
+  # - `colored-line-number`
+  # - `line-number`
+  # - `json`
+  # - `colored-tab`
+  # - `tab`
+  # - `html`
+  # - `checkstyle`
+  # - `code-climate`
+  # - `junit-xml`
+  # - `junit-xml-extended`
+  # - `github-actions`
+  # - `teamcity`
+  # - `sarif`
+  # Output path can be either `stdout`, `stderr` or path to the file to write to.
+  #
+  # For the CLI flag (`--out-format`), multiple formats can be specified by separating them by comma.
+  # The output can be specified for each of them by separating format name and path by colon symbol.
+  # Example: "--out-format=checkstyle:report.xml,json:stdout,colored-line-number"
+  # The CLI flag (`--out-format`) override the configuration file.
+  #
+  # Default:
+  #   formats:
+  #     - format: colored-line-number
+  #       path: stdout
+  formats:
+    - format: json
+      path: stderr
+    - format: colored-line-number
+
+  # Print lines of code with issue.
+  # Default: true
+  print-issued-lines: false
+
+  # Print linter name in the end of issue text.
+  # Default: true
+  print-linter-name: true
+
+  # Make issues output unique by line.
+  # Default: true
+  uniq-by-line: false
+
+  # Add a prefix to the output file references.
+  # Default: ""
+  path-prefix: ""
+
+  # Sort results by the order defined in `sort-order`.
+  # Default: false
+  sort-results: true
+
+  # Order to use when sorting results.
+  # Require `sort-results` to `true`.
+  # Possible values: `file`, `linter`, and `severity`.
+  #
+  # If the severity values are inside the following list, they are ordered in this order:
+  #   1. error
+  #   2. warning
+  #   3. high
+  #   4. medium
+  #   5. low
+  # Either they are sorted alphabetically.
+  #
+  # Default: ["file"]
+  sort-order:
+    - linter
+    - severity
+    - file # filepath, line, and column.
+
+  # Show statistics per linter.
+  # Default: false
+  show-stats: true
+
+# Options for analysis running.
+run:
+  # Timeout for analysis, e.g. 30s, 5m.
+  # Default: 1m
+  timeout: 5m
+
+  # Exit code when at least one issue was found.
+  # Default: 1
+  issues-exit-code: 2
+
+  # Include test files or not.
+  # Default: true
+  tests: false
+
+  # List of build tags, all linters use it.
+  # Default: []
+  build-tags:
+    - mytag
+
+  # If set, we pass it to "go list -mod={option}". From "go help modules":
+  # If invoked with -mod=readonly, the go command is disallowed from the implicit
+  # automatic updating of go.mod described above. Instead, it fails when any changes
+  # to go.mod are needed. This setting is most useful to check that go.mod does
+  # not need updates, such as in a continuous integration and testing system.
+  # If invoked with -mod=vendor, the go command assumes that the vendor
+  # directory holds the correct copies of dependencies and ignores
+  # the dependency descriptions in go.mod.
+  #
+  # Allowed values: readonly|vendor|mod
+  # Default: ""
+  modules-download-mode: readonly
+
+  # Allow multiple parallel golangci-lint instances running.
+  # If false, golangci-lint acquires file lock on start.
+  # Default: false
+  allow-parallel-runners: true
+
+  # Allow multiple golangci-lint instances running, but serialize them around a lock.
+  # If false, golangci-lint exits with an error if it fails to acquire file lock on start.
+  # Default: false
+  allow-serial-runners: true
+
+  # Define the Go version limit.
+  # Mainly related to generics support since go1.18.
+  # Default: use Go version from the go.mod file, fallback on the env var `GOVERSION`, fallback on 1.17
+  go: "1.23"
+
+  # Number of operating system threads (`GOMAXPROCS`) that can execute golangci-lint simultaneously.
+  # If it is explicitly set to 0 (i.e. not the default) then golangci-lint will automatically set the value to match Linux container CPU quota.
+  # Default: the number of logical CPUs in the machine
+  concurrency: 4
 
 severity:
   # Set the default severity for issues.
@@ -510,10 +329,13 @@ severity:
   # this will be the default severity applied.
   # Severities should match the supported severity names of the selected out format.
   # - Code climate: https://docs.codeclimate.com/docs/issues#issue-severity
-  # - Checkstyle: https://checkstyle.sourceforge.io/property_types.html#severity
+  # - Checkstyle: https://checkstyle.sourceforge.io/property_types.html#SeverityLevel
   # - GitHub: https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
+  # - TeamCity: https://www.jetbrains.com/help/teamcity/service-messages.html#Inspection+Instance
   #
-  # Default value is an empty string.
+  # `@linter` can be used as severity value to keep the severity from linters (e.g. revive, gosec, ...)
+  #
+  # Default: ""
   default-severity: error
 
   # If set to true `severity-rules` regular expressions become case-sensitive.
@@ -523,10 +345,13 @@ severity:
   # When a list of severity rules are provided, severity information will be added to lint issues.
   # Severity rules have the same filtering capability as exclude rules
   # except you are allowed to specify one matcher per severity rule.
+  #
+  # `@linter` can be used as severity value to keep the severity from linters (e.g. revive, gosec, ...)
+  #
   # Only affects out formats that support setting severity information.
   #
   # Default: []
   rules:
     - linters:
-      - dupl
+        - dupl
       severity: info
