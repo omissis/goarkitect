@@ -7,23 +7,23 @@ import (
 	"github.com/omissis/goarkitect/internal/arch/rule"
 )
 
-func ContainsValue(s string) *ContainsValueExpression {
-	return &ContainsValueExpression{
+func ContainValue(s string) *ContainValueExpression {
+	return &ContainValueExpression{
 		value: s,
 	}
 }
 
-type ContainsValueExpression struct {
+type ContainValueExpression struct {
 	value string
 
 	errors []error
 }
 
-func (e *ContainsValueExpression) GetErrors() []error {
+func (e *ContainValueExpression) GetErrors() []error {
 	return e.errors
 }
 
-func (e *ContainsValueExpression) Evaluate(rb rule.Builder) {
+func (e *ContainValueExpression) Evaluate(rb rule.Builder) {
 	frb, ok := rb.(*file.RuleBuilder)
 	if !ok {
 		e.errors = append(e.errors, file.ErrInvalidRuleBuilder)
