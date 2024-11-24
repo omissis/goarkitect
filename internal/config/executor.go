@@ -44,6 +44,7 @@ type That struct {
 	Folder    string `json:"folder"    yaml:"folder"`
 	Recursive bool   `json:"recursive" yaml:"recursive"`
 	Suffix    string `json:"suffix"    yaml:"suffix"`
+	Value     string `json:"value"     yaml:"value"`
 }
 type Except struct {
 	Kind     string `json:"kind"     yaml:"kind"`
@@ -157,6 +158,9 @@ func applyThats(rb *file.RuleBuilder, ts []That) error {
 
 		case "end_with":
 			rb.That(ft.EndWith(t.Suffix))
+
+		case "contain_value":
+			rb.That(ft.ContainValue(t.Value))
 
 		default:
 			return fmt.Errorf("'%s': %w", t.Kind, ErrUnknonwnThat)

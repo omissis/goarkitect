@@ -69,3 +69,15 @@ rules:
       - kind: end_with
         suffix: file
     because: "it is an example"
+  - name: a set of file that contains .go must be go file (end with .go) 
+    kind: file
+    matcher:
+      kind: all
+    thats:
+      - kind: contain_value
+        value: .go
+    excepts: []
+    shoulds:
+      - kind: end_with
+        suffix: .go
+    because: "it is an example "

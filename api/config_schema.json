@@ -96,6 +96,23 @@
                 "folder"
             ]
         },
+        "fileThatContainValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "pattern": "^contain_value$"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "kind",
+                "value"
+            ]
+        },
         "fileThatEndWith": {
             "type": "object",
             "additionalProperties": false,
