@@ -5,7 +5,7 @@ go 1.23
 require (
 	github.com/google/go-cmp v0.7.0
 	github.com/santhosh-tekuri/jsonschema v1.2.4
-	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1
+	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
